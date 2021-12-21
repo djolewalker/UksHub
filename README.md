@@ -35,6 +35,7 @@ When you have MySql running on your device execute scripts/create_db_local.sql s
 When database is ready we can migrate data.
 ```python
 # Migrate data
+(venv) ..\uks-hub> pip install -r requirements.txt
 (venv) ..\uks-hub> cd .\UksHub
 (venv) ..\uks-hub\UksHub> python manage.py makemigrations
 (venv) ..\uks-hub\UksHub> python manage.py migrate
