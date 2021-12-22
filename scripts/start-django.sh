@@ -1,4 +1,3 @@
-cd UksHub
 # uncomment this to use sqlite as test db
 #export UKS_TEST_DB=ON
 # collect static files and put inside ./static/

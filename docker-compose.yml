@@ -32,8 +32,10 @@ services:
     links:
       - redis
     environment:
+      - DJANGO_SETTINGS_MODULE=UksHub.settings.test
       - MYSQL_USER=user
       - MYSQL_PASSWORD=user
+      - MYSQL_HOST=db
 
   # Nginx as a web server and reverse proxy
   nginx:
