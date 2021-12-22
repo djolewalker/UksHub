@@ -8,11 +8,11 @@ on:
 
 # use sqlite as testdb
 env:
+  DJANGO_SETTINGS_MODULE: UksHub.settings.test
   UKS_TEST_DB: ON
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
