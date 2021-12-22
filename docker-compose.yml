@@ -1,0 +1,57 @@
+services:
+  # Mysql as a main storage
+  db:
+    restart: always
+    image: mysql
+    container_name: uks_hub_db
+    volumes:
+      - ./mysqldata:/var/lib/mysql
+    ports:
+      - "8001:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=uks_hub
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=user
+      - MYSQL_HOST=db
+
+  # Django application
+  web:
+    container_name: uks_hub_web
+    labels:
+      com.example.service: "web"
+      com.example.description: "Use for the main web process"
+    build: .
+    command: ["./scripts/wait_for_mysql.sh"]
+    expose:
+      - 8000
+    volumes:
+      - ./static:/code/static #must be same as nginx!
+    depends_on:
+      - db
+    links:
+      - redis
+    environment:
+      - DJANGO_SETTINGS_MODULE=UksHub.settings.test
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=user
+      - MYSQL_HOST=db
+
+  # Nginx as a web server and reverse proxy
+  nginx:
+    image: nginx
+    container_name: uks_hub_nginx
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./static:/code/static #must be same as web!
+    depends_on:
+      - web
+
+  # redis as a Django cache store
+  redis:
+    image: redis
+    container_name: uks_hub_redis
+    expose:
+      - 6379
