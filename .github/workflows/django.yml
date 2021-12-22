@@ -35,4 +35,5 @@ jobs:
         python manage.py migrate
     - name: Run Django Test Suite
       run: |
-        python manage.py test hub.tests --noinput
+        python manage.py test UksHub.apps.hub.tests --noinput
+        python manage.py test UksHub.apps.backoffice.tests --noinput
