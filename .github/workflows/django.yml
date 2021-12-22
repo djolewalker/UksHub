@@ -31,10 +31,8 @@ jobs:
         pip install -r requirements.txt
     - name: Setup Django DB
       run: |
-        cd UksHub
         python manage.py makemigrations
         python manage.py migrate
     - name: Run Django Test Suite
       run: |
-        cd UksHub
         python manage.py test hub.tests --noinput
