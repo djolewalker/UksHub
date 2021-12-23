@@ -45,8 +45,13 @@ App will be running on django's default port [http://localhost:8000/](http://loc
 ### Run with docker:
 You will need docker installed on your machine.
 ```python
-# Run docker compose from root folder (uks-hub) to run docker file
-# Be patient
+# Run docker compose from root folder (ukshub) to run docker file
+# Be patient first time
 docker-compose up --build
+```
+```python
+# Follow instructions in docker-compose.yml file to run container from image on DockerHub 
+# Run docker compose with --force-recreate parameter to rebuild container from remote image
+docker-compose up --build --force-recreate
 ```
 App will be running on [http://localhost:8083/](http://localhost:8083/)
