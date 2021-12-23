@@ -16,17 +16,20 @@ services:
       - MYSQL_HOST=db
 
   # Django application
+  # To run with image from dockerhub uncomment image action and comment build action
+  # Run with "docker-compose up --build --force-recreate" to recreate container from remote image
   web:
+    # image: djolewalker/ukshub # Uncomment this to build from remote docker image
     container_name: uks_hub_web
     labels:
       com.example.service: "web"
       com.example.description: "Use for the main web process"
-    build: .
+    build: . # Comment this to build from remote docker image
     command: ["./scripts/wait_for_mysql.sh"]
     expose:
       - 8000
     volumes:
-      - ./static:/code/static #must be same as nginx!
+      - ./static:/code/static # must be same as nginx!
     depends_on:
       - db
     links:
