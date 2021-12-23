@@ -11,7 +11,7 @@ Uks-hub is web based VCS, project management and collaboration tool. GitHub's tw
 
 ## Setup:
 ### Clone repo:
-```python
+```
 git clone https://github.com/djolewalker/UksHub.git
 cd UksHub
 ```
