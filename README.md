@@ -13,7 +13,7 @@ Uks-hub is web based VCS, project management and collaboration tool. GitHub's tw
 ### Clone repo:
 ```python
 git clone https://github.com/djolewalker/UksHub.git
-cd uks-hub
+cd UksHub
 ```
 ### Create venv:
 ```python
