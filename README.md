@@ -1,6 +1,13 @@
-# uks-hub
+# UksHub
 
-Uks-hub is web based VCS, project management and collaboration tool. GitHub's twin brother.
+UksHub is web based VCS, project management and collaboration tool. GitHub's twin brother.
+
+## Available on Docker Hub
+![example workflow](https://github.com/djolewalker/UksHub/actions/workflows/django.yml/badge.svg) ![example workflow](https://github.com/djolewalker/UksHub/actions/workflows/docker-hub.yml/badge.svg)
+
+```
+docker pull djolewalker/ukshub
+```
 
 ## Team 3
 | Contributor | Full name | Student Id |
