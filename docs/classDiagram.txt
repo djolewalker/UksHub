@@ -1,7 +1,7 @@
 @startuml UksHub
 skinparam groupInheritance 3
 
-enum ProjectState{
+enum ProjectState {
     OPEN
     CLOSE
 }
@@ -63,7 +63,11 @@ class Artefact {
 class Project {
     title: string
     description: string
-    status
+    status: ProjectState
+}
+class ProjectColumn {
+    title: string
+    order: number
 }
 class Action {
     title: string
@@ -128,6 +132,7 @@ PullRequest "0..*" --* "target" Branch
 PullRequest "0..*" --* "source" Branch
 PullRequest *-- "0..*" FileViewedMark
 Project *--> GitRepo
+Project *-- "0..*" ProjectColumn 
 Action *-- "0..* implements" Check
 Check --> "trigger" Commit
 GitRepo *-- "0..*" WikiPage
@@ -138,28 +143,29 @@ GitRepo *-- "1..*" Branch
 GitRepo --> "creator" User
 GitRepo -- "0..* watch" User
 GitRepo -- "0..* star" User
-GitRepo *-- "0..* contributors" User
+GitRepo o-- "0..* contributors" User
 GitRepo -- "0..* Forks" GitRepo
 Branch *-- "1..*" Commit
 Commit -- "author" User
 Commit -- "0..2 parents" Commit
 Commit -- "commiter" User
-Project *-- "0..*" Milestone
-Project -- "1..* developers" User
+Project o-- "1..* developers" User
 Project --> "lead" User
 Milestone -- "0..*" Artefact
 Issue --|> Artefact
-Artefact -- "1..*" Event
+Artefact *-- "1..*" Event
+ProjectColumn o-- "0..*" Artefact
+ProjectColumnSet --> Project
 UserAssignement -- "1..*" User
 MilestoneAssignment -- "1..*" Milestone
 PullRequestAssignment -- "1..*" PullRequest
 IssueLink -- "1..*" Issue
 LabelApplication --> "1..*" Label
-Project -- "0..*" Label
 User "assignees 0..*" -- Artefact
 ReviewRequest --> "Done by" Review
-Review -- "1..*" ReviewConversation
-ReviewConversation -- "1..*" Comment
+Review *-- "0..*" ReviewConversation
+Review --> Comment
+ReviewConversation o-- "1..*" Comment
 Event -- "create" User
 
 Event <|-- Comment
@@ -174,4 +180,5 @@ Event <|-- ReviewRequest
 Event <|-- Review
 Event <|-- IssueLink
 Event <|-- FileViewedMark
+Event <|-- ProjectColumnSet
 @enduml
