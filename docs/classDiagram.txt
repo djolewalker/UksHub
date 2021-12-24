@@ -1,0 +1,177 @@
+@startuml UksHub
+skinparam groupInheritance 3
+
+enum ProjectState{
+    OPEN
+    CLOSE
+}
+enum ArtefactState {
+    OPEN
+    CLOSE
+    MERGED
+}
+enum ReviewState {
+    COMMENT
+    APPROVE
+    REQUEST_CHANGE
+}
+enum CheckState {
+    STARTED
+    SUCCESSFUL
+    FAILED
+}
+enum ChangeState {
+    APPLICATION
+    REMOVAL
+}
+
+class GitRepo {
+    path: string
+}
+class WikiPage {
+    title: string
+}
+class WikiPageRevision {
+    content: string
+    date_created: Date
+}
+class Email {
+    address: string
+    verified: boolean
+    isPrimary: boolean
+    isVisible: boolean
+    isNotification: boolean
+}
+class User {
+    username: string
+    name: string
+    bio: string
+    url: string
+    twitterUsername: string
+    company: string
+}
+class Label {
+    name: string
+    description: string
+    color: string
+}
+class Artefact {
+    title: string
+    date_created: Date
+    state: ArtefactState
+}
+class Project {
+    title: string
+    description: string
+    status
+}
+class Action {
+    title: string
+    file: string
+    disabled: boolean
+}
+class Check {
+    result: CheckState
+    duration: number
+}
+class Milestone {
+    title: string
+    description: string
+    due_date: Date
+    state: State
+}
+class Event {
+    date_time: DateTime
+    state: ChangeState
+}
+class Issue
+class PullRequest
+class Comment {
+    content: string
+}
+class StateChange {
+    new_state: ArtefactState
+}
+class UserAssignement
+class Branch {
+    name: string
+}
+class Commit {
+    date_time: DateTime
+    log_message: string
+    hash: string
+}
+class NameChange {
+    name: string
+}
+class Review {
+    state: ReviewState
+}
+class ReviewRequest {
+    done: boolean
+}
+class ReviewConversation {
+    resolved: boolean
+    file: string
+    line: number
+}
+class FileViewedMark {
+    checked: boolean
+    file: string
+}
+
+User *-- "1..*" Email
+User "creator" <-- Artefact
+PullRequest -- "0..*" Issue
+PullRequest --|> Artefact
+PullRequest "0..*" --* "target" Branch
+PullRequest "0..*" --* "source" Branch
+PullRequest *-- "0..*" FileViewedMark
+Project *--> GitRepo
+Action *-- "0..* implements" Check
+Check --> "trigger" Commit
+GitRepo *-- "0..*" WikiPage
+WikiPage *-- "1..*" WikiPageRevision
+WikiPageRevision --> User
+WikiPageRevision -- "0..1 changes" WikiPageRevision
+GitRepo *-- "1..*" Branch
+GitRepo --> "creator" User
+GitRepo -- "0..* watch" User
+GitRepo -- "0..* star" User
+GitRepo *-- "0..* contributors" User
+GitRepo -- "0..* Forks" GitRepo
+Branch *-- "1..*" Commit
+Commit -- "author" User
+Commit -- "0..2 parents" Commit
+Commit -- "commiter" User
+Project *-- "0..*" Milestone
+Project -- "1..* developers" User
+Project --> "lead" User
+Milestone -- "0..*" Artefact
+Issue --|> Artefact
+Artefact -- "1..*" Event
+UserAssignement -- "1..*" User
+MilestoneAssignment -- "1..*" Milestone
+PullRequestAssignment -- "1..*" PullRequest
+IssueLink -- "1..*" Issue
+LabelApplication --> "1..*" Label
+Project -- "0..*" Label
+User "assignees 0..*" -- Artefact
+ReviewRequest --> "Done by" Review
+Review -- "1..*" ReviewConversation
+ReviewConversation -- "1..*" Comment
+Event -- "create" User
+
+Event <|-- Comment
+Event <|-- Check
+Event <|-- StateChange
+Event <|-- NameChange
+Event <|-- LabelApplication
+Event <|-- UserAssignement
+Event <|-- MilestoneAssignment
+Event <|-- PullRequestAssignment
+Event <|-- ReviewRequest
+Event <|-- Review
+Event <|-- IssueLink
+Event <|-- FileViewedMark
+@enduml
