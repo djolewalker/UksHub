@@ -13,10 +13,11 @@ DEBUG = False
 # Until deployment to hosting service
 ALLOWED_HOSTS = ['*']
 
+ADMIN_ENABLED = False
+
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -24,11 +25,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 3rd party
     'compressor',
+    # Tracker app
     'crispy_forms',
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
     'UksHub.apps.hubAuth.apps.HubAuthConfig',
-    'UksHub.apps.backoffice.apps.BackofficeConfig'
+    'UksHub.apps.backoffice.apps.BackofficeConfig',
+    'UksHub.apps.analytics.apps.AnalyticsConfig'
 ]
 
 MIDDLEWARE = [
@@ -39,6 +42,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'UksHub.apps.analytics.middleware.AnalyticsMiddleware'
 ]
 
 ROOT_URLCONF = 'UksHub.urls'
@@ -171,7 +175,7 @@ else:
     # Cache time to live is 15 minutes.
     CACHE_TTL = 60 * 15
     # store session in cache
-    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
     SESSION_CACHE_ALIAS = "default"
     # Note that caching is done only for sessions.
     # If the views should be cached too, then check how to do this

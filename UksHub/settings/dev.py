@@ -15,6 +15,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+ADMIN_ENABLED = True
 
 # Application definition
 
@@ -27,11 +28,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 3rd party
     'compressor',
+    # Tracker app
     'crispy_forms',
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
     'UksHub.apps.hubAuth.apps.HubAuthConfig',
-    'UksHub.apps.backoffice.apps.BackofficeConfig'
+    'UksHub.apps.backoffice.apps.BackofficeConfig',
+    'UksHub.apps.analytics.apps.AnalyticsConfig'
 ]
 
 MIDDLEWARE = [
@@ -42,6 +45,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'UksHub.apps.analytics.middleware.AnalyticsMiddleware'
 ]
 
 ROOT_URLCONF = 'UksHub.urls'
