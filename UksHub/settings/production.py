@@ -26,10 +26,12 @@ INSTALLED_APPS = [
     # 3rd party
     'compressor',
     # Tracker app
-    'UksHub.apps.analytics.apps.AnalyticsConfig',
+    'crispy_forms',
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
-    'UksHub.apps.backoffice.apps.BackofficeConfig'
+    'UksHub.apps.hubAuth.apps.HubAuthConfig',
+    'UksHub.apps.backoffice.apps.BackofficeConfig',
+    'UksHub.apps.analytics.apps.AnalyticsConfig'
 ]
 
 MIDDLEWARE = [
@@ -122,6 +124,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'UksHub' / 'static'
 ]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 # SCSS dependency
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -176,3 +180,6 @@ else:
     # Note that caching is done only for sessions.
     # If the views should be cached too, then check how to do this
     # by introspecting the views.lista_kategorija.
+
+
+LOGIN_URL = "/login"

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %} {% load compress %} {% load crispy_forms_tags %}
+{% block title %}
+Signup
+{% endblock %}
+{% block header %}
+{% compress css %}
+<link type="text/x-scss" href="{% static 'styles/hub/auth.scss' %}" rel="stylesheet" media="screen" />
+{% endcompress %}
+{% endblock header %}
+{% block content %}
+<h1>UksHub</h1>
+<div class="form-container">
+    <h2>Sign up:</h2>
+    <form class="needs-validation" method="POST" novalidate>
+        {% csrf_token %}
+        {{ form | crispy }}
+        <div class="mb-3 repeat-password">
+            <label for="repeat-password" class="form-label">Repeat password</label>
+            <input type="password" name="repeat_password" class="form-control" id="repeat_password" required>
+            <span class="invalid-feedback">Password not a match.</span>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+</div>
+<script src="{% static 'js/hub/register.js' %}"></script>
+{% endblock content %}

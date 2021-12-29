@@ -1,0 +1,36 @@
+.form-container {
+    width: 250px;
+    margin: auto;
+    margin-top: 100px;
+
+    .asteriskField {
+        display: none;
+    }
+
+    label {
+        margin-bottom: 0;
+    }
+
+    .btn-primary {
+        margin: auto;
+        display: block;
+        margin-top: 30px;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        font-size: 1.4em;
+        text-align: center;
+    }
+
+    .alert-block ul {
+        padding: 0;
+    }
+}
+
+h1 {
+    margin: auto;
+    display: block;
+    width: 150px;
+    margin-top: 80px;
+}
