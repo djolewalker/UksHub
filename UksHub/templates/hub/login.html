@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %} {% load compress %} {% load crispy_forms_tags %}
+{% block title %}
+Login
+{% endblock %}
+{% block header %}
+{% compress css %}
+<link type="text/x-scss" href="{% static 'styles/hub/auth.scss' %}" rel="stylesheet" media="screen" />
+{% endcompress %}
+{% endblock header %}
+{% block content %}
+<h1>UksHub</h1>
+<div class="form-container">
+    <h2>Log in:</h2>
+    {% if next %}
+    <form action="/login?next={{next}}" method="POST">
+        {% else%}
+        <form action="/login" method="POST">
+            {% endif %}
+            {% csrf_token %}
+            {{ form | crispy }}
+            <button type="submit" class="btn btn-primary">Log in</button>
+        </form>
+</div>
+{% endblock content %}

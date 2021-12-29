@@ -27,8 +27,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 3rd party
     'compressor',
+    'crispy_forms',
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
+    'UksHub.apps.hubAuth.apps.HubAuthConfig',
     'UksHub.apps.backoffice.apps.BackofficeConfig'
 ]
 
@@ -47,7 +49,7 @@ ROOT_URLCONF = 'UksHub.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'UksHub' / 'templates' ],
+        'DIRS': [BASE_DIR / 'UksHub' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -117,7 +119,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = 'static/'
 
-STATICFILES_DIRS = [ BASE_DIR / 'UksHub' / 'static' ]
+STATICFILES_DIRS = [BASE_DIR / 'UksHub' / 'static']
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # SCSS dependency
 STATICFILES_FINDERS = [
@@ -138,3 +142,5 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = "/login"
