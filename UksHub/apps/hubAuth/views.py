@@ -14,14 +14,12 @@ def login(request):
         if form.is_valid():
             if loginUser(
                     request, form.cleaned_data['username'], form.cleaned_data['password']):
-                next = request.GET.get('next', '/')
-                return redirect(next)
+                return redirect(request.GET.get('next', '/'))
             else:
                 form.add_error(None, 'Invalid credentials!')
-        return render(request, 'hub/login.html', {'form': form})
     else:
-        next = request.GET.get('next')
-        return render(request, 'hub/login.html', {'form': LoginForm(), 'next': next})
+        form = LoginForm()
+    return render(request, 'hub/login.html', {'form': form, 'next': request.GET.get('next') })
 
 
 @login_required
@@ -42,9 +40,9 @@ def register(request):
             else:
                 form.add_error(
                     None, 'Can\'t create user! Something went wrong.')
-                return render(request, 'hub/register.html', {'form': form})
-        return render(request, 'hub/register.html', {'form': form})
-    return render(request, 'hub/register.html', {'form': SignupForm()})
+    else:
+        form = SignupForm()
+    return render(request, 'hub/register.html', {'form': form})
 
 
 def resetPassword(request):
