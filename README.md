@@ -88,7 +88,7 @@ Git server is implemented with Gitolite. Clone repo is also available through ht
 git clone ssh://git@127.0.0.1:2222/{user}/{repo-name}.git
 
 # Http and git protocols
-git clone http://127.0.0.1:8080/{user}/{repo-name}.git
+git clone http://127.0.0.1:8083/{user}/{repo-name}.git
 git clone git://127.0.0.1:9418/{user}/{repo-name}.git
 ```
 
