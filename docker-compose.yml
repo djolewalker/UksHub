@@ -92,10 +92,9 @@ services:
   git-http:
     image: ynohat/git-http-backend
     container_name: git-http
-    ports:
-      - "8080:80"
+    expose:
+      - 80
     volumes:
-      - ./config/http/nginx.conf:/etc/nginx/nginx.conf
       - gitolite-git:/git
 
 volumes:
