@@ -98,6 +98,5 @@ services:
       - gitolite-git:/git
 
 volumes:
-  gitolite-sshkeys:
   gitolite-git:
   public-key:
