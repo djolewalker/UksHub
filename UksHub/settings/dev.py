@@ -32,7 +32,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
-    'UksHub.apps.hubAuth.apps.HubAuthConfig',
+    'UksHub.apps.gitcore.apps.GitCoreConfig',
+    'UksHub.apps.hubauth.apps.HubAuthConfig',
     'UksHub.apps.backoffice.apps.BackofficeConfig',
     'UksHub.apps.analytics.apps.AnalyticsConfig'
 ]
@@ -148,3 +149,12 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = "/login"
+
+GIT_REPOSITORIES = BASE_DIR / 'git-repos'
+
+GIT_ADMIN_SUPERUSER = 'random.user.admin'
+GIT_ADMIN = BASE_DIR / 'git-admin-dev'
+GIT_ADMIN_CONF_REPO = GIT_ADMIN / 'conf' 
+GIT_ADMIN_CONF = GIT_ADMIN_CONF_REPO / 'gitolite.conf'
+GIT_ADMIN_KEYS = GIT_ADMIN / 'keydir'
+GIT_ADMIN_REMOTE = "D:\git-admin-dev"

@@ -1,0 +1,3 @@
+Host git-server
+   StrictHostKeyChecking no
+   UserKnownHostsFile=/dev/null

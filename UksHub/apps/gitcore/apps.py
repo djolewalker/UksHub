@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class HubAuthConfig(AppConfig):
+class GitCoreConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'UksHub.apps.hubauth'
+    name = 'UksHub.apps.gitcore'

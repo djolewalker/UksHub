@@ -13,6 +13,8 @@ RUN pip install --upgrade pip
 RUN pip install --upgrade wheel
 RUN pip install --upgrade setuptools
 RUN pip install -r requirements.txt
+
 # make these scripts executables
+RUN ["chmod", "+x", "./scripts/create-public-key.sh"]
 RUN ["chmod", "+x", "./scripts/wait_for_mysql.sh"]
 RUN ["chmod", "+x", "./scripts/start-django.sh"]
