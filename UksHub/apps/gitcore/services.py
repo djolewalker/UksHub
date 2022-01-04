@@ -2,8 +2,9 @@ from os import path, makedirs, rmdir
 import subprocess
 from git import Repo
 from django.conf import settings
-from UksHub.apps.gitcore.decorators import clone_or_pull_admin
 from django.template.loader import render_to_string
+
+from .decorators import clone_or_pull_admin
 
 @clone_or_pull_admin
 def init_repository(repo):

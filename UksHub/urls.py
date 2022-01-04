@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
-from UksHub.apps.hubauth.urls import urlpatterns as authUrls
-from UksHub.apps.gitcore.urls import urlpatterns as gitCoreUrls
+from .apps.hubauth.urls import urlpatterns as authUrls
+from .apps.gitcore.urls import urlpatterns as gitCoreUrls
 
 urlpatterns = []
 
