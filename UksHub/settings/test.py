@@ -28,8 +28,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
+    'UksHub.apps.hubAuth.apps.HubAuthConfig',
     'UksHub.apps.gitcore.apps.GitCoreConfig',
-    'UksHub.apps.hubauth.apps.HubAuthConfig',
     'UksHub.apps.backoffice.apps.BackofficeConfig',
     'UksHub.apps.analytics.apps.AnalyticsConfig',
 ]
