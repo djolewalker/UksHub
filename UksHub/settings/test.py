@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'UksHub.apps.gitcore.apps.GitCoreConfig',
     'UksHub.apps.hubauth.apps.HubAuthConfig',
     'UksHub.apps.backoffice.apps.BackofficeConfig',
-    'UksHub.apps.analytics.apps.AnalyticsConfig'
+    'UksHub.apps.analytics.apps.AnalyticsConfig',
 ]
 
 MIDDLEWARE = [
@@ -42,7 +42,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'UksHub.apps.analytics.middleware.AnalyticsMiddleware'
+    'UksHub.apps.analytics.middleware.AnalyticsMiddleware',
 ]
 
 ROOT_URLCONF = 'UksHub.urls'
