@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class HubAuthConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'UksHub.apps.hubAuth'
+    name = 'UksHub.apps.hubauth'

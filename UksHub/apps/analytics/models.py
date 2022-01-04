@@ -8,5 +8,5 @@ class Visit(models.Model):
     responseCode = models.CharField(max_length=3, default='')
     time = models.DateTimeField()
     host = models.CharField(max_length=30)
-    session = models.ForeignKey(Session, on_delete=models.SET_NULL, blank=True, null=True)
+    session_id = models.CharField(max_length=40, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)

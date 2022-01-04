@@ -19,7 +19,7 @@ def login(request):
                 form.add_error(None, 'Invalid credentials!')
     else:
         form = LoginForm()
-    return render(request, 'hub/login.html', {'form': form, 'next': request.GET.get('next') })
+    return render(request, 'hub/auth/login.html', {'form': form, 'next': request.GET.get('next') })
 
 
 @login_required
@@ -42,12 +42,12 @@ def register(request):
                     None, 'Can\'t create user! Something went wrong.')
     else:
         form = SignupForm()
-    return render(request, 'hub/register.html', {'form': form})
+    return render(request, 'hub/auth/register.html', {'form': form})
 
 
 def resetPassword(request):
-    return render(request, 'hub/reset-password.html')
+    return render(request, 'hub/auth/reset-password.html')
 
 
 def createNewPassword(request):
-    return render(request, 'hub/create-new-password.html')
+    return render(request, 'hub/auth/create-new-password.html')
