@@ -1,5 +1,3 @@
-
-
 from django.urls.conf import path
 
 from UksHub.apps.gitcore.views import add_contributor, init_repo, set_public_key
