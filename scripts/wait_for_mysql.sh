@@ -6,7 +6,6 @@ function mysql_ready() {
 import sys
 import mysql.connector
 try:
-    print()
     conn = mysql.connector.connect(user='root',password='1234',host='db')
 except mysql.connector.Error as e:
     print(e)
@@ -23,4 +22,5 @@ done
 # Start app
 >&2 echo "MySql is up - executing command"
 
+./scripts/create-public-key.sh
 ./scripts/start-django.sh

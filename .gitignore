@@ -3,6 +3,7 @@
 /static/
 mysqldata/
 compressed/
+git-server/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -30,6 +30,8 @@ services:
       - 8000
     volumes:
       - ./static:/code/static # must be same as nginx!
+      - gitolite-git:/code/git-repos
+      - public-key:/root/.ssh
     depends_on:
       - db
     links:
@@ -58,3 +60,43 @@ services:
     container_name: uks_hub_redis
     expose:
       - 6379
+
+  git-server:
+    image: jgiannuzzi/gitolite
+    restart: always
+    container_name: git-server
+    depends_on:
+      - git-deamon
+      - git-http
+      - web
+    ports:
+      - "2222:22"
+    expose:
+      - 22
+    volumes:
+      - gitolite-git:/var/lib/git/repositories
+      - ./scripts/gitolite-entrypoint.sh:/docker-entrypoint.sh
+      - public-key:/tmp/ssh-keys
+    environment:
+      - SSH_KEY=/tmp/ssh-keys/id_rsa.pub
+      - SSH_KEY_NAME=random.user.admin
+
+  git-deamon:
+    build: ./git-deamon
+    container_name: git-deamon
+    ports:
+      - "9418:9418"
+    volumes:
+      - gitolite-git:/var/lib/git
+
+  git-http:
+    image: ynohat/git-http-backend
+    container_name: git-http
+    expose:
+      - 80
+    volumes:
+      - gitolite-git:/git
+
+volumes:
+  gitolite-git:
+  public-key:

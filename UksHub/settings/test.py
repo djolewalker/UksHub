@@ -12,10 +12,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+ADMIN_ENABLED = False
+
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -23,9 +24,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 3rd party
     'compressor',
+    # Tracker app
+    'crispy_forms',
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
-    'UksHub.apps.backoffice.apps.BackofficeConfig'
+    'UksHub.apps.hubauth.apps.HubAuthConfig',
+    'UksHub.apps.gitcore.apps.GitCoreConfig',
+    'UksHub.apps.backoffice.apps.BackofficeConfig',
+    'UksHub.apps.analytics.apps.AnalyticsConfig',
 ]
 
 MIDDLEWARE = [
@@ -36,6 +42,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'UksHub.apps.analytics.middleware.AnalyticsMiddleware',
 ]
 
 ROOT_URLCONF = 'UksHub.urls'
@@ -117,6 +124,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'UksHub' / 'static'
 ]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 # SCSS dependency
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -166,8 +175,20 @@ else:
     # Cache time to live is 15 minutes.
     CACHE_TTL = 60 * 15
     # store session in cache
-    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
     SESSION_CACHE_ALIAS = "default"
     # Note that caching is done only for sessions.
     # If the views should be cached too, then check how to do this
     # by introspecting the views.lista_kategorija.
+
+
+LOGIN_URL = "/login"
+
+GIT_REPOSITORIES = BASE_DIR / 'git-repos'
+
+GIT_ADMIN_SUPERUSER = 'random.user.admin'
+GIT_ADMIN = BASE_DIR / 'gitolite-admin'
+GIT_ADMIN_CONF_REPO = GIT_ADMIN / 'conf' 
+GIT_ADMIN_CONF = GIT_ADMIN_CONF_REPO / 'gitolite.conf'
+GIT_ADMIN_KEYS = GIT_ADMIN / 'keydir'
+GIT_ADMIN_REMOTE = "git@git-server:gitolite-admin.git"
