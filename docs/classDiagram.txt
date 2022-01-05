@@ -25,8 +25,10 @@ enum ChangeState {
     REMOVAL
 }
 
-class GitRepo {
-    path: string
+class Repository {
+    name: string
+    private: boolean
+    achived: boolean
 }
 class WikiPage {
     title: string
@@ -49,6 +51,11 @@ class User {
     url: string
     twitterUsername: string
     company: string
+}
+class PublicKey {
+    label: string
+    public_key: string
+    archived: boolean
 }
 class Label {
     name: string
@@ -123,6 +130,18 @@ class FileViewedMark {
     checked: boolean
     file: string
 }
+class Session {
+    session_key: string
+    session_data: string
+    exipre_date: DateTime
+}
+class Visit {
+    path: string
+    response_code: number
+    time: DateTime
+    host: string
+}
+
 
 User *-- "1..*" Email
 User "creator" <-- Artefact
@@ -131,20 +150,20 @@ PullRequest --|> Artefact
 PullRequest "0..*" --* "target" Branch
 PullRequest "0..*" --* "source" Branch
 PullRequest *-- "0..*" FileViewedMark
-Project *--> GitRepo
+Project *--> Repository
 Project *-- "0..*" ProjectColumn 
 Action *-- "0..* implements" Check
 Check --> "trigger" Commit
-GitRepo *-- "0..*" WikiPage
+Repository *-- "0..*" WikiPage
 WikiPage *-- "1..*" WikiPageRevision
 WikiPageRevision --> User
 WikiPageRevision -- "0..1 changes" WikiPageRevision
-GitRepo *-- "1..*" Branch
-GitRepo --> "creator" User
-GitRepo -- "0..* watch" User
-GitRepo -- "0..* star" User
-GitRepo o-- "0..* contributors" User
-GitRepo -- "0..* Forks" GitRepo
+Repository *-- "1..*" Branch
+Repository --> "creator" User
+Repository -- "0..* watch" User
+Repository -- "0..* star" User
+Repository o-- "0..* contributors" User
+Repository -- "0..* Forks" Repository
 Branch *-- "1..*" Commit
 Commit -- "author" User
 Commit -- "0..2 parents" Commit
@@ -162,11 +181,14 @@ PullRequestAssignment -- "1..*" PullRequest
 IssueLink -- "1..*" Issue
 LabelApplication --> "1..*" Label
 User "assignees 0..*" -- Artefact
+User *-- "owns 0..*" PublicKey
 ReviewRequest --> "Done by" Review
 Review *-- "0..*" ReviewConversation
 Review --> Comment
 ReviewConversation o-- "1..*" Comment
 Event -- "create" User
+Visit --> Session
+Visit --> User
 
 Event <|-- Comment
 Event <|-- Check
