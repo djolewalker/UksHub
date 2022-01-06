@@ -1,6 +1,38 @@
 {% extends 'base.html' %}
+{% load compress %} {% load static %}
+{% block title %}
+UksHub
+{% endblock %}
+{% block header %}
+{% compress css %}
+<link type="text/x-scss" href="{% static 'styles/hub/home.scss' %}" rel="stylesheet" media="screen" />
+{% endcompress %}
+{% endblock %}
 {% block content %}
-Hub works
-{% load static %}
-<img src="{% static 'img/1821632-200.png' %}" alt="Example image">
+<div class="home d-flex flex-sm-column">
+    <div class="header centered-content d-flex justify-content-sm-between">
+        <a href="{% url 'home' %}" class="d-flex align-items-center">
+            <img src="{% static 'img/temp-logo.png' %}" alt="UksHub logo">
+            <h1>UksHub</h1>
+        </a>
+        <div class="actions d-flex align-items-center">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search..." aria-label="Search ukshub"
+                    aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">/</span>
+                </div>
+            </div>
+            <a href="{% url 'login' %}"><button type="button" class="btn btn-outline-secondary hub">Sign in</button></a>
+            <a href="{% url 'register' %}"><button type="button" class="btn btn-secondary hub">Sign up</button></a>
+        </div>
+    </div>
+    <div class="content d-flex centered-content flex-wrap">
+        <div class="content-item mx-auto">{% include 'auth/register-partial.html' %}</div>
+        <div class="content-item mx-auto"><img src="{% static '/img/home-branch.png' %}" alt="home brach image"></div>
+    </div>
+    <div class="footer centered-content d-flex justify-content-sm-center border-top border-secondary py-4">
+        <p>© 2022 UksHub</p>
+    </div>
+</div>
 {% endblock content %}

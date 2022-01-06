@@ -1,0 +1,39 @@
+.settings-wrapper {
+    height: fit-content;
+    min-height: 100%;
+
+    .quick-info {
+        height: 50px;
+    }
+
+    .settings-content {
+        flex: 1;
+        min-height: fit-content;
+
+        .settings-options {
+            width: 300px;
+
+            a:last-of-type li {
+                border-bottom: 0 !important;
+            }
+
+            .active-option {
+                border-left: 5px solid;
+            }
+        }
+
+        .current-settings-content {
+            flex: 1;
+            min-width: 0;
+            margin-left: 20px;
+
+            &>div {
+                max-width: 770px;
+            }
+
+            form {
+                width: 100%
+            }
+        }
+    }
+}

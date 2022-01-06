@@ -1,11 +1,8 @@
 .form-container {
     width: 250px;
     margin: auto;
-    margin-top: 100px;
-
-    .asteriskField {
-        display: none;
-    }
+    margin-top: 80px;
+    margin-bottom: 60px;
 
     label {
         margin-bottom: 0;
@@ -26,11 +23,10 @@
     .alert-block ul {
         padding: 0;
     }
-}
 
-h1 {
-    margin: auto;
-    display: block;
-    width: 150px;
-    margin-top: 80px;
+    .terms {
+        margin-top: 20px;
+        font-size: 0.9em;
+        text-align: center;
+    }
 }

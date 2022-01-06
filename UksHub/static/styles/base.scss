@@ -10,3 +10,46 @@ body {
 ul {
     list-style-type: none;
 }
+
+h1, h2, h3, h4, p {
+    margin: 0;
+}
+
+a,
+a:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.centered-content {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.btn.hub {
+    height: 38px;
+    min-width: 90px;
+    margin-left: 10px;
+}
+
+.initials-image {
+    width: 48px;
+    height: 48px;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3em;
+    font-weight: 500;
+
+    &.initials-s {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2em;
+        font-weight: 500;
+    }
+}
+
+.ingore-asterics .asteriskField {
+    display: none;
+}
