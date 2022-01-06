@@ -1,4 +1,4 @@
-from django.http.response import Http404, HttpResponse
+from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 
@@ -19,14 +19,15 @@ def login(request):
                 form.add_error(None, 'Invalid credentials!')
     else:
         form = LoginForm()
-    return render(request, 'hub/auth/login.html', {'form': form, 'next': request.GET.get('next') })
+    return render(request, 'auth/login.html', {'form': form, 'next': request.GET.get('next') })
 
 
 @login_required
 def logout(request):
     if request.method == 'POST':
         logoutUser(request)
-        return HttpResponse(status=204)
+        return redirect('/')
+    return HttpResponse(status=204)     
 
 
 def register(request):
@@ -42,12 +43,12 @@ def register(request):
                     None, 'Can\'t create user! Something went wrong.')
     else:
         form = SignupForm()
-    return render(request, 'hub/auth/register.html', {'form': form})
+    return render(request, 'auth/register.html', {'form': form})
 
 
 def resetPassword(request):
-    return render(request, 'hub/auth/reset-password.html')
+    return render(request, 'auth/reset-password.html')
 
 
 def createNewPassword(request):
-    return render(request, 'hub/auth/create-new-password.html')
+    return render(request, 'auth/create-new-password.html')

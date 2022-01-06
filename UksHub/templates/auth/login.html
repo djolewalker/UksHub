@@ -9,17 +9,17 @@ Login
 {% endcompress %}
 {% endblock header %}
 {% block content %}
-<h1>UksHub</h1>
+<h1 style="margin: auto; display: block; width: 140px; margin-top: 80px;">UksHub</h1>
 <div class="form-container">
-    <h2>Log in:</h2>
+    <h2>Sign in to UksHub</h2>
     {% if next %}
-    <form action="/login?next={{next}}" method="POST">
+    <form class="ingore-asterics" action="/login?next={{next}}" method="POST">
         {% else%}
-        <form action="/login" method="POST">
+        <form class="ingore-asterics" action="/login" method="POST">
             {% endif %}
             {% csrf_token %}
             {{ form | crispy }}
-            <button type="submit" class="btn btn-primary">Log in</button>
+            <button type="submit" class="btn btn-primary">Sign in</button>
         </form>
 </div>
 {% endblock content %}

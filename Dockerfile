@@ -14,6 +14,9 @@ RUN pip install --upgrade wheel
 RUN pip install --upgrade setuptools
 RUN pip install -r requirements.txt
 
+COPY /config/web/.gitconfig /etc/gitconfig
+COPY /config/web/ssh_config /etc/ssh/ssh_config
+
 # make these scripts executables
 RUN ["chmod", "+x", "./scripts/create-public-key.sh"]
 RUN ["chmod", "+x", "./scripts/wait_for_mysql.sh"]

@@ -1,0 +1,17 @@
+{% extends 'hub/user-settings/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Create SSH
+{% endblock %}
+
+{% block settingsTitle %}<h2 class="h3 m-0">Add SSH key</h2>{% endblock settingsTitle %}
+
+{% block settingsContent %}
+{% if note %}<p>{{ note }}</p>{% endif %}
+<form class="ingore-asterics" method="POST">
+    {% csrf_token %}
+    {{ form | crispy }}
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+{% endblock settingsContent %}

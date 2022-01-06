@@ -1,0 +1,32 @@
+.home {
+    height: 100vh;
+
+    .header {
+        height: 72px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        img {
+            height: 100%;
+        }
+
+        h1 {
+            margin-left: 10px;
+            margin-bottom: 0;
+        }
+    }
+
+    .content {
+        min-height: fit-content;
+        flex: 1;
+        padding: 80px;
+
+        img {
+            height: 600px;
+        }
+    }
+
+    .footer {
+        height: 68px;
+    }
+}

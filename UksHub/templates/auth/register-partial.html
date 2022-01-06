@@ -1,18 +1,7 @@
-{% extends 'base.html' %}
-{% load static %} {% load compress %} {% load crispy_forms_tags %}
-{% block title %}
-Signup
-{% endblock %}
-{% block header %}
-{% compress css %}
-<link type="text/x-scss" href="{% static 'styles/hub/auth.scss' %}" rel="stylesheet" media="screen" />
-{% endcompress %}
-{% endblock header %}
-{% block content %}
-<h1>UksHub</h1>
+{% load static %} {% load compress %} {% load crispy_forms_tags  %}
 <div class="form-container">
-    <h2>Sign up:</h2>
-    <form class="needs-validation" method="POST" novalidate>
+    <h2>Sign up to UksHub</h2>
+    <form class="needs-validation ingore-asterics" method="POST" novalidate>
         {% csrf_token %}
         {{ form | crispy }}
         <div class="mb-3 repeat-password">
@@ -22,6 +11,9 @@ Signup
         </div>
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
+    <p class="terms">By creating an account, you agree to the Terms!</p>
 </div>
 <script src="{% static 'js/hub/register.js' %}"></script>
-{% endblock content %}
+{% compress css %}
+<link type="text/x-scss" href="{% static 'styles/hub/auth.scss' %}" rel="stylesheet" media="screen" />
+{% endcompress %}
