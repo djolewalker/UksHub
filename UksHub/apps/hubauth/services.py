@@ -1,6 +1,4 @@
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from UksHub.apps.hub.models import UserProfile
 
 
@@ -18,7 +16,7 @@ def logoutUser(request):
 
 
 def createUser(request, registerForm):
-    user = User.objects.create_user(
+    user = get_user_model().objects.create_user(
         registerForm.cleaned_data['username'], registerForm.cleaned_data['email'], registerForm.cleaned_data['password'])
     UserProfile.objects.create(user=user)
     return loginUser(request,

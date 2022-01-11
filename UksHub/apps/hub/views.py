@@ -1,8 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.http.response import Http404
 from UksHub.apps.hub.forms import UserProfileForm
-from UksHub.apps.hub.models import UserProfile
 
 from UksHub.apps.hubauth.forms import SignupForm
 from UksHub.apps.hubauth.views import register
