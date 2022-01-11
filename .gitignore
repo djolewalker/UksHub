@@ -4,6 +4,8 @@
 mysqldata/
 compressed/
 git-server/
+/git-admin-dev
+/user-files
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

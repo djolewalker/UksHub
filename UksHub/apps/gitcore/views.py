@@ -1,5 +1,5 @@
 from django.http.response import Http404, HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 
@@ -7,7 +7,7 @@ from .models import Repository, PublicKey
 from .services import init_repository, sync_repo, sync_user_keys
 from .forms import KeyForm, RepositoryForm, RepositoryContributorsForm
 
-
+# TODO: just a test, should be integrated in HUB
 @login_required
 def init_repo(request):
     if request.method == 'POST':
@@ -17,11 +17,12 @@ def init_repo(request):
             repo.creator = request.user
             repo.save()
             init_repository(repo)
-            return HttpResponse(status=200)
+            return redirect('/')
     if request.method == 'GET':
         repo_form = RepositoryForm()
-    return render(request, 'hub/git-core/create-form.html', {'form': repo_form }) if repo_form  else HttpResponse(status=409)
+    return render(request, 'git-core/create-form.html', {'form': repo_form }) if repo_form  else HttpResponse(status=409)
 
+# TODO: just a test, should be integrated in HUB
 @login_required
 def add_contributor(request, repoId):
     if request.method == 'POST':
@@ -34,25 +35,27 @@ def add_contributor(request, repoId):
     if request.method == 'GET':
         repo = get_object_or_404(Repository, pk=repoId)
         contr_form = RepositoryContributorsForm(repo.creator, instance=repo)
-    return render(request, 'hub/git-core/create-form.html', {'form': contr_form }) if contr_form else Http404
+    return render(request, 'git-core/create-form.html', {'form': contr_form }) if contr_form else Http404
 
 @login_required
-def set_public_key(request):
+def public_key(request):
     note = None
     if request.method == 'POST':
         key_form = KeyForm(request.POST)
         if key_form.is_valid():
             try:
+                if PublicKey.objects.filter(owner=request.user, label=None).exists():
+                    PublicKey.objects.filter(owner=request.user, label=None).delete()
                 key = key_form.save(commit=False)
                 key.owner = request.user
                 key.save()
                 sync_user_keys(request.user)
-                return HttpResponse(status=200)
+                return redirect('settings-keys')
             except IntegrityError:
                 key_form.add_error('label', 'Only one key can be labeled with same label!')
     if request.method == 'GET':
         if PublicKey.objects.filter(owner=request.user, label=None).exists():
             note = 'You have set unlabeled public key. Create new one with specified label. Otherwise current unlabeled public key will be overridden!' 
         key_form = KeyForm()
-    return render(request, 'hub/git-core/create-form.html', { 'form': key_form, 'note': note }) if key_form else Http404
+    return render(request, 'hub/user-settings/settings-new-ssh.html', { 'form': key_form, 'note': note }) if key_form else Http404
         

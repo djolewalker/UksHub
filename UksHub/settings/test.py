@@ -23,9 +23,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 3rd party
-    'compressor',
-    # Tracker app
-    'crispy_forms',
+    'compressor', # SCSS
+    'easy_thumbnails', # Thumbnail support
+    'django_cleanup.apps.CleanupConfig', # Remove unreferenced files
+    'crispy_forms', # Format django forms in bootstrap way
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
     'UksHub.apps.hubauth.apps.HubAuthConfig',
@@ -120,6 +121,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = 'static/'
 
+MEDIA_ROOT = BASE_DIR / 'user-files'
+MEDIA_URL = 'user-files/'
+
 STATICFILES_DIRS = [
     BASE_DIR / 'UksHub' / 'static'
 ]
@@ -192,3 +196,12 @@ GIT_ADMIN_CONF_REPO = GIT_ADMIN / 'conf'
 GIT_ADMIN_CONF = GIT_ADMIN_CONF_REPO / 'gitolite.conf'
 GIT_ADMIN_KEYS = GIT_ADMIN / 'keydir'
 GIT_ADMIN_REMOTE = "git@git-server:gitolite-admin.git"
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'avatar-xs': {'size': (38, 38), 'crop': True},
+        'avatar-s': {'size': (50, 50), 'crop': True},
+        'avatar-m': {'size': (100, 100), 'crop': True},
+        'avatar-l': {'size': (150, 150), 'crop': True},
+    },
+}

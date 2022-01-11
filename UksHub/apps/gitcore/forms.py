@@ -6,7 +6,7 @@ from .models import PublicKey, Repository
 class KeyForm(forms.ModelForm):
     class Meta:
         model = PublicKey
-        fields = ['public_key', 'label']
+        fields = ['name', 'label', 'public_key']
 
 class RepositoryForm(forms.ModelForm):
     class Meta:
