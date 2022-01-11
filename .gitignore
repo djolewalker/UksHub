@@ -6,6 +6,7 @@ compressed/
 git-server/
 /git-admin-dev
 /user-files
+migrations
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

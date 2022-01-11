@@ -36,7 +36,8 @@ UksHub
             {% if user.is_authenticated %}
 
             {% if user.userprofile.avatar %}
-            <img class="rounded-circle mr-1" src="{{ user.userprofile.avatar |thumbnail_url:'avatar-s' }}" alt="User avatar">
+            <img class="rounded-circle mr-1" src="{{ user.userprofile.avatar |thumbnail_url:'avatar-s' }}"
+                alt="User avatar">
             {% else %}
             <div class="initials-image rounded-circle d-flex bg-dark text-white mr-1"
                 style="height: 38px; width:38px; font-size: 1em">
@@ -65,6 +66,15 @@ UksHub
         </div>
     </div>
     <div class="content d-flex flex-wrap">
+        {% if notification %}
+        <div id="hub-notification-panel"
+            class="d-flex text-info w-100 position-relative justify-content-center align-items-center border-top border-bottom border-info">
+            <span class="font-weight-bold ml-3">{{ notification }}</span>
+            <i id="hub-notification-panel-button" class="remove-button bi bi-x ml-3"></i>
+            <div class="notification-background position-absolute w-100 h-100 bg-info"></div>
+            <script src="{% static 'js/hub/base.js' %}"></script>
+        </div>
+        {% endif %}
         {% block hubcontent %}{% endblock hubcontent %}
     </div>
     <div class="footer centered-content d-flex justify-content-sm-center border-top mt-4 border-secondary py-4">
