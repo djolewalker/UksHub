@@ -46,11 +46,16 @@ class Email {
 }
 class User {
     username: string
+    email: string
+}
+class UserProfile {
     name: string
+    avatar: File
     bio: string
     url: string
-    twitterUsername: string
+    twitter: string
     company: string
+    location: string
 }
 class PublicKey {
     label: string
@@ -142,7 +147,7 @@ class Visit {
     host: string
 }
 
-
+User -- UserProfile
 User *-- "1..*" Email
 User "creator" <-- Artefact
 PullRequest -- "0..*" Issue
