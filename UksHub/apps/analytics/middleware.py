@@ -24,7 +24,7 @@ class AnalyticsMiddleware:
             visit.save()
         response = self.get_response(request)
         if request.is_ajax() is False:
-            visit.responseCode = response.status_code
+            visit.response_code = response.status_code
             visit.save()
         return response
 

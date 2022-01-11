@@ -18,6 +18,10 @@ docker pull djolewalker/ukshub
 | [JSTheGreat](https://github.com/JSTheGreat)   | Jovan Svorcan            | R2 21/2021 |
 | [djolewalker](https://github.com/djolewalker) | Dimitrije Žarković Đolai | R2 17/2021 |
 
+## Model
+Current version of class diagram
+![diagram image](https://github.com/djolewalker/UksHub/blob/documentation-1-class-diagram/docs/UksHub.png?raw=true)
+
 ## Setup:
 
 ### Clone repo:
