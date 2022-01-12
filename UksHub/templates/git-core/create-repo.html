@@ -1,0 +1,37 @@
+{% extends 'hub/hub-base.html' %}
+{% load  crispy_forms_tags static compress %}
+
+{% block title %}
+Create a New Repository
+{% endblock title %}
+
+{% block hubcontent %}
+<div class="centered-content-s create-repo-content">
+    <div class="pb-3 mb-4 border-bottom">
+        <h1 class="h3">Create a new repository</h1>
+        <p style="font-size:14px">
+            A repository contains all project files, including the revision history. Already
+            have a project repository elsewhere?
+        </p>
+    </div>
+
+    <form method="post" class="position-relative">
+        <div class="username position-absolute"></div>
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-3 d-flex pr-0">
+              {{ form.owner | as_crispy_field }}
+              <span class="pt-4 ml-2" style="font-size:2.3em">/</span>
+            </div>
+            <div class="col-9 pl-2">
+              {{ form.name | as_crispy_field }}
+            </div>
+          </div>
+        {{ form.description | as_crispy_field }}
+        {{ form.isPublic | as_crispy_field }}
+        <div class="pt-3 mt-4 border-top">
+            <button type="submit" class="btn btn-primary">Create repository</button>
+        </div>
+    </form>
+</div>
+{% endblock hubcontent %}

@@ -30,8 +30,8 @@
                         class="{% if request.GET.tab == 'repositories' %}active-tab{% endif %} h-100 d-flex px-4 pt-2 align-items-baseline justify-content-center">
                         <i class="bi bi-journal-bookmark mr-2"></i>
                         Repositories
-                        {% if user.repositories %}
-                        <span class="counter ml-1 bg-secondary text-white px-2">25</span>
+                        {% if repos_count %}
+                        <span class="counter ml-1 bg-secondary text-white px-2">{{repos_count}}</span>
                         {% endif %}
                     </li>
                 </a>
