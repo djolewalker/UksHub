@@ -1,4 +1,5 @@
 from django import template
+import hashlib
 
 register = template.Library()
 
@@ -12,3 +13,9 @@ def initials(fullname):
         if len(initials) == 2:
             return initials
     return initials
+
+@register.filter(name='hash')
+def hash(text):
+    return hashlib.sha1(text.encode('utf8')).hexdigest()
+
+

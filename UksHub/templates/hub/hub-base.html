@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load compress thumbnail static hub_filters %}
+{% load compress thumbnail static %}
 
 {% block title %}
 UksHub
@@ -13,7 +13,7 @@ UksHub
 <div class="home d-flex flex-sm-column">
     <div class="header d-flex justify-content-sm-between px-3 border-bottom border-secondary">
         <div class="d-flex align-items-center">
-            {% if user.is_authenticated %}
+            {% if request.user.is_authenticated %}
             <a href="{% url 'home' %}" class="d-flex h-100 align-items-center">
                 <img src="{% static 'img/temp-logo.png' %}" alt="UksHub logo">
             </a>
@@ -25,7 +25,7 @@ UksHub
                 </div>
             </div>
             {% else %}
-            <a href="{% url 'home' %}" class="d-flex align-items-center">
+            <a href="{% url 'home' %}" class="d-flex align-items-center h-100">
                 <img src="{% static 'img/temp-logo.png' %}" alt="UksHub logo">
                 <h1>UksHub</h1>
             </a>
@@ -33,18 +33,20 @@ UksHub
         </div>
 
         <div class="actions d-flex align-items-center">
-            {% if user.is_authenticated %}
+            {% if request.user.is_authenticated %}
+            <a class="d-flex align-items-center" href="{% url 'profile' request.user.username %}">
+                {% if request.user.userprofile.avatar %}
+                <img class="rounded-circle mr-1" src="{{ request.user.userprofile.avatar |thumbnail_url:'avatar-s' }}"
+                    alt="User avatar">
+                {% else %}
+                <div class="initials-image rounded-circle d-flex bg-dark text-white mr-1"
+                    style="height: 38px; width:38px; font-size: 1em">
+                    {% include 'hub/avatar.html' %}
+                </div>
+                {% endif %}
+                <p class="mr-4">{{request.user.username}}</p>
+            </a>
 
-            {% if user.userprofile.avatar %}
-            <img class="rounded-circle mr-1" src="{{ user.userprofile.avatar |thumbnail_url:'avatar-s' }}"
-                alt="User avatar">
-            {% else %}
-            <div class="initials-image rounded-circle d-flex bg-dark text-white mr-1"
-                style="height: 38px; width:38px; font-size: 1em">
-                {% if user.userprofile.name %}{{user.userprofile.name | initials}}{% else %}NA{% endif %}</div>
-            {% endif %}
-
-            <p class="mr-4">{{user.username}}</p>
             <a href="{% url 'settings-profile' %}" class="mr-2">
                 <i class="bi-gear-fill" style="font-size:1.8em"></i>
             </a>
