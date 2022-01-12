@@ -7,20 +7,23 @@ from .models import Repository, PublicKey
 from .services import init_repository, sync_repo, sync_user_keys
 from .forms import KeyForm, RepositoryForm, RepositoryContributorsForm
 
-# TODO: just a test, should be integrated in HUB
 @login_required
 def init_repo(request):
     if request.method == 'POST':
-        repo_form = RepositoryForm(request.POST)
+        repo_form = RepositoryForm(request.POST, initial={'isPublic': True, 'owner': request.user.username })
         if repo_form.is_valid():
-            repo = repo_form.save()
-            repo.creator = request.user
-            repo.save()
-            init_repository(repo)
-            return redirect('/')
+            try:
+                repo = repo_form.save(commit=False)
+                repo.creator = request.user
+                repo.private = not repo_form.cleaned_data['isPublic']
+                repo.save()
+                init_repository(repo)
+                return redirect('/')
+            except IntegrityError:
+                repo_form.add_error('name', 'You have already created repository with this name!')
     if request.method == 'GET':
-        repo_form = RepositoryForm()
-    return render(request, 'git-core/create-form.html', {'form': repo_form }) if repo_form  else HttpResponse(status=409)
+        repo_form = RepositoryForm(initial={'isPublic': True, 'owner': request.user.username })
+    return render(request, 'git-core/create-repo.html', {'form': repo_form }) if repo_form  else HttpResponse(status=409)
 
 # TODO: just a test, should be integrated in HUB
 @login_required

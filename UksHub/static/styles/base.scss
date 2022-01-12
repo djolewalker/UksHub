@@ -28,6 +28,13 @@ a:hover {
     padding: 0 16px;
 }
 
+.centered-content-s {
+    width: 100%;
+    max-width: 768px;
+    margin: 40px auto;
+    padding: 0 16px;
+}
+
 .btn.hub {
     height: 38px;
     min-width: 90px;
@@ -52,4 +59,8 @@ a:hover {
 
 .ingore-asterics .asteriskField {
     display: none;
+}
+
+.flex-auto {
+    flex: auto !important;
 }

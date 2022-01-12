@@ -9,9 +9,14 @@ class KeyForm(forms.ModelForm):
         fields = ['name', 'label', 'public_key']
 
 class RepositoryForm(forms.ModelForm):
+    owner = forms.CharField(max_length=500, required=False, disabled=True)
+    isPublic = forms.ChoiceField(choices=[
+        (True,'Public, anyone on the internet can see this repository. You choose who can commit.'),
+        (False,'Private, you choose who can see and commit to this repository.')
+        ], widget=forms.RadioSelect, label="")
     class Meta:
         model = Repository
-        fields = ['name']
+        fields = ['name', 'description']
         
 class RepositoryContributorsForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
