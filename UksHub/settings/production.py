@@ -28,9 +28,11 @@ INSTALLED_APPS = [
     'easy_thumbnails', # Thumbnail support
     'django_cleanup.apps.CleanupConfig', # Remove unreferenced files
     'crispy_forms', # Format django forms in bootstrap way
+    'polymorphic', # ORM polymorphism support
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
     'UksHub.apps.gitcore.apps.GitCoreConfig',
+    'UksHub.apps.events.apps.EventsConfig',
     'UksHub.apps.hubauth.apps.HubAuthConfig',
     'UksHub.apps.backoffice.apps.BackofficeConfig',
     'UksHub.apps.analytics.apps.AnalyticsConfig'
