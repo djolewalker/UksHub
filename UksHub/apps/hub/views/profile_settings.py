@@ -4,14 +4,16 @@ from UksHub.apps.hub.forms import UserProfileForm
 
 @login_required
 def settings_profile(request):
-    if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
-        if form.is_valid():
-            userpofile = form.save(commit=True)
-            form = UserProfileForm(instance=userpofile)
+    context = {}
     if request.method == 'GET':
-        form = UserProfileForm(instance=request.user.userprofile)
-    return render(request, 'hub/user-settings/settings-profile.html', {'form': form })
+        context['form'] = UserProfileForm(instance=request.user.userprofile)
+    if request.method == 'POST':
+        context['form'] = UserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
+        if context['form'].is_valid():
+            userpofile = context['form'].save(commit=True)
+            context['form'] = UserProfileForm(instance=userpofile)
+            context['notification'] = 'Profile successfullty updated!'
+    return render(request, 'hub/user-settings/settings-profile.html', context )
 
 @login_required
 def settings_keys(request):

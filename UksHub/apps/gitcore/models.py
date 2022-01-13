@@ -23,3 +23,14 @@ class PublicKey(TimeStampModel):
     archived = models.BooleanField(default=False)
     class Meta:
         unique_together = ('owner', 'label')
+
+class Branch():   
+    def __init__(self):
+        self.commits = []
+
+class Commit():
+    def __init__(self):
+        self.created_at = None
+        self.message = ''
+        self.hash = ''
+        pass

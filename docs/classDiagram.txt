@@ -20,10 +20,6 @@ enum CheckState {
     SUCCESSFUL
     FAILED
 }
-enum ChangeState {
-    APPLICATION
-    REMOVAL
-}
 
 class Repository {
     name: string
@@ -86,7 +82,7 @@ class Action {
     file: string
     disabled: boolean
 }
-class Check {
+class ActionCheck {
     result: CheckState
     duration: number
 }
@@ -98,7 +94,7 @@ class Milestone {
 }
 class Event {
     date_time: DateTime
-    state: ChangeState
+    isRemoval: boolean
 }
 class Issue
 class PullRequest
@@ -157,8 +153,9 @@ PullRequest "0..*" --* "source" Branch
 PullRequest *-- "0..*" FileViewedMark
 Project *--> Repository
 Project *-- "0..*" ProjectColumn 
-Action *-- "0..* implements" Check
-Check --> "trigger" Commit
+Repository *-- Action
+Action *-- "0..* checks" ActionCheck
+ActionCheck --> "trigger" Commit
 Repository *-- "0..*" WikiPage
 WikiPage *-- "1..*" WikiPageRevision
 WikiPageRevision --> User
@@ -173,20 +170,19 @@ Branch *-- "1..*" Commit
 Commit -- "author" User
 Commit -- "0..2 parents" Commit
 Commit -- "commiter" User
-Project o-- "1..* developers" User
 Project --> "lead" User
-Milestone -- "0..*" Artefact
+Milestone <-- Artefact
 Issue --|> Artefact
 Artefact *-- "1..*" Event
 ProjectColumn o-- "0..*" Artefact
-ProjectColumnSet --> Project
+ProjectColumnAssignment --> ProjectColumn
 UserAssignement -- "1..*" User
-MilestoneAssignment -- "1..*" Milestone
-PullRequestAssignment -- "1..*" PullRequest
-IssueLink -- "1..*" Issue
+MilestoneAssignment --> Milestone
+PullRequestAssignment -- "1..*" PullRequest 
 LabelApplication --> "1..*" Label
 User "assignees 0..*" -- Artefact
 User *-- "owns 0..*" PublicKey
+ReviewRequest -- User
 ReviewRequest --> "Done by" Review
 Review *-- "0..*" ReviewConversation
 Review --> Comment
@@ -196,7 +192,7 @@ Visit --> Session
 Visit --> User
 
 Event <|-- Comment
-Event <|-- Check
+Event <|-- ActionCheck
 Event <|-- StateChange
 Event <|-- NameChange
 Event <|-- LabelApplication
@@ -205,7 +201,6 @@ Event <|-- MilestoneAssignment
 Event <|-- PullRequestAssignment
 Event <|-- ReviewRequest
 Event <|-- Review
-Event <|-- IssueLink
 Event <|-- FileViewedMark
-Event <|-- ProjectColumnSet
+Event <|-- ProjectColumnAssignment
 @enduml
