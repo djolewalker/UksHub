@@ -128,6 +128,7 @@ git clone git://127.0.0.1:9418/{user}/{repo-name}.git
    # go back to git-admin-dev folder
    cd ..
    mkdir keydir
+   cd keydir
    echo > example.pub
    ```
 
