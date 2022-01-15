@@ -41,6 +41,11 @@ python -m venv venv
 .\venv\Scripts\activate
 ```
 
+If you have problem with executing permissions on windows run next command as admin in power shell
+```
+Set-ExecutionPolicy RemoteSigned
+```
+
 ### Run locally:
 
 You will need MySQL server (e.g. [WAMP](https://www.wampserver.com/en/)).
