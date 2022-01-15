@@ -34,11 +34,8 @@ cd UksHub
 ### Create venv:
 
 ```python
-# Install venv if you don't have it
-pip install venv
-
 # Create virtual environment
-python venv venv
+python -m venv venv
 
 # Start virtual environment
 .\venv\Scripts\activate
