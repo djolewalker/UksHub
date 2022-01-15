@@ -34,20 +34,22 @@ cd UksHub
 ### Create venv:
 
 ```python
-# Install venv if you don't have it
-pip install venv
-
 # Create virtual environment
-python venv venv
+python -m venv venv
 
 # Start virtual environment
 .\venv\Scripts\activate
 ```
 
+If you have problem with executing permissions on windows run next command as admin in power shell
+```
+Set-ExecutionPolicy RemoteSigned
+```
+
 ### Run locally:
 
 You will need MySQL server (e.g. [WAMP](https://www.wampserver.com/en/)).
-When you have MySql running on your device execute scripts/create_db_local.sql script.
+When you have MySql running on your device execute `scripts/create_db_local.sql` script.
 When database is ready we can migrate data.
 
 ```python
