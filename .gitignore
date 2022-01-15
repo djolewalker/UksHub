@@ -6,7 +6,8 @@ compressed/
 git-server/
 /git-admin-dev
 /user-files
-migrations
+/UksHub/apps/*/migrations/*
+!/UksHub/apps/*/migrations/__init__.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
