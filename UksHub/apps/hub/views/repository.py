@@ -17,7 +17,7 @@ def _get_last_commits(repo, branch):
     # https://github.com/gitpython-developers/GitPython/issues/240
     paths = [obj.path for obj in branch.commit.tree]
     commits = {}
-    for commit in repo.iter_commits(paths=paths):
+    for commit in repo.iter_commits(branch.name, paths=paths):
         for f in commit.stats.files.keys():
             p = f[:f.index('/')] if '/' in f else f
             if p in commits:
