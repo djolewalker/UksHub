@@ -19,3 +19,11 @@ def hash(text):
     return hashlib.sha1(text.encode('utf8')).hexdigest()
 
 
+@register.filter(name='cmt_msg')
+def get_item(dictionary, key):
+    return dictionary.get(key).message
+
+
+@register.filter(name='cmt_time')
+def get_item(dictionary, key):
+    return dictionary.get(key).committed_datetime

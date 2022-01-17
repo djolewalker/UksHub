@@ -11,7 +11,11 @@ ul {
     list-style-type: none;
 }
 
-h1, h2, h3, h4, p {
+h1,
+h2,
+h3,
+h4,
+p {
     margin: 0;
 }
 
@@ -19,6 +23,18 @@ a,
 a:hover {
     text-decoration: none;
     color: inherit;
+}
+
+a:hover .link-hover {
+    color: var(--primary)
+}
+
+.fs {
+    font-size: 16px;
+}
+
+.fs-small {
+    font-size: 14px;
 }
 
 .centered-content {

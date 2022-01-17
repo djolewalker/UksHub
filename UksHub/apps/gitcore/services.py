@@ -64,7 +64,7 @@ def _sync_repo(repo):
                                     }))
 
 def get_repository(user,name):
-    repoPath = path.join(settings.GIT_REPOS, user.username, f'{name}.git')
+    repoPath = path.join(settings.GIT_REPOSITORIES, user.username, f'{name}.git')
     try:
         repo = Repo(repoPath)
     except:

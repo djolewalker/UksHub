@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from git import Commit as cmt, Head
 from UksHub.apps.core.models import TimeStampModel
 from UksHub.apps.core.validators import path_validator
 
@@ -11,6 +12,7 @@ class Repository(TimeStampModel):
     contributors = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='contributors')
     private = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
+    default_branch = models.CharField(max_length=400)
     
     class Meta:
         unique_together = ('name', 'creator')
@@ -24,13 +26,8 @@ class PublicKey(TimeStampModel):
     class Meta:
         unique_together = ('owner', 'label')
 
-class Branch():   
-    def __init__(self):
-        self.commits = []
+class Branch(Head):   
+    pass
 
-class Commit():
-    def __init__(self):
-        self.created_at = None
-        self.message = ''
-        self.hash = ''
-        pass
+class Commit(cmt):
+    pass

@@ -4,6 +4,7 @@
 mysqldata/
 compressed/
 git-server/
+git-repos/
 /git-admin-dev
 /user-files
 /UksHub/apps/*/migrations/*

@@ -17,6 +17,7 @@ urlpatterns = [
     path('settings/keys', settings_keys, name='settings-keys'),
     # Repository
     path('<username>/<reponame>', repository, name='repository'),
+    path('<username>/<reponame>/tree/<branch>', repository, name='repository-tree'),
     path('<username>/<reponame>/issues', issues, name='issues'),
     path('<username>/<reponame>/pulls', pull_requests, name='pull-requests'),
     path('<username>/<reponame>/actions', actions, name='actions'),
