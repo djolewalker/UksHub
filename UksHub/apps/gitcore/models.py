@@ -12,7 +12,7 @@ class Repository(TimeStampModel):
     contributors = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='contributors')
     private = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
-    default_branch = models.CharField(max_length=400)
+    default_branch = models.CharField(max_length=400, default='master')
     
     class Meta:
         unique_together = ('name', 'creator')

@@ -24,6 +24,12 @@ def init_repository(repo):
     push_admin_changes(f'{repo_name} repo created')
 
 
+def init_repository_dev(repo):
+    repo_name = f'{repo.creator.username}/{repo.name}.git'
+    repo_path = path.join(settings.GIT_REPOSITORIES, repo_name)
+    Repo.init(repo_path, bare=True)
+
+
 @clone_or_pull_admin
 def sync_repo(repo):
     _sync_repo(repo)

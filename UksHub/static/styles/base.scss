@@ -29,6 +29,11 @@ a:hover .link-hover {
     color: var(--primary)
 }
 
+a:hover .link-hover-underline {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
 .fs {
     font-size: 16px;
 }
@@ -79,4 +84,12 @@ a:hover .link-hover {
 
 .flex-auto {
     flex: auto !important;
+}
+
+.mw-0 {
+    min-width: 0 !important;
+}
+
+.mh-0 {
+    min-height: 0 !important;
 }

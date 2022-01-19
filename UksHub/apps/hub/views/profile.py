@@ -15,7 +15,7 @@ def profile_overview(request, username):
         if tab:
             return _redirect_to_tab(request, tab, context)
         return render(request, 'hub/profile/overview.html', context)
-    return Http404
+    raise Http404
 
 
 def _redirect_to_tab(request, tab, context):
@@ -27,7 +27,7 @@ def _redirect_to_tab(request, tab, context):
         return _packages(request, context)
     elif tab == 'stars':
         return _stars(request, context)
-    return Http404
+    raise Http404
 
 def _repositories(request, context):
     if request.user == context['user']:

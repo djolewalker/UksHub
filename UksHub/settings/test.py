@@ -209,3 +209,5 @@ THUMBNAIL_ALIASES = {
         'avatar-l': {'size': (150, 150), 'crop': True},
     },
 }
+
+APPEND_SLASH = False

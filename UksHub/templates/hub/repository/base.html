@@ -69,7 +69,7 @@
             {% with request.resolver_match.url_name as path_name %}
             <ul class="pl-0 mb-0 d-flex">
                 <a href="{% url 'repository' repository.creator repository.name %}">
-                    <li class="{% if path_name in 'repository,repository-tree' %}active-url {% endif %}px-3 py-2">
+                    <li class="{% if path_name in 'repository,repository-tree,repository-blob' %}active-url {% endif %}px-3 py-2">
                         <i class="bi bi-code"></i>
                         Code
                     </li>

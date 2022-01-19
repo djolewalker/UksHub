@@ -1,4 +1,5 @@
 from django import template
+import base64
 import hashlib
 
 register = template.Library()
@@ -20,10 +21,30 @@ def hash(text):
 
 
 @register.filter(name='cmt_msg')
-def get_item(dictionary, key):
+def get_msg(dictionary, key):
     return dictionary.get(key).message
 
 
 @register.filter(name='cmt_time')
-def get_item(dictionary, key):
+def get_time(dictionary, key):
     return dictionary.get(key).committed_datetime
+
+
+@register.filter(name='decode')
+def decode(text, format):
+    return text.decode(format)
+
+
+@register.filter(name='base64')
+def encode_base64(text):
+    return base64.b64encode(text)
+
+    
+@register.filter(name='split')
+def split_str(text, chr):
+    return text.split(chr)
+
+
+@register.filter(name='count')
+def count_str(text, chr):
+    return text.count(chr)
