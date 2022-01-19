@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     # 3rd party
     'compressor', # SCSS
     'easy_thumbnails', # Thumbnail support
@@ -209,3 +210,5 @@ THUMBNAIL_ALIASES = {
         'avatar-l': {'size': (150, 150), 'crop': True},
     },
 }
+
+APPEND_SLASH = False

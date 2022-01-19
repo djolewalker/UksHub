@@ -24,6 +24,12 @@ def init_repository(repo):
     push_admin_changes(f'{repo_name} repo created')
 
 
+def init_repository_dev(repo):
+    repo_name = f'{repo.creator.username}/{repo.name}.git'
+    repo_path = path.join(settings.GIT_REPOSITORIES, repo_name)
+    Repo.init(repo_path, bare=True)
+
+
 @clone_or_pull_admin
 def sync_repo(repo):
     _sync_repo(repo)
@@ -64,7 +70,7 @@ def _sync_repo(repo):
                                     }))
 
 def get_repository(user,name):
-    repoPath = path.join(settings.GIT_REPOS, user.username, f'{name}.git')
+    repoPath = path.join(settings.GIT_REPOSITORIES, user.username, f'{name}.git')
     try:
         repo = Repo(repoPath)
     except:

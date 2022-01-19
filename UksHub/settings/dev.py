@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     # 3rd party
     'compressor', # SCSS
     'easy_thumbnails', # Thumbnail support
@@ -158,13 +159,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = "/login"
 
 GIT_REPOSITORIES = BASE_DIR / 'git-repos'
+USE_DEV_GIT = True
 
 GIT_ADMIN_SUPERUSER = 'random.user.admin'
 GIT_ADMIN = BASE_DIR / 'git-admin-dev'
 GIT_ADMIN_CONF_REPO = GIT_ADMIN / 'conf' 
 GIT_ADMIN_CONF = GIT_ADMIN_CONF_REPO / 'gitolite.conf'
 GIT_ADMIN_KEYS = GIT_ADMIN / 'keydir'
-GIT_ADMIN_REMOTE = "D:\git-admin-dev"
+GIT_ADMIN_REMOTE = 'D:\\Works\\UKS\\git-admin-dev'
 
 THUMBNAIL_ALIASES = {
     '': {
@@ -174,3 +176,5 @@ THUMBNAIL_ALIASES = {
         'avatar-l': {'size': (150, 150), 'crop': True},
     },
 }
+
+APPEND_SLASH = False

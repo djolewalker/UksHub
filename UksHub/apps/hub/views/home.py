@@ -11,4 +11,4 @@ def home(request):
         return render(request, 'hub/home.html', {'form': SignupForm()})
     if request.method == 'POST':
         return register(request)
-    return Http404
+    raise Http404

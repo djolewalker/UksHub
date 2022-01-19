@@ -1,10 +1,10 @@
-from django.urls import path
+from django.urls import path, re_path
 from django.views.generic import RedirectView
 
 from .views.home import home
 from .views.profile import profile_overview
 from .views.profile_settings import settings_keys, settings_profile
-from .views.repository import actions, insights, issues, pull_requests, repository, repository_projects, repository_settings, security, wiki
+from .views.repository import actions, blob, insights, issues, pull_requests, tree, repository_projects, repository_settings, security, wiki
 
 urlpatterns = [
     # Home
@@ -16,7 +16,9 @@ urlpatterns = [
     path('settings/profile', settings_profile, name='settings-profile'),
     path('settings/keys', settings_keys, name='settings-keys'),
     # Repository
-    path('<username>/<reponame>', repository, name='repository'),
+    path('<username>/<reponame>', tree, name='repository'),
+    path('<username>/<reponame>/tree/<path:path>', tree, name='repository-tree'),
+    path('<username>/<reponame>/blob/<path:path>', blob, name='repository-blob'),
     path('<username>/<reponame>/issues', issues, name='issues'),
     path('<username>/<reponame>/pulls', pull_requests, name='pull-requests'),
     path('<username>/<reponame>/actions', actions, name='actions'),

@@ -2,9 +2,10 @@ from django.http.response import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.conf import settings
 
 from .models import Repository, PublicKey
-from .services import init_repository, sync_repo, sync_user_keys
+from .services import init_repository, init_repository_dev, sync_repo, sync_user_keys
 from .forms import KeyForm, RepositoryForm, RepositoryContributorsForm
 
 
@@ -18,7 +19,10 @@ def init_repo(request):
                 repo.creator = request.user
                 repo.private = not repo_form.cleaned_data['isPublic']
                 repo.save()
-                init_repository(repo)
+                if settings.USE_DEV_GIT:
+                    init_repository_dev(repo)
+                else:
+                    init_repository(repo)
                 return redirect(f'/{request.user.username}?tab=repositories')
             except IntegrityError:
                 repo_form.add_error('name', 'You have already created repository with this name!')
