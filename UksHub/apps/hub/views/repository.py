@@ -33,13 +33,13 @@ def _find_branch_from_path(repo, path):
     return branch
 
 
-def repository(request, username, reponame, path=None):
+def tree(request, username, reponame, path=None):
     if request.method == 'GET':
         repo = _find_repo(request.user, username, reponame)
         repo_obj = get_repository(repo.creator, repo.name)
         if not repo_obj: raise Http404
 
-        ssh_enabled = request.user.publickey_set.filter(archived=False).exists()
+        ssh_enabled = request.user.is_authenticated and request.user.publickey_set.filter(archived=False).exists()
         
         branch = _find_branch_from_path(repo_obj, path) if path else repo.default_branch
         branch_obj = next(filter(lambda head: head.name == branch, repo_obj.branches), None)
@@ -79,7 +79,7 @@ def blob(request, username, reponame, path=None):
             return render(request, 'hub/repository/code.html', {
                 'repository': repo, 
                 'repo': repo_obj, 
-                'ssh_enabled': request.user.publickey_set.filter(archived=False).exists() })
+                'ssh_enabled': request.user.is_authenticated and request.user.publickey_set.filter(archived=False).exists() })
 
         blob = path.replace(f'{branch}/','')
         if not blob: raise Http404
