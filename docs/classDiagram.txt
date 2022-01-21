@@ -1,0 +1,206 @@
+@startuml UksHub
+skinparam groupInheritance 3
+
+enum ProjectState {
+    OPEN
+    CLOSE
+}
+enum ArtefactState {
+    OPEN
+    CLOSE
+    MERGED
+}
+enum ReviewState {
+    COMMENT
+    APPROVE
+    REQUEST_CHANGE
+}
+enum CheckState {
+    STARTED
+    SUCCESSFUL
+    FAILED
+}
+
+class Repository {
+    name: string
+    private: boolean
+    achived: boolean
+}
+class WikiPage {
+    title: string
+}
+class WikiPageRevision {
+    content: string
+    date_created: Date
+}
+class Email {
+    address: string
+    verified: boolean
+    isPrimary: boolean
+    isVisible: boolean
+    isNotification: boolean
+}
+class User {
+    username: string
+    email: string
+}
+class UserProfile {
+    name: string
+    avatar: File
+    bio: string
+    url: string
+    twitter: string
+    company: string
+    location: string
+}
+class PublicKey {
+    label: string
+    public_key: string
+    archived: boolean
+}
+class Label {
+    name: string
+    description: string
+    color: string
+}
+class Artefact {
+    title: string
+    date_created: Date
+    state: ArtefactState
+}
+class Project {
+    title: string
+    description: string
+    status: ProjectState
+}
+class ProjectColumn {
+    title: string
+    order: number
+}
+class Action {
+    title: string
+    file: string
+    disabled: boolean
+}
+class ActionCheck {
+    result: CheckState
+    duration: number
+}
+class Milestone {
+    title: string
+    description: string
+    due_date: Date
+    state: State
+}
+class Event {
+    date_time: DateTime
+    isRemoval: boolean
+}
+class Issue
+class PullRequest
+class Comment {
+    content: string
+}
+class StateChange {
+    new_state: ArtefactState
+}
+class UserAssignement
+class Branch {
+    name: string
+}
+class Commit {
+    date_time: DateTime
+    log_message: string
+    hash: string
+}
+class NameChange {
+    name: string
+}
+class Review {
+    state: ReviewState
+}
+class ReviewRequest {
+    done: boolean
+}
+class ReviewConversation {
+    resolved: boolean
+    file: string
+    line: number
+}
+class FileViewedMark {
+    checked: boolean
+    file: string
+}
+class Session {
+    session_key: string
+    session_data: string
+    exipre_date: DateTime
+}
+class Visit {
+    path: string
+    response_code: number
+    time: DateTime
+    host: string
+}
+
+User -- UserProfile
+User *-- "1..*" Email
+User "creator" <-- Artefact
+PullRequest -- "0..*" Issue
+PullRequest --|> Artefact
+PullRequest "0..*" --* "target" Branch
+PullRequest "0..*" --* "source" Branch
+PullRequest *-- "0..*" FileViewedMark
+Project *--> Repository
+Project *-- "0..*" ProjectColumn 
+Repository *-- Action
+Action *-- "0..* checks" ActionCheck
+ActionCheck --> "trigger" Commit
+Repository *-- "0..*" WikiPage
+WikiPage *-- "1..*" WikiPageRevision
+WikiPageRevision --> User
+WikiPageRevision -- "0..1 changes" WikiPageRevision
+Repository *-- "1..*" Branch
+Repository --> "creator" User
+Repository -- "0..* watch" User
+Repository -- "0..* star" User
+Repository o-- "0..* contributors" User
+Repository -- "0..* Forks" Repository
+Branch *-- "1..*" Commit
+Commit -- "author" User
+Commit -- "0..2 parents" Commit
+Commit -- "commiter" User
+Project --> "lead" User
+Milestone <-- Artefact
+Issue --|> Artefact
+Artefact *-- "1..*" Event
+ProjectColumn o-- "0..*" Artefact
+ProjectColumnAssignment --> ProjectColumn
+UserAssignement -- "1..*" User
+MilestoneAssignment --> Milestone
+PullRequestAssignment -- "1..*" PullRequest 
+LabelApplication --> "1..*" Label
+User "assignees 0..*" -- Artefact
+User *-- "owns 0..*" PublicKey
+ReviewRequest -- User
+ReviewRequest --> "Done by" Review
+Review *-- "0..*" ReviewConversation
+Review --> Comment
+ReviewConversation o-- "1..*" Comment
+Event -- "create" User
+Visit --> Session
+Visit --> User
+
+Event <|-- Comment
+Event <|-- ActionCheck
+Event <|-- StateChange
+Event <|-- NameChange
+Event <|-- LabelApplication
+Event <|-- UserAssignement
+Event <|-- MilestoneAssignment
+Event <|-- PullRequestAssignment
+Event <|-- ReviewRequest
+Event <|-- Review
+Event <|-- FileViewedMark
+Event <|-- ProjectColumnAssignment
+@enduml

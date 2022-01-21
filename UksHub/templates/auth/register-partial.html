@@ -1,0 +1,19 @@
+{% load static %} {% load compress %} {% load crispy_forms_tags  %}
+<div class="form-container">
+    <h2>Sign up to UksHub</h2>
+    <form class="needs-validation ingore-asterics" method="POST" novalidate>
+        {% csrf_token %}
+        {{ form | crispy }}
+        <div class="mb-3 repeat-password">
+            <label for="repeat-password" class="form-label">Repeat password</label>
+            <input type="password" name="repeat_password" class="form-control" id="repeat_password" required>
+            <span class="invalid-feedback">Password not a match.</span>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+    <p class="terms">By creating an account, you agree to the Terms!</p>
+</div>
+<script src="{% static 'js/hub/register.js' %}"></script>
+{% compress css %}
+<link type="text/x-scss" href="{% static 'styles/hub/auth.scss' %}" rel="stylesheet" media="screen" />
+{% endcompress %}

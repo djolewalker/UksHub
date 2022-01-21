@@ -1,0 +1,29 @@
+{% extends 'hub/user-settings/base.html' %}
+{% load thumbnail static compress crispy_forms_tags %}
+
+{% block header %}
+{{ block.super }}
+{% compress css %}
+<link type="text/x-scss" href="{% static 'styles/hub/user-settings-profile.scss' %}" rel="stylesheet" media="screen" />
+{% endcompress %}
+{% endblock header %}
+
+{% block title %}
+Your profile
+{% endblock %}
+
+{% block settingsTitle %}
+<h2 class="h3 m-0">Public profile</h2>
+{% endblock settingsTitle %}
+
+{% block settingsContent %}
+
+
+<form class="ingore-asterics position-relative {% if form.instance.avatar %}with-avatar{% endif %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if form.instance.avatar %} <img class="position-absolute p-1 rounded-circle" style="left:0"
+        src="{{ form.instance.avatar | thumbnail_url:'avatar-m' }}" alt=""> {% endif %}
+    {{ form | crispy }}
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+{% endblock settingsContent %}

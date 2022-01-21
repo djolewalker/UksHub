@@ -1,0 +1,33 @@
+{% extends 'hub/user-settings/base.html' %}
+{% load static compress crispy_forms_tags %}
+
+{% block title %}
+Your keys
+{% endblock %}
+
+{% block settingsTitle %}
+<h2 class="h3 m-0">SSH keys</h2>
+<a href="{% url 'settings-keys-new' %}"><button type="submit" class="btn btn-primary btn-sm">Add SSH key</button></a>
+{% endblock settingsTitle %}
+{% block settingsContent %}
+<ul class="m-0 p-0">
+    <p>{% if keys %}This is a list of SSH keys associated with your account {% else %} Add your SSH keys {% endif %}</p>
+    {% for key in keys %}
+    <li class="p-3 my-3 border rounded d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-key h2"></i>
+            <div class="d-flex flex-column ml-3">
+                <h3 class="h4 m-0">{{ key.name }}</h3>
+                {% if key.label %}Label: {{key.label}} {% endif %}
+                <p>Added on: {{key.created_at | date:"M d, Y" }}</p>
+            </div>
+        </div>
+        <div>
+            <form action="">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock settingsContent %}

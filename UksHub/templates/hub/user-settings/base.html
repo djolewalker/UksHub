@@ -1,0 +1,66 @@
+{% extends 'hub/hub-base.html' %}
+{% load compress static thumbnail %}
+{% block header %}
+{{ block.super }}
+{% compress css %}
+<link type="text/x-scss" href="{% static 'styles/hub/user-settings-base.scss' %}" rel="stylesheet" media="screen" />
+{% endcompress %}
+{% endblock %}
+{% block hubcontent %}
+<div class="settings-wrapper centered-content d-flex flex-column">
+    <div class="quick-info w-100 my-3 justify-content-start">
+        <div class="d-flex">
+            {% if user.userprofile.avatar %}
+            <img class="rounded-circle" src="{{ user.userprofile.avatar |thumbnail_url:'avatar-s' }}" alt="User avatar">
+            {% else %}
+            <div class="initials-image rounded-circle d-flex bg-dark text-white">
+                {% include 'hub/avatar.html' %}
+            </div>
+            {% endif %}
+            <div class="d-flex flex-column justify-content-center ml-2">
+                {% if user.userprofile.name %}
+                <span class="font-weight-bold">{{user.userprofile.name}}</span>
+                {% endif %}
+                <span>Your account settings</span>
+            </div>
+        </div>
+    </div>
+    <div class="settings-content d-flex w-100">
+        <nav>
+            <ul class="settings-options rounded border border-secondary p-0">
+                <li class="d-flex p-2 pl-3 border-bottom border-secondary align-items-center">Account settings</li>
+                {% with request.resolver_match.url_name as url_name %}
+                <a href="{% url 'settings-profile' %}">
+                    <li
+                        class="{% if url_name == 'settings-profile' %}active-option{% endif %} d-flex p-2 pl-3 border-bottom border-secondary align-items-center">
+                        Profile
+                    </li>
+                </a>
+                <a href="{% url 'settings-keys' %}">
+                    <li
+                        class="{% if 'settings-keys' in url_name %}active-option{% endif %} d-flex p-2 pl-3 border-bottom border-secondary align-items-center">
+                        SSH Keys
+                    </li>
+                </a>
+                <a href="#">
+                    <li
+                        class="{% if url_name == 'home' %}active-option{% endif %} d-flex p-2 pl-3 border-bottom border-secondary align-items-center">
+                        todo...
+                    </li>
+                </a>
+                {% endwith %}
+            </ul>
+        </nav>
+        <div class="current-settings-content ">
+            <div class="d-flex w-100 flex-column">
+                <div class="w-100 border-bottom border-secondary mb-3 py-2 d-flex justify-content-between">
+                    {% block settingsTitle %}{% endblock settingsTitle %}
+                </div>
+                {% block settingsContent %}
+                {% endblock settingsContent %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock hubcontent  %}

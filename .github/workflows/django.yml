@@ -37,3 +37,6 @@ jobs:
       run: |
         python manage.py test UksHub.apps.hub.tests --noinput
         python manage.py test UksHub.apps.backoffice.tests --noinput
+        python manage.py test UksHub.apps.analytics.tests --noinput
+        python manage.py test UksHub.apps.gitcore.tests --noinput
+        python manage.py test UksHub.apps.hubauth.tests --noinput

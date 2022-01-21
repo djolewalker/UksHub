@@ -1,0 +1,4 @@
+scripts/create-public-key.sh      eol=lf
+scripts/gitolite-entrypoint.sh    eol=lf
+scripts/start-django.sh           eol=lf
+scripts/wait_for_mysql.sh         eol=lf

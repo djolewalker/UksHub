@@ -15,6 +15,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+ADMIN_ENABLED = True
 
 # Application definition
 
@@ -25,11 +26,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     # 3rd party
-    'compressor',
+    'compressor', # SCSS
+    'easy_thumbnails', # Thumbnail support
+    'django_cleanup.apps.CleanupConfig', # Remove unreferenced files
+    'crispy_forms', # Format django forms in bootstrap way
+    'polymorphic', # ORM polymorphism support
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
-    'UksHub.apps.backoffice.apps.BackofficeConfig'
+    'UksHub.apps.gitcore.apps.GitCoreConfig',
+    'UksHub.apps.events.apps.EventsConfig',
+    'UksHub.apps.hubauth.apps.HubAuthConfig',
+    'UksHub.apps.backoffice.apps.BackofficeConfig',
+    'UksHub.apps.analytics.apps.AnalyticsConfig'
 ]
 
 MIDDLEWARE = [
@@ -40,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'UksHub.apps.analytics.middleware.AnalyticsMiddleware'
 ]
 
 ROOT_URLCONF = 'UksHub.urls'
@@ -47,7 +58,7 @@ ROOT_URLCONF = 'UksHub.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'UksHub' / 'templates' ],
+        'DIRS': [BASE_DIR / 'UksHub' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,6 +88,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'hubauth.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -115,9 +127,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = 'static/'
+STATIC_ROOT = 'static'
 
-STATICFILES_DIRS = [ BASE_DIR / 'UksHub' / 'static' ]
+MEDIA_ROOT = BASE_DIR / 'user-files'
+MEDIA_URL = 'user-files/'
+
+STATICFILES_DIRS = [BASE_DIR / 'UksHub' / 'static']
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # SCSS dependency
 STATICFILES_FINDERS = [
@@ -138,3 +155,26 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = "/login"
+
+GIT_REPOSITORIES = BASE_DIR / 'git-repos'
+USE_DEV_GIT = True
+
+GIT_ADMIN_SUPERUSER = 'random.user.admin'
+GIT_ADMIN = BASE_DIR / 'git-admin-dev'
+GIT_ADMIN_CONF_REPO = GIT_ADMIN / 'conf' 
+GIT_ADMIN_CONF = GIT_ADMIN_CONF_REPO / 'gitolite.conf'
+GIT_ADMIN_KEYS = GIT_ADMIN / 'keydir'
+GIT_ADMIN_REMOTE = 'D:\\Works\\UKS\\git-admin-dev'
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'avatar-xs': {'size': (38, 38), 'crop': True},
+        'avatar-s': {'size': (50, 50), 'crop': True},
+        'avatar-m': {'size': (100, 100), 'crop': True},
+        'avatar-l': {'size': (150, 150), 'crop': True},
+    },
+}
+
+APPEND_SLASH = False

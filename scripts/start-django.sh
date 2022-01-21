@@ -2,7 +2,6 @@
 #export UKS_TEST_DB=ON
 # collect static files and put inside ./static/
 python3 manage.py collectstatic --noinput
-#python3 manage.py compress --force
 # setup db
 python3 manage.py makemigrations
 python3 manage.py migrate

@@ -1,0 +1,32 @@
+.form-container {
+    width: 250px;
+    margin: auto;
+    margin-top: 80px;
+    margin-bottom: 60px;
+
+    label {
+        margin-bottom: 0;
+    }
+
+    .btn-primary {
+        margin: auto;
+        display: block;
+        margin-top: 30px;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        font-size: 1.4em;
+        text-align: center;
+    }
+
+    .alert-block ul {
+        padding: 0;
+    }
+
+    .terms {
+        margin-top: 20px;
+        font-size: 0.9em;
+        text-align: center;
+    }
+}

@@ -1,1 +1,11 @@
 .env
+.github
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+README.md
+/venv
+/git-deamon
+/git-admin-dev
+/user-files

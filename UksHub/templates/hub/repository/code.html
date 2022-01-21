@@ -1,0 +1,311 @@
+{% extends 'hub/repository/base.html' %}
+{% load compress static hub_filters humanize %}
+
+
+{% block header %}
+{{ block.super }}
+{% compress css %}
+<link type="text/x-scss" href="{% static 'styles/hub/repository/code.scss' %}" rel="stylesheet" media="screen" />
+{% endcompress %}
+{% endblock header %}
+
+
+{% block repocontent %}
+{% if repo.branches %}
+
+<div class="code-wrpper d-flex">
+    <div class="main-content d-flex mr-4 flex-column">
+        <div class="content-header mb-3 d-flex justify-content-between w-100">
+            <div class="d-flex">
+                <div class="dropdown show">
+                    <a class="main-content-branches text-truncate btn btn-secondary btn-sm dropdown-toggle pl-3 pr-4"
+                        href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown">
+                        <i class="bi bi-diagram-2"></i>
+                        {{branch}}
+                    </a>
+                    <div class="dropdown-menu">
+                        {% for brch in repo.branches %}
+                        {% if request.resolver_match.url_name == 'repository-blob' %}
+                        <a class="dropdown-item"
+                            href="{% url 'repository-blob' repository.creator.username repository.name brch.name|add:"/"|add:blob.path  %}">
+                            <i class="bi bi-check-lg{% if brch.name != branch %} unchecked{% endif %}"></i>
+                            {{ brch.name }}
+                        </a>
+                        {% elif request.resolver_match.url_name == 'repository-tree' %}
+                        <a class="dropdown-item"
+                            href="{% url 'repository-tree' repository.creator.username repository.name brch.name|add:"/"|add:tree.path  %}">
+                            <i class="bi bi-check-lg{% if brch.name != branch %} unchecked{% endif %}"></i>
+                            {{ brch.name }}
+                        </a>
+                        {% else %}
+                        <a class="dropdown-item"
+                            href="{% url 'repository-tree' repository.creator.username repository.name brch.name %}">
+                            <i class="bi bi-check-lg{% if brch.name != branch %} unchecked{% endif %}"></i>
+                            {{ brch.name }}
+                        </a>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if request.resolver_match.url_name in 'repository-tree,repository-blob' and hierarchy|length  %}
+                <div class="d-flex ml-2 align-items-center text-truncate">
+                    <a href="{% url 'repository-tree' repository.creator.username repository.name branch %}">
+                        <b class="text-primary link-hover-underline">{{repository.name}}</b>
+                    </a>
+                    {% for path_item in hierarchy|slice:":-1" %}
+                    <b class="ml-1">/</b>
+                    <a class="ml-1"
+                        href="{% url 'repository-tree' repository.creator.username repository.name branch|add:"/"|add:path_item.path %}">
+                        <b class="text-primary link-hover-underline">{{path_item.name}}</b>
+                    </a>
+                    {% endfor %}
+                    <b class="ml-1">/</b>
+                    {% with hierarchy|last as path_item %}
+                    <b class="ml-1">{{path_item.name}}</b>
+                    {% if request.resolver_match.url_name == 'repository-tree' %}
+                    <b class="ml-1">/</b>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                {% else %}
+                <a class="ml-3 d-flex align-items-center" href="">
+                    <b class="mr-1 link-hover">
+                        <i class="bi bi-diagram-2"></i>
+                        {{ repo.branches|length }}
+                    </b>
+                    <span class="fs-small">branches</span>
+                </a>
+                <a class="ml-3 d-flex align-items-center" href="">
+                    <b class="mr-1 link-hover">
+                        <i class="bi bi-tag"></i>
+                        {{ repo.tags|length }}
+                    </b>
+                    <span class="fs-small">tags</span>
+                </a>
+                {% endif %}
+            </div>
+            <div>
+                <div class="dropdown show">
+                    <button class="btn btn-success btn-sm dropdown-toggle px-3" role="button" id="dropdownMenuLink"
+                        data-toggle="dropdown">
+                        Code
+                    </button>
+                    <div class="clone dropdown-menu dropdown-menu-right mt-2">
+                        <div class="p-3">
+                            <h3 class="h4 fs"><i class="bi bi-terminal"></i> Clone</h3>
+                            {% if ssh_enabled %}
+                            <label for="clone-ssh" class="fs-small">SSH</label>
+                            <div id="clone-ssh" class="input-group input-group-sm mb-3">
+                                <input data-autoselect type="text" class="form-control"
+                                    value="ssh://git@127.0.0.1:2222/{{repository.creator.username}}/{{repository.name}}.git">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="bi bi-clipboard"></i></span>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <label for="clone-ssh" class="fs-small">HTTP</label>
+                            <div id="clone-ssh" class="input-group input-group-sm mb-3">
+                                <input data-autoselect type="text" class="form-control"
+                                    value="http://127.0.0.1:8083/{{repository.creator.username}}/{{repository.name}}.git">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="bi bi-clipboard"></i></span>
+                                </div>
+                            </div>
+                            <label for="clone-ssh" class="fs-small">GIT</label>
+                            <div id="clone-ssh" class="input-group input-group-sm mb-3">
+                                <input data-autoselect type="text" class="form-control"
+                                    value="git://127.0.0.1:9418/{{repository.creator.username}}/{{repository.name}}.git">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="bi bi-clipboard"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3 fs-small border rounded">
+            <div class="p-3 bg-light d-flex justify-content-between">
+                <div class="d-flex mw-0 flex-auto">
+                    <b class="text-truncate" style="width:120px;flex-shrink:0">
+                        {{commit.committer}}
+                    </b>
+                    <a href="" class="text-truncate">
+                        <span class="link-hover-underline">
+                            {{commit.message}}
+                        </span>
+                    </a>
+                </div>
+                <div class="d-flex justify-content-end" style="width:250px;flex-shrink:0;">
+                    <span>{{commit.committed_datetime|naturaltime}}</span>
+                    <a href="">
+                        {% if blob %}
+                        <b class="ml-2 link-hover">
+                            <i class="bi bi-clock-history"></i> History
+                        </b>
+                        {% else %}
+                        <b class="ml-2 link-hover">
+                            <i class="bi bi-clock-history"></i>
+                            {{commit.count}}
+                        </b>
+                        commits
+                        {% endif %}
+
+                    </a>
+                </div>
+            </div>
+            {% if not blob %}
+            {% for tree in tree.trees %}
+            <div class="px-3 py-2 border-top d-flex position-relative">
+                <i class="bi bi-folder-fill mr-2 flex-shrink-0"></i>
+                <div class="flex-auto text-truncate min-width-0 col-md-2 mr-3">
+                    <a
+                        href="{% url 'repository-tree' repository.creator.username repository.name branch|add:"/"|add:tree.path %}">
+                        <span class="link-hover-underline">{{ tree.name }}</span>
+                    </a>
+                </div>
+                <div class="text-truncate text-muted flex-auto min-width-0 d-none d-md-block col-5 mr-3">
+                    {{ stats|cmt_msg:tree.name }}</div>
+                <div class="text-right text-muted">{{ stats|cmt_time:tree.name|naturaltime }}</div>
+            </div>
+            {% endfor %}
+            {% for blob in tree.blobs %}
+            <div class="px-3 py-2 border-top d-flex position-relative">
+                <i class="bi bi-file-earmark mr-2 flex-shrink-0"></i>
+                <div class="flex-auto text-truncate min-width-0 col-md-2 mr-3">
+                    <a
+                        href="{% url 'repository-blob' repository.creator.username repository.name branch|add:"/"|add:blob.path %}">
+                        <span class="link-hover-underline">{{ blob.name }}</span>
+                    </a>
+                </div>
+                <div class="text-truncate text-muted flex-auto min-width-0 d-none d-md-block col-5 mr-3">
+                    {{ stats|cmt_msg:blob.name }}
+                </div>
+                <div class="text-right text-muted" style="width:130px">
+                    {{ stats|cmt_time:blob.name|naturaltime }}
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        {% if blob %}
+        <div class="mb-3 fs-small border rounded">
+            {% with blob.mime_type|split:"/"|first as type %}
+            <div class="p-3 bg-light d-flex justify-content-between">
+                <div>
+                    {% if type == 'text' %}
+                    {% if blob.data_stream.read %}
+                    <span class="pr-2 border-right">{{blob.data_stream.read|decode:'utf-8'|count:'\n'|add:1}}
+                        lines</span>
+                    {% endif %}
+                    {% endif %}
+                    <span class="pl-2">{{blob.size|filesizeformat}}</span>
+                </div>
+                <div>
+
+                </div>
+            </div>
+            <div class="p-3 overflow-auto">
+                {% if blob.size %}
+                {% if type == 'text' %}
+                <pre class="m-0">{{blob.data_stream.read|decode:'utf-8'|safe}}</pre>
+                {% elif type == 'image' %}
+                <img src="data:{{blob.mime_type}};base64,{{blob.data_stream.read|base64|decode:'utf-8'}}"
+                    alt="{{blob.name}}">
+                {% else %}
+                <span>Format not supported!</span>
+                {% endif %}
+                {% else %}
+                <span>Empty file!</span>
+                {% endif %}
+            </div>
+            {% endwith %}
+        </div>
+        {% endif %}
+    </div>
+
+
+    <div class="about-side-bar d-table">
+        <div class="pb-3">
+            <h2 class="mb-3 h4 fs font-weight-bold">About</h2>
+            <div class="f4 my-3 color-fg-muted">
+                <i>
+                    {% if repository.description %}
+                    {{repository.description}}
+                    {% else %}
+                    No description, website, or topics provided.
+                    {% endif %}
+                </i>
+            </div>
+            <ul class="p-0 fs-small m-0">
+                <li class="mb-1"> <i class="bi bi-star mr-2"></i>0 stars</li>
+                <li class="mb-1"> <i class="bi bi-eye mr-2"></i>0 watching</li>
+                <li class="mb-1"> <i class="bi bi-diagram-2 mr-2"></i>0 forks</li>
+            </ul>
+        </div>
+        <div class="py-3 border-top d-flex flex-column">
+            <h2 class="mb-3 h4 fs font-weight-bold">Releases</h2>
+            <a class="fs-small mb-2 " href="#">
+                <span class="link-hover font-weight-bold">
+                    <i class="bi bi-tag mr-1"></i>
+                    {{ repo.tags|length }}
+                </span> tags
+            </a>
+            <a class="text-primary fs-small" href="#"></a>
+        </div>
+        <div class="py-3 border-top d-flex flex-column">
+            <h2 class="mb-3 h4 fs font-weight-bold">
+                Contributors
+                <span class="mx-1 badge badge-pill badge-secondary">
+                    {{ repository.contributors.all|length|add:1 }}
+                </span>
+            </h2>
+            <ul class="p-0 fs-small m-0">
+                <li class="contributor">
+                    {% with user=repository.creator %}
+                    <div class="h-100 mr-2">
+                        <a href="{% url 'profile' user.username %}">{% include 'hub/profile-picture.html' %}</a>
+                    </div>
+                    <a href="{% url 'profile' user.username %}">
+                        <b class="link-hover">{{user.username}}</b>
+                        {% if user.userprofile.name %}{{user.userprofile.name}}{% endif %}
+                    </a>
+                    {% endwith %}
+                </li>
+                {% for contributor in repository.contributors.all %}
+                <li class="contributor mt-2">
+                    {% with user=contributor %}
+                    <div class="h-100 mr-2">
+                        <a href="{% url 'profile' user.username %}">{% include 'hub/profile-picture.html' %}</a>
+                    </div>
+                    <a href="{% url 'profile' user.username %}">
+                        <b class="link-hover">{{user.username}}</b>
+                        {% if user.userprofile.name %}user.userprofile.name{% endif %}
+                    </a>
+                    {% endwith %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="py-3 border-top d-flex flex-column">
+            <h2 class="mb-3 h4 fs font-weight-bold">Languages</h2>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="d-flex align-items-center flex-column">
+    <h2 class="h4 mt-3">Reposiotry is empty!</h2>
+    <p>Clone a repository using one of next protocols:</p>
+    <pre class="mt-5">
+    <code>
+{% if ssh_enabled %}git clone ssh://git@127.0.0.1:2222/{{repository.creator}}/{{repository.name}}.git{% endif %}
+
+git clone http://127.0.0.1:8083/{{repository.creator}}/{{repository.name}}.git
+    
+git clone git://127.0.0.1:9418/{{repository.creator}}/{{repository.name}}.git
+    </code>
+    </pre>
+</div>
+{% endif %}
+{% endblock repocontent %}}
