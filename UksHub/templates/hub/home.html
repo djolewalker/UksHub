@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load compress %} {% load static %}
+{% load static compress %}
 {% block title %}
 UksHub
 {% endblock %}
@@ -29,7 +29,7 @@ UksHub
     </div>
     <div class="content d-flex centered-content flex-wrap">
         <div class="content-item mx-auto">{% include 'auth/register-partial.html' %}</div>
-        <div class="content-item mx-auto"><img src="{% static '/img/home-branch.png' %}" alt="home brach image"></div>
+        <div class="content-item mx-auto"><img src="{% static 'img/home-branch.png' %}" alt="home brach image"></div>
     </div>
     <div class="footer centered-content d-flex justify-content-sm-center border-top border-secondary py-4">
         <p>© 2022 UksHub</p>

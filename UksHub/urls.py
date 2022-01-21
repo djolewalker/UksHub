@@ -17,3 +17,7 @@ urlpatterns += [
     *gitCoreUrls,
     path('', include('UksHub.apps.hub.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if not settings.DEBUG:
+    handler404 = 'UksHub.apps.hub.views.errors.handler404'
+    handler500 = 'UksHub.apps.hub.views.errors.handler500'
