@@ -138,12 +138,3 @@ git clone git://127.0.0.1:9418/{user}/{repo-name}.git
    git commit -m "Initial setup"
    git push
    ```
-
-### Important for git server!!!
-
-Clear previous volume with ssh key before another `docker-compose up` call
-
-```
-.\scripts\clear-ssh-volume.sh
-docker-compose up --build
-```
