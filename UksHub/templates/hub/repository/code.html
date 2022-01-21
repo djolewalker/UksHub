@@ -205,7 +205,7 @@
 
                 </div>
             </div>
-            <div class="p-3">
+            <div class="p-3 overflow-auto">
                 {% if blob.size %}
                 {% if type == 'text' %}
                 <pre class="m-0">{{blob.data_stream.read|decode:'utf-8'|safe}}</pre>
@@ -268,7 +268,7 @@
                     </div>
                     <a href="{% url 'profile' user.username %}">
                         <b class="link-hover">{{user.username}}</b>
-                        {% if user.userprofile.name %}user.userprofile.name{% endif %}
+                        {% if user.userprofile.name %}{{user.userprofile.name}}{% endif %}
                     </a>
                     {% endwith %}
                 </li>
