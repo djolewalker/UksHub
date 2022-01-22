@@ -1,14 +1,8 @@
 from enum import Enum
 
-class ARTEFACT_STATE(Enum):
+class BASE_STATE(Enum):
     OPEN = 1
     CLOSED = 2
-    MERGED = 3
-
-class PROJECT_STATE(Enum):
-    OPEN = 1
-    CLOSED = 2
-
 
 class REVIEW_STATE(Enum):
     COMMENT = 1
