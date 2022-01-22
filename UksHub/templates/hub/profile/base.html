@@ -65,7 +65,7 @@
                 {% if user.userprofile.avatar %}
                 <img class="rounded-circle mr-1 w-100 h-100" src="{{user.userprofile.avatar.url}}" alt="User avatar">
                 {% else %}
-                {% include 'hub/avatar.html' %}
+                {% include 'hub/common/avatar.html' %}
                 {% endif %}
             </div>
             <div class="mt-3">

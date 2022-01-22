@@ -8,20 +8,15 @@
         max-width: unset;
     }
 
-    .main-content {
-        min-width: 0;
-        flex: 1;
+    .main-content .main-content-branches {
+        display: inline-block;
+        max-width: 165px;
+        vertical-align: top;
 
-        .main-content-branches {
-            display: inline-block;
-            max-width: 165px;
-            vertical-align: top;
-
-            &::after {
-                position: absolute;
-                right: 10px;
-                top: 14px
-            }
+        &::after {
+            position: absolute;
+            right: 10px;
+            top: 14px;
         }
     }
 
@@ -30,18 +25,6 @@
 
         .clone {
             width: 400px;
-        }
-    }
-
-
-    .about-side-bar {
-        width: 296px;
-
-        .contributor {
-            height: 32px;
-            max-height: 32px;
-            display: flex;
-            align-items: center;
         }
     }
 

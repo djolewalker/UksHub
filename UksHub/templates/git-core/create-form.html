@@ -9,7 +9,7 @@ Create
 {% endcompress %}
 {% endblock header %}
 {% block content %}
-<form method="POST" class="ingore-asterics">
+<form method="POST" class="ignore-asterics">
     {% csrf_token %}
     {{ form | crispy }}
     <button type="submit" class="btn btn-primary">Finish</button>

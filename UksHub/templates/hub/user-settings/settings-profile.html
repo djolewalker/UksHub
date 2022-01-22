@@ -19,7 +19,7 @@ Your profile
 {% block settingsContent %}
 
 
-<form class="ingore-asterics position-relative {% if form.instance.avatar %}with-avatar{% endif %}" method="POST" enctype="multipart/form-data">
+<form class="ignore-asterics position-relative {% if form.instance.avatar %}with-avatar{% endif %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% if form.instance.avatar %} <img class="position-absolute p-1 rounded-circle" style="left:0"
         src="{{ form.instance.avatar | thumbnail_url:'avatar-m' }}" alt=""> {% endif %}

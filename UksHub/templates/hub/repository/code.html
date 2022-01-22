@@ -257,26 +257,15 @@
             <h2 class="mb-3 h4 fs font-weight-bold">
                 Contributors
                 <span class="mx-1 badge badge-pill badge-secondary">
-                    {{ repository.contributors.all|length|add:1 }}
+                    {{ repository.contributors.all|length }}
                 </span>
             </h2>
             <ul class="p-0 fs-small m-0">
-                <li class="contributor">
-                    {% with user=repository.creator %}
-                    <div class="h-100 mr-2">
-                        <a href="{% url 'profile' user.username %}">{% include 'hub/profile-picture.html' %}</a>
-                    </div>
-                    <a href="{% url 'profile' user.username %}">
-                        <b class="link-hover">{{user.username}}</b>
-                        {% if user.userprofile.name %}{{user.userprofile.name}}{% endif %}
-                    </a>
-                    {% endwith %}
-                </li>
                 {% for contributor in repository.contributors.all %}
-                <li class="contributor mt-2">
+                <li class="contributor mb-2">
                     {% with user=contributor %}
                     <div class="h-100 mr-2">
-                        <a href="{% url 'profile' user.username %}">{% include 'hub/profile-picture.html' %}</a>
+                        <a href="{% url 'profile' user.username %}">{% include 'hub/common/profile-picture.html' %}</a>
                     </div>
                     <a href="{% url 'profile' user.username %}">
                         <b class="link-hover">{{user.username}}</b>
