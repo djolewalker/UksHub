@@ -44,7 +44,10 @@ class Artefact(PolymorphicModel):
     assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     milestone = models.ForeignKey(
         Milestone, on_delete=models.CASCADE, blank=True, null=True)
+    
 
+    def sorted_event_set(self):
+        return self.event_set.order_by('created_at')
 
 class Issue(Artefact):
     pass

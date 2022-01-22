@@ -2,6 +2,7 @@ from django.http.response import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from UksHub.apps.events.forms import CommentForm
+from UksHub.apps.events.services import event_user_to_artefact
 
 from UksHub.apps.gitcore.services import get_repository
 from UksHub.apps.hub.forms import IssueForm
@@ -95,8 +96,10 @@ def issues(request, username, reponame):
 def issue(request, username, reponame, id):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
-        issue = repository.artefact_set.get(id=id)
-        return render(request, 'hub/repository/issues.html', {'repository': repository})
+        issue = repository.artefact_set.get(pk=id)
+        if not issue: raise Http404
+        print(issue.event_set.all())
+        return render(request, 'hub/repository/issue.html', {'repository': repository, 'issue': issue})
     raise Http404
 
 
@@ -118,14 +121,20 @@ def create_issue(request, username, reponame):
             issue.creator = request.user
             issue.save()
             issue_form.save_m2m()
-            # TODO Create events for assignment
+
             if comment_form.is_valid():
                 comment = comment_form.save(commit=False)
                 comment.creator = request.user
                 comment.artefact = issue
                 comment.save()
                 issue.message = comment
-            return redirect(reverse('issues', kwargs={'username': username, 'reponame': reponame}))
+                issue.save()
+
+            # Create events
+            if issue.assignees.all():   
+                event_user_to_artefact(request.user, issue, issue.assignees.all())
+
+            return redirect(reverse('issue', kwargs={'username': username, 'reponame': reponame, 'id':issue.id}))
     else:
         raise Http404
     return render(request, 'hub/repository/new-issue.html', {'repository': repository, 'issue_form': issue_form, 'comment_form': comment_form})

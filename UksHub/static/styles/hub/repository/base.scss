@@ -1,28 +1,23 @@
 .repo-header {
     height: fit-content;
-
     nav li {
         width: fit-content;
         font-size: 14px;
         border-bottom: 3px solid transparent;
         display: flex;
         align-items: center;
-
         i {
             font-size: 1.2em;
             margin-right: 6px;
         }
-
         &:hover {
             border-bottom: 3px solid var(--secondary, #6c757d);
         }
-
         &.active-url {
             padding-bottom: 0px;
             border-bottom: 3px solid var(--primary, #007bff);
             font-weight: 600;
         }
-
         .counter {
             border-radius: 15px;
             font-weight: 300 !important;
@@ -33,15 +28,27 @@
 .repo-content {
     flex: 1;
     min-height: fit-content;
-
     .main-content {
         min-width: 0;
         flex: 1;
+        .lined-item::before {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            display: block;
+            width: 2px;
+            content: "";
+            background-color: var(--secondary);
+            z-index: -1;
+        }
     }
-
     .about-side-bar {
         width: 296px;
-
+        .form-group>div {
+            max-height: 200px;
+            overflow-y: auto;
+        }
         .contributor {
             height: 32px;
             max-height: 32px;

@@ -265,7 +265,7 @@
                 <li class="contributor mb-2">
                     {% with user=contributor %}
                     <div class="h-100 mr-2">
-                        <a href="{% url 'profile' user.username %}">{% include 'hub/profile-picture.html' %}</a>
+                        <a href="{% url 'profile' user.username %}">{% include 'hub/common/profile-picture.html' %}</a>
                     </div>
                     <a href="{% url 'profile' user.username %}">
                         <b class="link-hover">{{user.username}}</b>

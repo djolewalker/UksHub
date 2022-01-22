@@ -9,6 +9,9 @@ class Event(PolymorphicModel):
     is_removal = models.BooleanField(default=False)
     artefact = models.ForeignKey('hub.Artefact', on_delete=models.CASCADE, related_name='%(class)s_set')
 
+    def get_type(self):
+        return self.__class__.__name__
+
 
 class StateChange(Event):
     new_state = models.BigIntegerField()
