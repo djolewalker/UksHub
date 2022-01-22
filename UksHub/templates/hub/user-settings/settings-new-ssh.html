@@ -9,7 +9,7 @@ Create SSH
 
 {% block settingsContent %}
 {% if note %}<p>{{ note }}</p>{% endif %}
-<form class="ingore-asterics" method="POST">
+<form class="ignore-asterics" method="POST">
     {% csrf_token %}
     {{ form | crispy }}
     <button type="submit" class="btn btn-primary">Create</button>

@@ -1,7 +1,7 @@
 {% load static compress crispy_forms_tags %}
 <div class="form-container">
     <h2>Sign up to UksHub</h2>
-    <form class="needs-validation ingore-asterics" method="POST" novalidate>
+    <form class="needs-validation ignore-asterics" method="POST" novalidate>
         {% csrf_token %}
         {{ form | crispy }}
         <div class="mb-3 repeat-password">

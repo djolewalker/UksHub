@@ -13,9 +13,9 @@ Login
 <div class="form-container">
     <h2>Sign in to UksHub</h2>
     {% if next %}
-    <form class="ingore-asterics" action="/login?next={{next}}" method="POST">
+    <form class="ignore-asterics" action="/login?next={{next}}" method="POST">
         {% else%}
-        <form class="ingore-asterics" action="/login" method="POST">
+        <form class="ignore-asterics" action="/login" method="POST">
             {% endif %}
             {% csrf_token %}
             {{ form | crispy }}

@@ -19,6 +19,7 @@ def init_repo(request):
                 repo.creator = request.user
                 repo.private = not repo_form.cleaned_data['isPublic']
                 repo.save()
+                repo.contributors.add(repo.creator)
                 if settings.USE_DEV_GIT:
                     init_repository_dev(repo)
                 else:

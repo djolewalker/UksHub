@@ -23,7 +23,7 @@ class PullRequestAssignment(Event):
 
 
 class Comment(Event):
-    message = models.TextField()
+    message = models.TextField(blank=True, null=True)
     conversation = models.ForeignKey('hub.ReviewConversation', on_delete=models.CASCADE, blank=True, null=True)
 
 

@@ -33,4 +33,20 @@
 .repo-content {
     flex: 1;
     min-height: fit-content;
+
+    .main-content {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .about-side-bar {
+        width: 296px;
+
+        .contributor {
+            height: 32px;
+            max-height: 32px;
+            display: flex;
+            align-items: center;
+        }
+    }
 }
