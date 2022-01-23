@@ -54,6 +54,16 @@ def count_str(text, chr):
     return text.count(chr)
 
 
+@register.filter(name='isissue')
+def is_issue(entity):
+    return isinstance(entity, Issue)
+
+
+@register.filter(name='ispr')
+def is_pr(entity):
+    return isinstance(entity, PullRequest)
+
+
 @register.filter(name='issuecount')
 def count_issue(repo):
     return repo.artefact_set.filter(polymorphic_ctype=ContentType.objects.get_for_model(Issue), state=BASE_STATE.OPEN.value).count()
@@ -62,3 +72,13 @@ def count_issue(repo):
 @register.filter(name='prcount')
 def count_pr(repo):
     return repo.artefact_set.filter(polymorphic_ctype=ContentType.objects.get_for_model(PullRequest), state=BASE_STATE.OPEN.value).count()
+
+
+@register.filter(name='opencount')
+def count_open(artefacts):
+    return artefacts.filter(state=BASE_STATE.OPEN.value).count()
+
+
+@register.filter(name='closedcount')
+def count_closed(artefacts):
+    return artefacts.filter(state=BASE_STATE.CLOSED.value).count()

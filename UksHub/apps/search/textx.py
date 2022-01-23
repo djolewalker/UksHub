@@ -4,7 +4,7 @@ from textx import metamodel_from_file, textx_isinstance
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, Q
 from UksHub.apps.core.enums import BASE_STATE
-from UksHub.apps.events.models import Comment, UserAssignment
+from UksHub.apps.events.models import Comment
 
 from UksHub.apps.hub.models import Issue, PullRequest
 
@@ -13,7 +13,7 @@ _meta_model = metamodel_from_file(os.path.join(module_dir, 'search-metamodel.tx'
 
 
 def map_query_to_filter(query):
-    model = _meta_model.model_from_str(query)
+    model = _meta_model.model_from_str(re.sub(' +',' ', query))
     filter = dict()
     sort = list()
     exclude = dict()
@@ -21,10 +21,10 @@ def map_query_to_filter(query):
     for expression in model.expressions:
         if textx_isinstance(expression, _meta_model['IsExpression']):
             if expression.value in ['pr', 'issue']:
-                if 'polymorphic_ctype' in filter: continue
+                if 'polymorphic_ctype' in filter: continue # Implement multiple OR
                 filter['polymorphic_ctype']=ContentType.objects.get_for_model(PullRequest if expression.value == 'pr' else Issue)
             else:
-                if 'state' in filter: continue
+                if 'state' in filter: continue # Implement multiple OR
                 filter['state']=BASE_STATE.OPEN.value if expression.value == 'open' else BASE_STATE.CLOSED.value
 
         elif textx_isinstance(expression, _meta_model['SortExpression']):

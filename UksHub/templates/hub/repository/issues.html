@@ -1,5 +1,47 @@
 {% extends 'hub/repository/base.html' %}
+{% load hub_filters %}
 
 {% block repocontent %}
-Issues works
+<div class="d-flex pb-3 justify-content-between align-items-center">
+    <div class="input-group-sm mw-0" style="flex: 1">
+        <input type="text" class="form-control w-100" placeholder="Find a repository...">
+    </div>
+    {% if request.user.is_authenticated and request.user == user %}
+    <a href="{% url 'create-issue' repository.creator.username repository.name %}" class="ml-3">
+        <button type="button" class="btn d-flex btn-sm btn-success px-3">
+            New Issue
+        </button>
+    </a>
+    {% endif %}
+</div>
+
+<div class="border rounded-top p-3">
+    <div class="d-flex col-12">
+        <div class="col-6 pl-1 mw-0 flex-auto" style="max-width:unset">
+            <a href="" class="font-weight-bold">
+                <i class="bi bi-record-circle"></i>
+                {{artefacts|opencount}}
+                Open
+            </a>
+            <a href="" class="ml-3">
+                <i class="bi bi-check-circle"></i>
+                {{artefacts|closedcount}}
+                Closed
+            </a>
+        </div>
+        <div class="col-6 p-0">
+            <div class="col-12 p-0 d-flex justify-content-end align-items-center">
+                TODO: apply filter
+            </div>
+        </div>
+    </div>
+</div>
+
+<ul class="p-0 border-left border-right">
+    {% for artefact in artefacts %}
+    <li class="d-flex py-1 border-bottom">
+        {% include 'hub/common/artefact.html' %}
+    </li>
+    {% endfor %}
+</ul>
 {% endblock repocontent %}}

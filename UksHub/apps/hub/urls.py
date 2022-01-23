@@ -23,6 +23,7 @@ urlpatterns = [
     path('<username>/<reponame>/issues/<int:id>', issue, name='issue'),
     path('<username>/<reponame>/issues/new', create_issue, name='create-issue'),
     path('<username>/<reponame>/pulls', pull_requests, name='pull-requests'),
+    path('<username>/<reponame>/pulls/<int:id>', pull_requests, name='pull-request'),
     path('<username>/<reponame>/actions', actions, name='actions'),
     path('<username>/<reponame>/projects', repository_projects, name='repository-projects'),
     path('<username>/<reponame>/wiki', wiki, name='wiki'),

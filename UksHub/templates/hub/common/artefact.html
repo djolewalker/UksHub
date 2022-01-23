@@ -1,0 +1,50 @@
+{% load hub_filters humanize %}
+{% with artefact|isissue as is_issue %}
+<div class="d-flex col-12">
+    <div>
+        <span class="badge badge-pill {% if artefact.state == 1 %}badge-success{% else %}badge-primary{% endif %} ml-3 p-1 mt-1 fs" style="height:24px; width:24px">
+            {% if is_issue %}
+                <i class="bi bi-record-circle"></i>
+            {% else %}
+                <i class="bi bi-bezier2"></i>
+            {% endif %}
+        </span>   
+    </div>
+    <div class="col-8 pl-2 mw-0 flex-auto" style="max-width:unset">
+        <div class="d-flex mb-1 align-items-center mt-2">
+            <h3 class="text-truncate fs h4 m-0">
+                {% if is_issue %}
+                <a href="{% url 'issue' repository.creator.username repository.name artefact.id %}">
+                    <b class="link-hover-underline">{{artefact.name}}</b>
+                </a>
+                {% else %}
+                <a href="{% url 'pull-request' repository.creator.username repository.name artefact.id %}">
+                    <b class="link-hover-underline">{{artefact.name}}</b>
+                </a>
+                {% endif %}
+            </h3>
+        </div>
+        <p class="col-9 d-inline-block color-fg-muted pl-0 pr-4 fs-small">
+            #{{artefact.id}} opened {{artefact.created_at|naturaltime}} by 
+            <a href="{% url 'profile' artefact.creator.username %}">
+                <span class="link-hover-underline">
+                    {{artefact.creator.username}}
+                </span>
+            </a>
+        </p>
+    </div>
+    <div class="col-3 p-0">
+        <div class="col-12 d-flex h-100 p-0">
+            <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
+            <div class="col-4 d-flex align-items-center justify-content-end px-1">
+                {% for user in artefact.assignees.all %}
+                    <a href="#" style="width:20px;height:20px">
+                        <span>{% include 'hub/common/profile-picture.html' %}</span>
+                    </a>
+                {% endfor %}
+            </div>
+            <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
+        </div>
+    </div>
+</div>
+{% endwith %}
