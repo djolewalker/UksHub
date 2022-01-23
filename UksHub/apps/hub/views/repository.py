@@ -90,10 +90,33 @@ def blob(request, username, reponame, path=None):
 def issues(request, username, reponame):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
-        query = request.GET.get('q') if request.GET.get('q') else 'is:issue is:open'
-        response = map_query_to_filter(query)
-        artefacts = repository.artefact_set.annotate(**response[3]).filter(**response[0]).exclude(**response[2]).order_by(*response[1]).all()
-        return render(request, 'hub/repository/issues.html', {'repository': repository, 'artefacts': artefacts})
+        query = request.GET.get('q', 'is:issue is:open')
+        f, s, e, a, q = map_query_to_filter(query)
+
+        artefacts = repository.artefact_set.annotate(
+            **a
+        ).filter(
+            **f
+        ).exclude(
+            **e
+        ).order_by(
+            *s
+        ).all()
+
+        print(q)
+
+        queries = {
+            'open': q.set_state('is:open'),
+            'closed': q.set_state('is:closed')
+        }
+
+        return render(request, 'hub/repository/issues.html', {
+            'repository': repository,
+            'artefacts': artefacts,
+            'query': q,
+            'queries': queries
+        })
+
     raise Http404
 
 
@@ -101,7 +124,8 @@ def issue(request, username, reponame, id):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
         issue = repository.artefact_set.get(pk=id)
-        if not issue: raise Http404
+        if not issue:
+            raise Http404
         print(issue.event_set.all())
         return render(request, 'hub/repository/issue.html', {'repository': repository, 'issue': issue})
     raise Http404
@@ -135,10 +159,12 @@ def create_issue(request, username, reponame):
                 issue.save()
 
             # Create events
-            if issue.assignees.all():   
-                event_user_to_artefact(request.user, issue, issue.assignees.all())
+            if issue.assignees.all():
+                event_user_to_artefact(
+                    request.user, issue, issue.assignees.all()
+                )
 
-            return redirect(reverse('issue', kwargs={'username': username, 'reponame': reponame, 'id':issue.id}))
+            return redirect(reverse('issue', kwargs={'username': username, 'reponame': reponame, 'id': issue.id}))
     else:
         raise Http404
     return render(request, 'hub/repository/new-issue.html', {'repository': repository, 'issue_form': issue_form, 'comment_form': comment_form})

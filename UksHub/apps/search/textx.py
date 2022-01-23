@@ -7,45 +7,69 @@ from UksHub.apps.core.enums import BASE_STATE
 from UksHub.apps.events.models import Comment
 
 from UksHub.apps.hub.models import Issue, PullRequest
+from UksHub.apps.search.models import Query
 
 module_dir = os.path.dirname(__file__)
-_meta_model = metamodel_from_file(os.path.join(module_dir, 'search-metamodel.tx'), skipws=False, ws='\s')
+_meta_model = metamodel_from_file(os.path.join(
+    module_dir, 'search-metamodel.tx'), skipws=False, ws='\s')
 
 
 def map_query_to_filter(query):
-    model = _meta_model.model_from_str(re.sub(' +',' ', query))
+    model = _meta_model.model_from_str(re.sub(' +', ' ', query))
     filter = dict()
     sort = list()
     exclude = dict()
     annotate = dict()
+    query = Query()
     for expression in model.expressions:
         if textx_isinstance(expression, _meta_model['IsExpression']):
             if expression.value in ['pr', 'issue']:
-                if 'polymorphic_ctype' in filter: continue # Implement multiple OR
-                filter['polymorphic_ctype']=ContentType.objects.get_for_model(PullRequest if expression.value == 'pr' else Issue)
+                query.entity.append(f'is:{expression.value}')
+
+                if 'polymorphic_ctype' in filter:
+                    continue  # Implement multiple OR
+                filter['polymorphic_ctype'] = ContentType.objects.get_for_model(
+                    PullRequest if expression.value == 'pr' else Issue)
             else:
-                if 'state' in filter: continue # Implement multiple OR
-                filter['state']=BASE_STATE.OPEN.value if expression.value == 'open' else BASE_STATE.CLOSED.value
+                query.state.append(f'is:{expression.value}')
+
+                if 'state' in filter:
+                    continue  # Implement multiple OR
+                filter['state'] = BASE_STATE.OPEN.value if expression.value == 'open' else BASE_STATE.CLOSED.value
 
         elif textx_isinstance(expression, _meta_model['SortExpression']):
             if expression.value:
+                query.entity.append(
+                    f'{expression.condition.value}:{expression.value}')
+
                 direction = '-' if expression.value.direction == 'desc' else ''
                 if expression.value.property == 'comments':
                     property = 'comments_count'
-                    annotate[property]=Count('event_set', filter=Q(event_set__polymorphic_ctype=ContentType.objects.get_for_model(Comment)))
+                    annotate[property] = Count('event_set', filter=Q(
+                        event_set__polymorphic_ctype=ContentType.objects.get_for_model(Comment)))
                 else:
                     property = 'created_at' if expression.value.property == 'created' else 'updated_at'
                 sort.append(f'{direction}{property}')
 
         elif textx_isinstance(expression, _meta_model['ExcludingExpression']):
-            pass
-        elif textx_isinstance(expression, _meta_model['MultyValueExpression']):
-            pass
-        elif textx_isinstance(expression, _meta_model['SingleValueExpression']):
-            pass
-        elif textx_isinstance(expression, _meta_model['NoEntityExpression']):
-            pass
-        elif textx_isinstance(expression, _meta_model['ReviewExpression']):
-            pass
+            query.exclude.append(
+                f'-{expression.condition.value}:{expression.value}')
 
-    return filter, sort, exclude, annotate
+        elif textx_isinstance(expression, _meta_model['MultyValueExpression']):
+            query.multi.append(
+                f'{expression.condition.value}:{",".join(v.value for v in expression.value.values)}')
+
+        elif textx_isinstance(expression, _meta_model['SingleValueExpression']):
+            if expression.condition:
+                query.match.append(
+                    f'{expression.condition.value}:{expression.value.value}')
+            query.match.append(expression.value.value)
+
+        elif textx_isinstance(expression, _meta_model['NoEntityExpression']):
+            query.no.append(f'no:{expression.value}')
+
+        elif textx_isinstance(expression, _meta_model['ReviewExpression']):
+            query.review.append(
+                f'{expression.condition.value}:{expression.value}')
+
+    return filter, sort, exclude, annotate, query

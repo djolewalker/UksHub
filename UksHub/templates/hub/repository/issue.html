@@ -1,78 +1,88 @@
-{% extends 'hub/repository/base.html' %} 
-{% load static compress humanize%} 
+{% extends 'hub/repository/base.html' %}
+{% load static compress humanize%}
 
-{% block header %} 
-{{ block.super }} 
+{% block header %}
+{{ block.super }}
 {% compress css %}
-<link type="text/x-scss" href="{% static 'styles/hub/repository/base.scss' %}" rel="stylesheet" media="screen" /> 
-{% endcompress %} 
-{% endblock header %} 
+<link
+  type="text/x-scss"
+  href="{% static 'styles/hub/repository/base.scss' %}"
+  rel="stylesheet"
+  media="screen"
+/>
+{% endcompress %}
+{% endblock header %}
 
 {% block repocontent %}
 <div class="w-100 pb-3 border-bottom">
-    <div class="w-100 d-flex justify-content-between">
-        <h2 class="mw-0 flex-auto text-truncate">{{issue.name}} <span class="text-secondary ml-1">#{{issue.id}}</span></h2>
-        <div style="min-width:130px">
-            <button class="btn btn-secondary btn-sm">Edit</button>
-            <a href="{% url 'create-issue' repository.creator.username repository.name %}"><button class="btn btn-success btn-sm">New issue</button></a>
-        </div>
+  <div class="w-100 d-flex justify-content-between">
+    <h2 class="mw-0 flex-auto text-truncate">{{issue.name}} <span class="text-secondary ml-1">#{{issue.id}}</span></h2>
+    <div style="min-width:130px">
+      <button class="btn btn-secondary btn-sm">Edit</button>
+      <a href="{% url 'create-issue' repository.creator.username repository.name %}"><button
+          class="btn btn-success btn-sm"
+        >New issue</button></a>
     </div>
-    <div class="d-flex align-items-center mt-2">
-        {% if issue.state == 1 %}
-        <span class="badge badge-pill badge-success fs-small px-3 py-2">
-            <i class="bi bi-record-circle"></i>
-            Open
-        </span>
-        {% else %}
-        <span class="badge badge-pill badge-primary fs-small px-3 py-2">
-            <i class="bi bi-check-circle"></i>
-            Closed
-        </span>
-        {% endif %}
-        <a class="ml-2" href="{% url 'profile' issue.creator.username %}">
-            <b class="link-hover-underline">{{issue.creator.username}}</b>
-        </a>
-        <span class="ml-1">opened this issue {{issue.created_at | naturaltime}}</span>
-    </div>
+  </div>
+  <div class="d-flex align-items-center mt-2">
+    {% if issue.state == 1 %}
+    <span class="badge badge-pill badge-success fs-small px-3 py-2">
+      <i class="bi bi-record-circle"></i>
+      Open
+    </span>
+    {% else %}
+    <span class="badge badge-pill badge-primary fs-small px-3 py-2">
+      <i class="bi bi-check-circle"></i>
+      Closed
+    </span>
+    {% endif %}
+    <a
+      class="ml-2"
+      href="{% url 'profile' issue.creator.username %}"
+    >
+      <b class="link-hover-underline">{{issue.creator.username}}</b>
+    </a>
+    <span class="ml-1">opened this issue {{issue.created_at | naturaltime}}</span>
+  </div>
 </div>
 <div class="d-flex mt-5">
-    <div class="main-content d-flex mr-4 flex-column position-relative">
-        {% with issue.message as comment %}
-            {% include 'hub/common/comment.html' %}
-        {% endwith %}
-        <div class="border-bottom border-secondary" >
-            {% if issue.event_set %}
-            {% for event in issue.sorted_event_set %}
-                {% if event != issue.message %}
-                    {% include 'hub/common/event.html' %}
-                {% endif %}
-            {% endfor %}
-            {% endif %}
-        </div>
+  <div class="main-content d-flex mr-4 flex-column position-relative">
+    {% with issue.message as comment %}
+    {% include 'hub/common/comment.html' %}
+    {% endwith %}
+    <div class="border-bottom border-secondary">
+      {% if issue.event_set %}
+      {% for event in issue.sorted_event_set %}
+      {% if event != issue.message %}
+      {% include 'hub/common/event.html' %}
+      {% endif %}
+      {% endfor %}
+      {% endif %}
     </div>
-    <div class="about-side-bar">
-        <div class="pb-3">
-            <h2 class="mb-3 h4 fs font-weight-bold">Assignees</h2>
-            {% if issue.assignees.all %}
-            <ul class="p-0 fs-small m-0">
-                {% for assignee in issue.assignees.all %}
-                <li class="contributor mb-2">
-                    {% with user=assignee %}
-                    <div class="h-100 mr-2">
-                        <a href="{% url 'profile' user.username %}">{% include 'hub/common/profile-picture.html' %}</a>
-                    </div>
-                    <a href="{% url 'profile' user.username %}">
-                        <b class="link-hover">{{user.username}}</b>
-                        {% if user.userprofile.name %}user.userprofile.name{% endif %}
-                    </a>
-                    {% endwith %}
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            No assignees
-            {% endif %}
-        </div>
+  </div>
+  <div class="about-side-bar">
+    <div class="pb-3">
+      <h2 class="mb-3 h4 fs font-weight-bold">Assignees</h2>
+      {% if issue.assignees.all %}
+      <ul class="p-0 fs-small m-0">
+        {% for assignee in issue.assignees.all %}
+        <li class="contributor mb-2">
+          {% with user=assignee %}
+          <div class="h-100 mr-2">
+            <a href="{% url 'profile' user.username %}">{% include 'hub/common/profile-picture.html' %}</a>
+          </div>
+          <a href="{% url 'profile' user.username %}">
+            <b class="link-hover">{{user.username}}</b>
+            {% if user.userprofile.name %}user.userprofile.name{% endif %}
+          </a>
+          {% endwith %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      No assignees
+      {% endif %}
     </div>
+  </div>
 </div>
 {% endblock %}
