@@ -1,0 +1,83 @@
+QueryString:
+  expressions+=Expression[' ']
+;
+
+Expression:
+  ExcludingExpression | SortExpression | IsExpression | NoEntityExpression | ReviewExpression | MultyValueExpression | SingleValueExpression
+;
+
+SortExpression:
+  condition=Sort':'value=SortValue
+;
+
+IsExpression:
+  'is:'value=IsValue
+;
+
+MultyValueExpression:
+  condition=Label':'value=MultipleValue
+;
+
+SingleValueExpression:
+  (condition=Entity':')?value=SingleValue
+;
+
+ExcludingExpression:
+  '-'condition=Label':'value=SingleValue
+;
+
+NoEntityExpression:
+  'no:'value=Entity
+;
+
+ReviewExpression:
+  condition=Review':'value=ReviewValue
+;
+
+IsValue: 
+  'issue' | 'pr' |'closed' | 'open'
+;
+
+Sort: value = 'sort';
+
+SortValue:
+  property=SortProperty'-'direction=SortDirection
+;
+
+SortProperty:
+  'created' | 'comments' | 'updated'
+;
+
+SortDirection:
+  'asc' | 'desc'
+;
+
+Entity: 
+  Author | Label | Project | Milestone | Assignee
+;
+
+Author: value = 'author';
+
+Label: value = 'label';
+
+Project: value = 'project';
+
+Milestone: value = 'milestone';
+
+Assignee: value = 'assignee';
+
+Review: value = 'review';
+
+ReviewValue: value = 'none' | 'required' | 'approved' | 'changes-requested';
+
+MultipleValue:
+  values += SeparatedValue[',']
+;
+
+SeparatedValue:
+  '"'value=/[\w ,]*/'"' | value=/[^ ,]*/
+;
+
+SingleValue:
+  (value=/[^ ]*"[\w ]*"[^ ]*/) | ('"'value=/[\w ]*/'"') |  value=/[^ ]*/
+;

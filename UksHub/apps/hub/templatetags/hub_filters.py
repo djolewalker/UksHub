@@ -1,6 +1,10 @@
 from django import template
+from django.contrib.contenttypes.models import ContentType
 import base64
 import hashlib
+
+from UksHub.apps.core.enums import BASE_STATE
+from UksHub.apps.hub.models import Issue, PullRequest
 
 register = template.Library()
 
@@ -48,3 +52,13 @@ def split_str(text, chr):
 @register.filter(name='count')
 def count_str(text, chr):
     return text.count(chr)
+
+
+@register.filter(name='issuecount')
+def count_issue(repo):
+    return repo.artefact_set.filter(polymorphic_ctype=ContentType.objects.get_for_model(Issue), state=BASE_STATE.OPEN.value).count()
+
+
+@register.filter(name='prcount')
+def count_pr(repo):
+    return repo.artefact_set.filter(polymorphic_ctype=ContentType.objects.get_for_model(PullRequest), state=BASE_STATE.OPEN.value).count()
