@@ -38,17 +38,17 @@ class Artefact(PolymorphicModel):
     name = models.CharField(max_length=250)
     message = models.OneToOneField('events.comment', blank=True, null=True,
                                    on_delete=models.CASCADE, related_name='%(class)s_messages')
-    state = models.BigIntegerField(default=BASE_STATE.OPEN)
+    state = models.BigIntegerField(default=BASE_STATE.OPEN.value)
     repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='%(class)s_creators')
     assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     milestone = models.ForeignKey(
         Milestone, on_delete=models.CASCADE, blank=True, null=True)
-    
 
     def sorted_event_set(self):
         return self.event_set.order_by('created_at')
+
 
 class Issue(Artefact):
     pass
