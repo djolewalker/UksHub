@@ -7,6 +7,7 @@ from UksHub.apps.events.services import event_user_to_artefact
 from UksHub.apps.gitcore.services import get_repository
 from UksHub.apps.hub.forms import IssueForm
 from UksHub.apps.hub.services import find_branch_from_path, find_repo, generate_hierarchy, get_last_commits, is_user_ssh_enabled
+from UksHub.apps.search.textx import map_query_to_filter
 
 
 def tree(request, username, reponame, path=None):
@@ -89,6 +90,11 @@ def blob(request, username, reponame, path=None):
 def issues(request, username, reponame):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
+        query = 'uslov:vrednost is:open author:asdasd is:asdasd1231 review:asdsa review:none no:"asdasdasda asdas1231d" is:asdasd iss is: is:issue is:closed sort:asdasd sort:comments-desc asdasd"123" "dasasdasdad ads" fsdgdfhh:"ASdasd" sdgdfhh:ASdasd label:asd,asdas asdasd:asdas,asd author:asdas,asd label:"1,2",asdas -asd -label:asd'
+        response = map_query_to_filter(query)
+        match = repository.artefact_set.annotate(**response[3]).filter(**response[0]).order_by(*response[1]).all()
+        print(response)
+        print(match)
         return render(request, 'hub/repository/issues.html', {'repository': repository})
     raise Http404
 
