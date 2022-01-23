@@ -74,11 +74,12 @@ def count_pr(repo):
     return repo.artefact_set.filter(polymorphic_ctype=ContentType.objects.get_for_model(PullRequest), state=BASE_STATE.OPEN.value).count()
 
 
-@register.filter(name='opencount')
-def count_open(artefacts):
-    return artefacts.filter(state=BASE_STATE.OPEN.value).count()
+@register.filter(name='issuecountclosed')
+def count_pr_closed(repo):
+    return repo.artefact_set.filter(polymorphic_ctype=ContentType.objects.get_for_model(Issue), state=BASE_STATE.CLOSED.value).count()
 
 
-@register.filter(name='closedcount')
-def count_closed(artefacts):
-    return artefacts.filter(state=BASE_STATE.CLOSED.value).count()
+@register.filter(name='prcountclosed')
+def count_issue_closed(repo):
+    return repo.artefact_set.filter(polymorphic_ctype=ContentType.objects.get_for_model(Issue), state=BASE_STATE.CLOSED.value).count()
+
