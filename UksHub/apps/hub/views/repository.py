@@ -127,7 +127,6 @@ def issue(request, username, reponame, id):
         issue = repository.artefact_set.get(pk=id)
         if not issue:
             raise Http404
-        print(issue.event_set.all())
         return render(request, 'hub/repository/issue.html', {'repository': repository, 'issue': issue})
     raise Http404
 
