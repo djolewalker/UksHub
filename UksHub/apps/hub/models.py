@@ -36,7 +36,7 @@ class Artefact(PolymorphicModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=250)
-    message = models.OneToOneField('events.comment', blank=True, null=True,
+    message = models.OneToOneField('events.Comment', blank=True, null=True,
                                    on_delete=models.CASCADE, related_name='%(class)s_messages')
     state = models.BigIntegerField(default=BASE_STATE.OPEN.value)
     repository = models.ForeignKey(Repository, on_delete=models.CASCADE)

@@ -8,6 +8,7 @@ from UksHub.apps.hub.models import Issue, PullRequest
 
 register = template.Library()
 
+
 @register.filter(name='initials')
 def initials(fullname):
     xs = (fullname)
@@ -18,6 +19,7 @@ def initials(fullname):
         if len(initials) == 2:
             return initials
     return initials
+
 
 @register.filter(name='hash')
 def hash(text):
@@ -43,7 +45,7 @@ def decode(text, format):
 def encode_base64(text):
     return base64.b64encode(text)
 
-    
+
 @register.filter(name='split')
 def split_str(text, chr):
     return text.split(chr)
@@ -74,12 +76,6 @@ def count_pr(repo):
     return repo.artefact_set.filter(polymorphic_ctype=ContentType.objects.get_for_model(PullRequest), state=BASE_STATE.OPEN.value).count()
 
 
-@register.filter(name='issuecountclosed')
-def count_pr_closed(repo):
-    return repo.artefact_set.filter(polymorphic_ctype=ContentType.objects.get_for_model(Issue), state=BASE_STATE.CLOSED.value).count()
-
-
-@register.filter(name='prcountclosed')
-def count_issue_closed(repo):
-    return repo.artefact_set.filter(polymorphic_ctype=ContentType.objects.get_for_model(Issue), state=BASE_STATE.CLOSED.value).count()
-
+@register.filter(name='queryinclude')
+def query_include(query, word):
+    return query == word or query.startswith(f'{word} ') or query.endswith(f' {word}') or f' {word} ' in query

@@ -7,11 +7,11 @@ Expression:
 ;
 
 SortExpression:
-  condition=Sort':'value=SortValue
+  'sort:'value=Value
 ;
 
 IsExpression:
-  'is:'value=IsValue
+  'is:'value=Value
 ;
 
 MultyValueExpression:
@@ -31,25 +31,7 @@ NoEntityExpression:
 ;
 
 ReviewExpression:
-  condition=Review':'value=ReviewValue
-;
-
-IsValue: 
-  'issue' | 'pr' |'closed' | 'open'
-;
-
-Sort: value = 'sort';
-
-SortValue:
-  property=SortProperty'-'direction=SortDirection
-;
-
-SortProperty:
-  'created' | 'comments' | 'updated'
-;
-
-SortDirection:
-  'asc' | 'desc'
+  condition=Review':'value=SingleValue
 ;
 
 Entity: 
@@ -68,8 +50,6 @@ Assignee: value = 'assignee';
 
 Review: value = 'review';
 
-ReviewValue: value = 'none' | 'required' | 'approved' | 'changes-requested';
-
 MultipleValue:
   values += SeparatedValue[',']
 ;
@@ -79,5 +59,9 @@ SeparatedValue:
 ;
 
 SingleValue:
-  (value=/[^ ]*"[\w ]*"[^ ]*/) | ('"'value=/[\w ]*/'"') |  value=/[^ ]*/
+  (value=/[^ ]*"[\w ]*"[^ ]*/) | ('"'value=/[\w ]*/'"') | value=Value
+;
+
+Value:
+  /[^ ]*/
 ;

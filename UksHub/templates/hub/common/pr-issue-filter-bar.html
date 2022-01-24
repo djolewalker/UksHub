@@ -1,0 +1,126 @@
+{% load hub_filters %}
+<div class="col-12 p-0 d-flex justify-content-end align-items-center">
+    <div class="col-2 pr-0 d-flex justify-content-end align-items-center" style="max-width:unset">
+        <div class="dropdown show">
+            <a class="text-truncate btn-sm dropdown-toggle pl-1" href="#" role="button" id="dropdownMenuLink"
+                data-toggle="dropdown">
+                Author
+            </a>
+            <div class="dropdown-menu">
+                {% for contributor in repository.contributors.all %}
+                {% with 'author:'|add:contributor.username as username %}
+                <a href="
+                {% if ispr %}
+                {% url 'pull-requests' repository.creator.username repository.name %}?q={{queries.author|urlencode}}
+                {% if not query|stringformat:'s'|queryinclude:username %}{{' '|add:username|urlencode}}{% endif %}
+                {% else %}
+                {% url 'issues' repository.creator.username repository.name %}?q={{queries.author|urlencode}}
+                {% if not query|stringformat:'s'|queryinclude:username %}{{' '|add:username|urlencode}}{% endif %}
+                {% endif %}" class="dropdown-item d-flex align-items-center">
+
+                    <i style="margin-left:-5px;margin-right:5px"
+                        class="bi bi-check-lg {% if not query|stringformat:'s'|queryinclude:username %}hidden{% endif %}">
+                    </i>
+                    {% with contributor as user  %}
+                    <div class="mr-1" style="height:20px;width:20px">
+                        <span>{% include 'hub/common/profile-picture.html' %}</span></div>
+                    {% endwith %}
+                    {{ contributor.username }}
+
+                </a>
+                {% endwith %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-2 pr-0 d-flex justify-content-end align-items-center" style="max-width:unset">
+        <div class="dropdown show">
+            <a class="text-truncate btn-sm dropdown-toggle pl-1" href="#" role="button" id="dropdownMenuLink"
+                data-toggle="dropdown">
+                Label
+            </a>
+            <div class="dropdown-menu">
+                TODO
+            </div>
+        </div>
+    </div>
+    <div class="col-2 pr-0 d-flex justify-content-end align-items-center" style="max-width:unset">
+        <div class="dropdown show">
+            <a class="text-truncate btn-sm dropdown-toggle pl-1" href="#" role="button" id="dropdownMenuLink"
+                data-toggle="dropdown">
+                Projects
+            </a>
+            <div class="dropdown-menu">
+                TODO
+            </div>
+        </div>
+    </div>
+    <div class="col-2 pr-0 d-flex justify-content-end align-items-center" style="max-width:unset">
+        <div class="dropdown show">
+            <a class="text-truncate btn-sm dropdown-toggle pl-1" href="#" role="button" id="dropdownMenuLink"
+                data-toggle="dropdown">
+                Milestones
+            </a>
+            <div class="dropdown-menu">
+                TODO
+            </div>
+        </div>
+    </div>
+    {% if ispr %}
+    <div class="col-2 pr-0 d-flex justify-content-end align-items-center" style="max-width:unset">
+        <div class="dropdown show">
+            <a class="text-truncate btn-sm dropdown-toggle pl-1" href="#" role="button" id="dropdownMenuLink"
+                data-toggle="dropdown">
+                Reviews
+            </a>
+            <div class="dropdown-menu">
+                TODO
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="col-2 pr-0 d-flex justify-content-end align-items-center" style="max-width:unset">
+        <div class="dropdown show">
+            <a class="text-truncate btn-sm dropdown-toggle pl-1" href="#" role="button" id="dropdownMenuLink"
+                data-toggle="dropdown">
+                Assignee
+            </a>
+            <div class="dropdown-menu">
+                {% for contributor in repository.contributors.all %}
+                {% with 'assignee:'|add:contributor.username as username %}
+                <a href="
+                {% if ispr %}
+                {% url 'pull-requests' repository.creator.username repository.name %}?q={{queries.assignee|urlencode}}
+                {% if not query|stringformat:'s'|queryinclude:username %}{{' '|add:username|urlencode}}{% endif %}
+                {% else %}
+                {% url 'issues' repository.creator.username repository.name %}?q={{queries.assignee|urlencode}}
+                {% if not query|stringformat:'s'|queryinclude:username %}{{' '|add:username|urlencode}}{% endif %}
+                {% endif %}" class="dropdown-item d-flex align-items-center">
+
+                    <i style="margin-left:-5px;margin-right:5px"
+                        class="bi bi-check-lg {% if not query|stringformat:'s'|queryinclude:username %}hidden{% endif %}">
+                    </i>
+                    {% with contributor as user  %}
+                    <div class="mr-1" style="height:20px;width:20px">
+                        <span>{% include 'hub/common/profile-picture.html' %}</span></div>
+                    {% endwith %}
+                    {{ contributor.username }}
+
+                </a>
+                {% endwith %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-2 pr-0 d-flex justify-content-end align-items-center" style="max-width:unset">
+        <div class="dropdown show">
+            <a class="text-truncate btn-sm dropdown-toggle pl-1" href="#" role="button" id="dropdownMenuLink"
+                data-toggle="dropdown">
+                Sort
+            </a>
+            <div class="dropdown-menu">
+                TODO
+            </div>
+        </div>
+    </div>
+</div>

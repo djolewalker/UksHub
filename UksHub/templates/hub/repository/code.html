@@ -28,19 +28,19 @@
                         {% if request.resolver_match.url_name == 'repository-blob' %}
                         <a class="dropdown-item"
                             href="{% url 'repository-blob' repository.creator.username repository.name brch.name|add:"/"|add:blob.path  %}">
-                            <i class="bi bi-check-lg{% if brch.name != branch %} unchecked{% endif %}"></i>
+                            <i class="bi bi-check-lg{% if brch.name != branch %} hidden{% endif %}"></i>
                             {{ brch.name }}
                         </a>
                         {% elif request.resolver_match.url_name == 'repository-tree' %}
                         <a class="dropdown-item"
                             href="{% url 'repository-tree' repository.creator.username repository.name brch.name|add:"/"|add:tree.path  %}">
-                            <i class="bi bi-check-lg{% if brch.name != branch %} unchecked{% endif %}"></i>
+                            <i class="bi bi-check-lg{% if brch.name != branch %} hidden{% endif %}"></i>
                             {{ brch.name }}
                         </a>
                         {% else %}
                         <a class="dropdown-item"
                             href="{% url 'repository-tree' repository.creator.username repository.name brch.name %}">
-                            <i class="bi bi-check-lg{% if brch.name != branch %} unchecked{% endif %}"></i>
+                            <i class="bi bi-check-lg{% if brch.name != branch %} hidden{% endif %}"></i>
                             {{ brch.name }}
                         </a>
                         {% endif %}

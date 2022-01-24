@@ -91,23 +91,24 @@ def issues(request, username, reponame):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
         query = request.GET.get('q', 'is:issue is:open')
-        f, s, e, a, q = map_query_to_filter(query)
+        f, s, e, a, m, q = map_query_to_filter(query)
 
         artefacts = repository.artefact_set.annotate(
             **a
         ).filter(
-            **f
+            *m,
+            **f,
         ).exclude(
             **e
         ).order_by(
             *s
         ).all()
 
-        print(q)
-
         queries = {
             'open': q.set_state('is:open'),
-            'closed': q.set_state('is:closed')
+            'closed': q.set_state('is:closed'),
+            'author': q.clear_author(),
+            'assignee': q.clear_assignee()
         }
 
         return render(request, 'hub/repository/issues.html', {
