@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from polymorphic.models import PolymorphicModel
+from UksHub.apps.core.enums import BASE_STATE
 from UksHub.apps.core.models import TimeStampModel
 from UksHub.apps.core.utils import random_hex_color
 from UksHub.apps.gitcore.models import Repository
@@ -35,19 +36,19 @@ class Artefact(PolymorphicModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=250)
-    message = models.OneToOneField('events.comment', blank=True, null=True,
+    message = models.OneToOneField('events.Comment', blank=True, null=True,
                                    on_delete=models.CASCADE, related_name='%(class)s_messages')
-    state = models.BigIntegerField(default=1)
+    state = models.BigIntegerField(default=BASE_STATE.OPEN.value)
     repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='%(class)s_creators')
     assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     milestone = models.ForeignKey(
         Milestone, on_delete=models.CASCADE, blank=True, null=True)
-    
 
     def sorted_event_set(self):
         return self.event_set.order_by('created_at')
+
 
 class Issue(Artefact):
     pass

@@ -9,3 +9,5 @@ README.md
 /git-deamon
 /git-admin-dev
 /user-files
+/UksHub/apps/*/migrations/*
+!/UksHub/apps/*/migrations/__init__.py

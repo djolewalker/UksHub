@@ -7,6 +7,47 @@ from UksHub.apps.events.services import event_user_to_artefact
 from UksHub.apps.gitcore.services import get_repository
 from UksHub.apps.hub.forms import IssueForm
 from UksHub.apps.hub.services import find_branch_from_path, find_repo, generate_hierarchy, get_last_commits, is_user_ssh_enabled
+from UksHub.apps.advancedsearch.models import Query
+from UksHub.apps.advancedsearch.mapper import map_query_to_filter
+
+_sort_options = [
+    ('sort:created-desc', 'Newest'),
+    ('sort:created-asc', 'Oldest'),
+    ('sort:comments-desc', 'Most commented'),
+    ('sort:comments-asc', 'Least commented'),
+    ('sort:updated-desc', 'Recently updated'),
+    ('sort:updated-asc', 'Least recently updated')
+]
+
+
+def _execute_query(repository, query):
+    if query:
+        f, s, e, a, m, q = map_query_to_filter(query)
+
+        artefacts = repository.artefact_set.annotate(
+            **a
+        ).filter(
+            *m,
+            **f,
+        ).exclude(
+            **e
+        ).order_by(
+            *s
+        ).all()
+
+    else:
+        artefacts = repository.artefact_set.all()
+        q = Query()
+
+    queries = {
+        'open': q.set_state('is:open'),
+        'closed': q.set_state('is:closed'),
+        'author': q.clear_author(),
+        'assignee': q.clear_assignee(),
+        'sort': q.clear_sort()
+    }
+
+    return artefacts, q, queries
 
 
 def tree(request, username, reponame, path=None):
@@ -89,7 +130,23 @@ def blob(request, username, reponame, path=None):
 def issues(request, username, reponame):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
-        return render(request, 'hub/repository/issues.html', {'repository': repository})
+        default_query = 'is:issue is:open'
+        query = request.GET.get('q', default_query)
+        artefacts, return_query, binding_queries = _execute_query(
+            repository,
+            query
+        )
+
+        return render(request, 'hub/repository/artefacts.html', {
+            'repository': repository,
+            'artefacts': artefacts,
+            'query': str(return_query),
+            'queries': binding_queries,
+            'ispr': False,
+            'is_default_query': query == default_query,
+            'sort_options': _sort_options
+        })
+
     raise Http404
 
 
@@ -97,8 +154,8 @@ def issue(request, username, reponame, id):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
         issue = repository.artefact_set.get(pk=id)
-        if not issue: raise Http404
-        print(issue.event_set.all())
+        if not issue:
+            raise Http404
         return render(request, 'hub/repository/issue.html', {'repository': repository, 'issue': issue})
     raise Http404
 
@@ -131,10 +188,12 @@ def create_issue(request, username, reponame):
                 issue.save()
 
             # Create events
-            if issue.assignees.all():   
-                event_user_to_artefact(request.user, issue, issue.assignees.all())
+            if issue.assignees.all():
+                event_user_to_artefact(
+                    request.user, issue, issue.assignees.all()
+                )
 
-            return redirect(reverse('issue', kwargs={'username': username, 'reponame': reponame, 'id':issue.id}))
+            return redirect(reverse('issue', kwargs={'username': username, 'reponame': reponame, 'id': issue.id}))
     else:
         raise Http404
     return render(request, 'hub/repository/new-issue.html', {'repository': repository, 'issue_form': issue_form, 'comment_form': comment_form})
@@ -143,7 +202,39 @@ def create_issue(request, username, reponame):
 def pull_requests(request, username, reponame):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
-        return render(request, 'hub/repository/pull-requests.html', {'repository': repository})
+        default_query = 'is:pr is:open'
+        query = request.GET.get('q', default_query)
+        artefacts, return_query, binding_queries = _execute_query(
+            repository,
+            query
+        )
+
+        return render(request, 'hub/repository/artefacts.html', {
+            'repository': repository,
+            'artefacts': artefacts,
+            'query': str(return_query),
+            'queries': binding_queries,
+            'ispr': True,
+            'is_default_query': query == default_query,
+            'sort_options': _sort_options
+        })
+
+    raise Http404
+
+
+def pull_request(request, username, reponame, id):
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+        return render(request, 'hub/repository/pull-request.html', {'repository': repository})
+
+    raise Http404
+
+
+def create_pull_request(request, username, reponame):
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+        return render(request, 'hub/repository/new-pull-request.html', {'repository': repository})
+
     raise Http404
 
 

@@ -1,5 +1,5 @@
 {% extends 'hub/hub-base.html' %}
-{% load compress static %}
+{% load compress static hub_filters %}
 
 {% block title %}
 {{repository.creator.username}}/{{repository.name}}
@@ -78,12 +78,26 @@
                     <li class="{% if path_name in 'issues,create-issue' %}active-url {% endif %} px-3 py-2">
                         <i class="bi bi-ticket"></i>
                         Issues
+                        {% with repository|issuecount as issue_count %}
+                        {% if issue_count %}
+                            <span class="mx-1 badge badge-pill badge-secondary">
+                                {{issue_count}}
+                            </span>
+                        {% endif %}
+                        {% endwith %}
                     </li>
                 </a>
                 <a href="{% url 'pull-requests' repository.creator repository.name %}">
-                    <li class="{% if path_name == 'pull-requests' %}active-url {% endif %}px-3 py-2">
+                    <li class="{% if path_name in 'pull-requests,create-pull-request' %}active-url {% endif %}px-3 py-2">
                         <i class="bi bi-bezier2"></i>
                         Pull requests
+                        {% with repository|prcount as issue_count %}
+                        {% if issue_count %}
+                            <span class="mx-1 badge badge-pill badge-secondary">
+                                {{issue_count}}
+                            </span>
+                        {% endif %}
+                        {% endwith %}
                     </li>
                 </a>
                 <a href="{% url 'actions' repository.creator repository.name %}">

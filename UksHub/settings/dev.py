@@ -28,11 +28,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     # 3rd party
-    'compressor', # SCSS
-    'easy_thumbnails', # Thumbnail support
-    'django_cleanup.apps.CleanupConfig', # Remove unreferenced files
-    'crispy_forms', # Format django forms in bootstrap way
-    'polymorphic', # ORM polymorphism support
+    'compressor',  # SCSS
+    'easy_thumbnails',  # Thumbnail support
+    'django_cleanup.apps.CleanupConfig',  # Remove unreferenced files
+    'crispy_forms',  # Format django forms in bootstrap way
+    'polymorphic',  # ORM polymorphism support
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
     'UksHub.apps.gitcore.apps.GitCoreConfig',
@@ -163,7 +163,7 @@ USE_DEV_GIT = True
 
 GIT_ADMIN_SUPERUSER = 'random.user.admin'
 GIT_ADMIN = BASE_DIR / 'git-admin-dev'
-GIT_ADMIN_CONF_REPO = GIT_ADMIN / 'conf' 
+GIT_ADMIN_CONF_REPO = GIT_ADMIN / 'conf'
 GIT_ADMIN_CONF = GIT_ADMIN_CONF_REPO / 'gitolite.conf'
 GIT_ADMIN_KEYS = GIT_ADMIN / 'keydir'
 GIT_ADMIN_REMOTE = 'D:\\Works\\UKS\\git-admin-dev'

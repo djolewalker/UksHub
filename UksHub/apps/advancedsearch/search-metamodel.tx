@@ -1,0 +1,71 @@
+QueryString:
+  expressions+=Expression[' ']
+;
+
+Expression:
+  ExcludingExpression | SortExpression | IsExpression | NoEntityExpression | ReviewExpression | MultyValueExpression | SingleValueExpression
+;
+
+SortExpression:
+  'sort:'value=Value
+;
+
+IsExpression:
+  'is:'value=Value
+;
+
+MultyValueExpression:
+  condition=Label':'value=MultipleValue
+;
+
+SingleValueExpression:
+  (condition=Entity':')?value=SingleValue
+;
+
+ExcludingExpression:
+  '-'condition=Label':'value=SingleValue
+;
+
+NoEntityExpression:
+  'no:'value=Value
+;
+
+ReviewExpression:
+  condition=Review':'value=SingleValue
+;
+
+Entity: 
+  Author | Label | Project | Milestone | Assignee
+;
+
+Author: value = 'author';
+
+Label: value = 'label';
+
+Project: value = 'project';
+
+Milestone: value = 'milestone';
+
+Assignee: value = 'assignee';
+
+Review: value = 'review';
+
+MultipleValue:
+  values += SeparatedValue[',']
+;
+
+SeparatedValue:
+  value='"'/[\w ,]*/'"' | value=/[^ ,]*/
+;
+
+SingleValue:
+  QuotedValue | Value
+;
+
+QuotedValue:
+  value=/[^ ]*"[\w ]*"[^ ]*/ | value='"'/[\w ]*/'"'
+;
+
+Value:
+  value=/[^ ]*/
+;

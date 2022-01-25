@@ -20,7 +20,11 @@ docker pull djolewalker/ukshub
 
 ## Model
 Current version of class diagram
-![diagram image](https://github.com/djolewalker/UksHub/blob/documentation-1-class-diagram/docs/UksHub.png?raw=true)
+![class diagram](https://github.com/djolewalker/UksHub/blob/dev/docs/UksHub.png?raw=true)
+
+## Advanced search metamodel
+TextX metamodel for query string parsing
+![advanced search metamodel](https://github.com/djolewalker/UksHub/blob/dev/docs/search-metamodel.png?raw=true)
 
 ## Setup:
 

@@ -3,11 +3,6 @@
 {% block title %}
 Create
 {% endblock %}
-{% block header %}
-{% compress css %}
-<link type="text/x-scss" href="{% static 'styles/git-core/create-form.scss' %}" rel="stylesheet" media="screen" />
-{% endcompress %}
-{% endblock header %}
 {% block content %}
 <form method="POST" class="ignore-asterics">
     {% csrf_token %}
