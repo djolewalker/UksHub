@@ -11,7 +11,7 @@ SECRET_KEY = 'django-insecure-g+2e)qgtmq!plc53k9v=k5!-@opb^o5*s5)0tg=+=%*m#a7)2j
 DEBUG = False
 
 # Until deployment to hosting service
-ALLOWED_HOSTS = ['https://ukshub.herokuapp.com/']
+ALLOWED_HOSTS = ['.herokuapp.com/']
 
 ADMIN_ENABLED = False
 
