@@ -108,6 +108,35 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# use redis as a cache in production
+CACHES = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "LOCATION": "redis://:pb3e2b1e2894b4f73906cc31ac1b932d7295ca5e6fe7adcae94e14bd8d60cf74c@ec2-52-214-65-216.eu-west-1.compute.amazonaws.com:13020",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "uks"
+    }
+}
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [os.environ.get('REDIS_URL', ("localhost", 6379))],
+#         },
+#     },
+# }
+
+# Cache time to live is 15 minutes.
+CACHE_TTL = 60 * 5
+# store session in cache
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+SESSION_CACHE_ALIAS = "default"
+# Note that caching is done only for sessions.
+# If the views should be cached too, then check how to do this
+# by introspecting the views.lista_kategorija.
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
