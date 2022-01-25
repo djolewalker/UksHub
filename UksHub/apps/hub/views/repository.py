@@ -7,8 +7,8 @@ from UksHub.apps.events.services import event_user_to_artefact
 from UksHub.apps.gitcore.services import get_repository
 from UksHub.apps.hub.forms import IssueForm
 from UksHub.apps.hub.services import find_branch_from_path, find_repo, generate_hierarchy, get_last_commits, is_user_ssh_enabled
-from UksHub.apps.search.models import Query
-from UksHub.apps.search.textx import map_query_to_filter
+from UksHub.apps.advancedsearch.models import Query
+from UksHub.apps.advancedsearch.mapper import map_query_to_filter
 
 _sort_options = [
     ('sort:created-desc', 'Newest'),

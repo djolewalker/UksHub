@@ -1,41 +1,14 @@
 import re
-from git import os
-from textx import metamodel_from_file, textx_isinstance
+from textx import textx_isinstance
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, Q
-from UksHub.apps.core.enums import BASE_STATE
 from UksHub.apps.events.models import Comment
+from UksHub.apps.advancedsearch.models import Query
+from UksHub.apps.advancedsearch.constants import meta_model, is_values, sort_values, m_2_m
 
-from UksHub.apps.hub.models import Issue, PullRequest
-from UksHub.apps.search.models import Query
 
-module_dir = os.path.dirname(__file__)
-_meta_model = metamodel_from_file(os.path.join(
-    module_dir, 'search-metamodel.tx'), skipws=False, ws='\s')
-
-is_values = {
-    'open': BASE_STATE.OPEN.value,
-    'closed': BASE_STATE.CLOSED.value,
-    'pr': ContentType.objects.get_for_model(PullRequest),
-    'issue': ContentType.objects.get_for_model(Issue),
-}
-
-sort_values = {
-    'created-asc': 'created_at',
-    'updated-asc': 'updated_at',
-    'comments-asc': 'comments_count',
-    'created-desc': '-created_at',
-    'updated-desc': '-updated_at',
-    'comments-desc': '-comments_count',
-}
-
-m_2_m = {
-    'author': 'creator__username',
-    'assignee': 'assignees__username',
-    'milestone': '',
-    'project': '',
-    'label': ''
-}
+def _get_artefact_content_type(type):
+    return ContentType.objects.get(model=_get_is(type))
 
 
 def _get_is(word):
@@ -55,7 +28,7 @@ def _get_no_value(word):
 
 
 def map_query_to_filter(query):
-    model = _meta_model.model_from_str(re.sub(' +', ' ', query.strip()))
+    model = meta_model.model_from_str(re.sub(' +', ' ', query.strip()))
     filter = dict()
     match = list()
     sort = list()
@@ -63,13 +36,13 @@ def map_query_to_filter(query):
     annotate = dict()
     query = Query()
     for expression in model.expressions:
-        if textx_isinstance(expression, _meta_model['IsExpression']):
+        if textx_isinstance(expression, meta_model['IsExpression']):
             value = expression.value.value
             if value in ['pr', 'issue']:
                 query.entity.append(f'is:{value}')
                 if 'polymorphic_ctype' in filter:
                     continue  # Implement multiple OR
-                filter['polymorphic_ctype'] = _get_is(value)
+                filter['polymorphic_ctype'] = _get_artefact_content_type(value)
             elif value in ['open', 'closed']:
                 query.state.append(f'is:{value}')
                 if 'state' in filter:
@@ -78,7 +51,7 @@ def map_query_to_filter(query):
             else:
                 query.match.append(f'is:{value}')
 
-        elif textx_isinstance(expression, _meta_model['SortExpression']):
+        elif textx_isinstance(expression, meta_model['SortExpression']):
             query.sort.append(f'sort:{expression.value.value}')
             value = _get_sort(expression.value.value)
             if value:
@@ -88,18 +61,18 @@ def map_query_to_filter(query):
                 sort.append(value)
 
         # Label specific
-        elif textx_isinstance(expression, _meta_model['ExcludingExpression']):
+        elif textx_isinstance(expression, meta_model['ExcludingExpression']):
             query.exclude.append(
                 f'-{expression.condition.value}:{expression.value.value}')
 
         # Label specific
-        elif textx_isinstance(expression, _meta_model['MultyValueExpression']):
+        elif textx_isinstance(expression, meta_model['MultyValueExpression']):
             query.multi.append(
                 f'{expression.condition.value}:{",".join(v.value for v in expression.value.values)}')
 
-        elif textx_isinstance(expression, _meta_model['SingleValueExpression']):
+        elif textx_isinstance(expression, meta_model['SingleValueExpression']):
             # Check for quotes in expression, use value without them but have them in dispaly query again
-            if textx_isinstance(expression.value, _meta_model['QuotedValue']):
+            if textx_isinstance(expression.value, meta_model['QuotedValue']):
                 value = expression.value.value.replace('"', '')
             else:
                 value = expression.value.value
@@ -119,7 +92,7 @@ def map_query_to_filter(query):
                     f"{expression.condition.value}:" if expression.condition else "", expression.value.value))
 
         # Same as on GH, match only last expression of same type, ignores all previous occurrences
-        elif textx_isinstance(expression, _meta_model['NoEntityExpression']):
+        elif textx_isinstance(expression, meta_model['NoEntityExpression']):
             value = expression.value.value
             m_2_m_value = _get_no_value(value)
             if m_2_m_value:
@@ -129,7 +102,7 @@ def map_query_to_filter(query):
                 query.match.append(f'no:{value}')
 
         # RP only
-        elif textx_isinstance(expression, _meta_model['ReviewExpression']):
+        elif textx_isinstance(expression, meta_model['ReviewExpression']):
             query.review.append(
                 f'{expression.condition.value}:{expression.value.value}')
 
