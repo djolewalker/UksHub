@@ -1,0 +1,86 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+2551444009664[ label="{QueryString|}"]
+
+2551444037040[ label="{*Expression|}"]
+
+2551444037984[ label="{SortExpression|}"]
+
+2551444039872[ label="{IsExpression|}"]
+
+2551444041760[ label="{MultyValueExpression|}"]
+
+2551444042704[ label="{SingleValueExpression|}"]
+
+2551444046480[ label="{ExcludingExpression|}"]
+
+2551444048368[ label="{NoEntityExpression|}"]
+
+2551444060640[ label="{ReviewExpression|}"]
+
+2551444052144[ label="{*Entity|}"]
+
+2551444035152[ label="{Author|value: STRING\l}"]
+
+2551444045536[ label="{Label|value: STRING\l}"]
+
+2551444051200[ label="{Project|value: STRING\l}"]
+
+2551444056864[ label="{Milestone|value: STRING\l}"]
+
+2551444054976[ label="{Assignee|value: STRING\l}"]
+
+2551444993120[ label="{Review|value: STRING\l}"]
+
+2551445003504[ label="{MultipleValue|}"]
+
+2551444992176[ label="{SeparatedValue|value: STRING\l}"]
+
+2551444997840[ label="{*SingleValue|}"]
+
+2551445013888[ label="{QuotedValue|value: STRING\l}"]
+
+2551445012944[ label="{Value|value: STRING\l}"]
+
+
+
+2551444009664 -> 2551444037040[arrowtail=diamond, dir=both, headlabel="expressions 1..*"]
+2551444037040 -> 2551444046480 [dir=back]
+2551444037040 -> 2551444037984 [dir=back]
+2551444037040 -> 2551444039872 [dir=back]
+2551444037040 -> 2551444048368 [dir=back]
+2551444037040 -> 2551444060640 [dir=back]
+2551444037040 -> 2551444041760 [dir=back]
+2551444037040 -> 2551444042704 [dir=back]
+2551444037984 -> 2551445012944[arrowtail=diamond, dir=both, headlabel="value "]
+2551444039872 -> 2551445012944[arrowtail=diamond, dir=both, headlabel="value "]
+2551444041760 -> 2551444045536[arrowtail=diamond, dir=both, headlabel="condition "]
+2551444041760 -> 2551445003504[arrowtail=diamond, dir=both, headlabel="value "]
+2551444042704 -> 2551444052144[arrowtail=diamond, dir=both, headlabel="condition "]
+2551444042704 -> 2551444997840[arrowtail=diamond, dir=both, headlabel="value "]
+2551444046480 -> 2551444045536[arrowtail=diamond, dir=both, headlabel="condition "]
+2551444046480 -> 2551444997840[arrowtail=diamond, dir=both, headlabel="value "]
+2551444048368 -> 2551445012944[arrowtail=diamond, dir=both, headlabel="value "]
+2551444060640 -> 2551444993120[arrowtail=diamond, dir=both, headlabel="condition "]
+2551444060640 -> 2551444997840[arrowtail=diamond, dir=both, headlabel="value "]
+2551444052144 -> 2551444035152 [dir=back]
+2551444052144 -> 2551444045536 [dir=back]
+2551444052144 -> 2551444051200 [dir=back]
+2551444052144 -> 2551444056864 [dir=back]
+2551444052144 -> 2551444054976 [dir=back]
+2551445003504 -> 2551444992176[arrowtail=diamond, dir=both, headlabel="values 1..*"]
+2551444997840 -> 2551445013888 [dir=back]
+2551444997840 -> 2551445012944 [dir=back]
+
+}
