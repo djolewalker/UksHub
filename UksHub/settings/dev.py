@@ -108,15 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Cache time to live is 15 minutes.
-CACHE_TTL = 60 * 5
-# store session in cache
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
-SESSION_CACHE_ALIAS = "default"
-# Note that caching is done only for sessions.
-# If the views should be cached too, then check how to do this
-# by introspecting the views.lista_kategorija.
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
