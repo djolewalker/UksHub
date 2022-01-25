@@ -11,7 +11,7 @@ SECRET_KEY = 'django-insecure-g+2e)qgtmq!plc53k9v=k5!-@opb^o5*s5)0tg=+=%*m#a7)2j
 DEBUG = False
 
 # Until deployment to hosting service
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://ukshub.herokuapp.com/']
 
 ADMIN_ENABLED = False
 
@@ -124,7 +124,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = 'static'
 
 MEDIA_ROOT = BASE_DIR / 'user-files'
 MEDIA_URL = 'user-files/'
@@ -149,7 +149,7 @@ COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
 LIBSASS_OUTPUT_STYLE = 'compressed'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-
+COMPRESS_ROOT = STATIC_ROOT
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
