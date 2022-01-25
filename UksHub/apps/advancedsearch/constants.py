@@ -9,8 +9,8 @@ meta_model = metamodel_from_file(os.path.join(
 is_values = {
     'open': BASE_STATE.OPEN.value,
     'closed': BASE_STATE.CLOSED.value,
-    'pr': 'PullRequest',
-    'issue': 'Issue',
+    'pr': 'pullrequest',
+    'issue': 'issue',
 }
 
 
