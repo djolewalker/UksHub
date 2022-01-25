@@ -27,7 +27,7 @@ ExcludingExpression:
 ;
 
 NoEntityExpression:
-  'no:'value=Entity
+  'no:'value=Value
 ;
 
 ReviewExpression:
@@ -55,13 +55,17 @@ MultipleValue:
 ;
 
 SeparatedValue:
-  '"'value=/[\w ,]*/'"' | value=/[^ ,]*/
+  value='"'/[\w ,]*/'"' | value=/[^ ,]*/
 ;
 
 SingleValue:
-  (value=/[^ ]*"[\w ]*"[^ ]*/) | ('"'value=/[\w ]*/'"') | value=Value
+  QuotedValue | Value
+;
+
+QuotedValue:
+  value=/[^ ]*"[\w ]*"[^ ]*/ | value='"'/[\w ]*/'"'
 ;
 
 Value:
-  /[^ ]*/
+  value=/[^ ]*/
 ;
