@@ -1,11 +1,9 @@
 # uncomment this to use sqlite as test db
 #export UKS_TEST_DB=ON
 # collect static files and put inside ./static/
-python3 manage.py collectstatic --noinput
 # setup db
 python3 manage.py makemigrations
 python3 manage.py migrate
-python3 manage.py compress --force
 # python3 manage.py db_script
 # run Django develop server
 # python3 manage.py runserver 0.0.0.0:8000

@@ -1,2 +1,2 @@
-release: chmod u+x scripts/start-django.sh && .scripts/start-django.sh
+release: python3 manage.py compress --force && python3 manage.py collectstatic --noinput
 web: gunicorn --workers=3 UksHub.wsgi
