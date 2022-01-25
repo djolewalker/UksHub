@@ -25,11 +25,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     # 3rd party
-    'compressor', # SCSS
-    'easy_thumbnails', # Thumbnail support
-    'django_cleanup.apps.CleanupConfig', # Remove unreferenced files
-    'crispy_forms', # Format django forms in bootstrap way
-    'polymorphic', # ORM polymorphism support
+    'compressor',  # SCSS
+    'easy_thumbnails',  # Thumbnail support
+    'django_cleanup.apps.CleanupConfig',  # Remove unreferenced files
+    'crispy_forms',  # Format django forms in bootstrap way
+    'polymorphic',  # ORM polymorphism support
     # Created apps
     'UksHub.apps.hub.apps.HubConfig',
     'UksHub.apps.gitcore.apps.GitCoreConfig',
@@ -173,7 +173,7 @@ else:
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": "redis://redis:6379",
+            "LOCATION": os.getenv('REDIS_URL'),
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient"
             },
@@ -190,6 +190,15 @@ else:
     # If the views should be cached too, then check how to do this
     # by introspecting the views.lista_kategorija.
 
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [os.getenv('REDIS_URL')],
+            },
+        },
+    }
+
 
 LOGIN_URL = "/login"
 
@@ -198,7 +207,7 @@ USE_DEV_GIT = False
 
 GIT_ADMIN_SUPERUSER = 'random.user.admin'
 GIT_ADMIN = BASE_DIR / 'gitolite-admin'
-GIT_ADMIN_CONF_REPO = GIT_ADMIN / 'conf' 
+GIT_ADMIN_CONF_REPO = GIT_ADMIN / 'conf'
 GIT_ADMIN_CONF = GIT_ADMIN_CONF_REPO / 'gitolite.conf'
 GIT_ADMIN_KEYS = GIT_ADMIN / 'keydir'
 GIT_ADMIN_REMOTE = "git@git-server:gitolite-admin.git"
