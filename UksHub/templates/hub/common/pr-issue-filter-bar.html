@@ -1,4 +1,5 @@
 {% load hub_filters %}
+{% with ispr|yesno:'pull-requests,issues' as resource %}
 <div class="col-12 p-0 d-flex justify-content-end align-items-center">
     <div class="col-2 pr-0 d-flex justify-content-end align-items-center" style="max-width:unset">
         <div class="dropdown show">
@@ -6,26 +7,20 @@
                 data-toggle="dropdown">
                 Author
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu dropdown-menu-right">
                 {% for contributor in repository.contributors.all %}
                 {% with 'author:'|add:contributor.username as username %}
-                <a href="
-                {% if ispr %}
-                {% url 'pull-requests' repository.creator.username repository.name %}?q={{queries.author|urlencode}}
-                {% if not query|stringformat:'s'|queryinclude:username %}{{' '|add:username|urlencode}}{% endif %}
-                {% else %}
-                {% url 'issues' repository.creator.username repository.name %}?q={{queries.author|urlencode}}
-                {% if not query|stringformat:'s'|queryinclude:username %}{{' '|add:username|urlencode}}{% endif %}
-                {% endif %}" class="dropdown-item d-flex align-items-center">
+                <a href="{% url resource repository.creator.username repository.name %}?q={{queries.author|urlencode}}{% if not query|queryinclude:username %}{{' '|add:username|urlencode}}{% endif %}"
+                    class="dropdown-item d-flex align-items-center">
 
                     <i style="margin-left:-5px;margin-right:5px"
-                        class="bi bi-check-lg {% if not query|stringformat:'s'|queryinclude:username %}hidden{% endif %}">
+                        class="bi bi-check-lg {% if not query|queryinclude:username %}hidden{% endif %}">
                     </i>
                     {% with contributor as user  %}
                     <div class="mr-1" style="height:20px;width:20px">
                         <span>{% include 'hub/common/profile-picture.html' %}</span></div>
                     {% endwith %}
-                    {{ contributor.username }}
+                    <span class="fs-small">{{ contributor.username }}</span>
 
                 </a>
                 {% endwith %}
@@ -39,7 +34,7 @@
                 data-toggle="dropdown">
                 Label
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu dropdown-menu-right">
                 TODO
             </div>
         </div>
@@ -50,7 +45,7 @@
                 data-toggle="dropdown">
                 Projects
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu dropdown-menu-right">
                 TODO
             </div>
         </div>
@@ -61,7 +56,7 @@
                 data-toggle="dropdown">
                 Milestones
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu dropdown-menu-right">
                 TODO
             </div>
         </div>
@@ -73,7 +68,7 @@
                 data-toggle="dropdown">
                 Reviews
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu dropdown-menu-right">
                 TODO
             </div>
         </div>
@@ -85,26 +80,29 @@
                 data-toggle="dropdown">
                 Assignee
             </a>
-            <div class="dropdown-menu">
-                {% for contributor in repository.contributors.all %}
-                {% with 'assignee:'|add:contributor.username as username %}
-                <a href="
-                {% if ispr %}
-                {% url 'pull-requests' repository.creator.username repository.name %}?q={{queries.assignee|urlencode}}
-                {% if not query|stringformat:'s'|queryinclude:username %}{{' '|add:username|urlencode}}{% endif %}
-                {% else %}
-                {% url 'issues' repository.creator.username repository.name %}?q={{queries.assignee|urlencode}}
-                {% if not query|stringformat:'s'|queryinclude:username %}{{' '|add:username|urlencode}}{% endif %}
-                {% endif %}" class="dropdown-item d-flex align-items-center">
+            <div class="dropdown-menu dropdown-menu-right">
+                <a href="{% url resource repository.creator.username repository.name %}?q={{queries.assignee|urlencode}}{% if not query|queryinclude:'no:assignee' %}{{' '|add:'no:assignee'|urlencode}}{% endif %}"
+                    class="dropdown-item d-flex align-items-center">
 
                     <i style="margin-left:-5px;margin-right:5px"
-                        class="bi bi-check-lg {% if not query|stringformat:'s'|queryinclude:username %}hidden{% endif %}">
+                        class="bi bi-check-lg {% if not query|queryinclude:'no:assignee' %}hidden{% endif %}">
+                    </i>
+                    <span class="fs-small">Assigned to nobody</span>
+
+                </a>
+                {% for contributor in repository.contributors.all %}
+                {% with 'assignee:'|add:contributor.username as username %}
+                <a href="{% url resource repository.creator.username repository.name %}?q={{queries.assignee|urlencode}}{% if not query|queryinclude:username %}{{' '|add:username|urlencode}}{% endif %}"
+                    class="dropdown-item d-flex align-items-center">
+
+                    <i style="margin-left:-5px;margin-right:5px"
+                        class="bi bi-check-lg {% if not query|queryinclude:username %}hidden{% endif %}">
                     </i>
                     {% with contributor as user  %}
                     <div class="mr-1" style="height:20px;width:20px">
                         <span>{% include 'hub/common/profile-picture.html' %}</span></div>
                     {% endwith %}
-                    {{ contributor.username }}
+                    <span class="fs-small">{{ contributor.username }}</span>
 
                 </a>
                 {% endwith %}
@@ -118,9 +116,18 @@
                 data-toggle="dropdown">
                 Sort
             </a>
-            <div class="dropdown-menu">
-                TODO
+            <div class="dropdown-menu dropdown-menu-right">
+                {% for sortvalue,message in sort_options %}
+                <a href="{% url resource repository.creator.username repository.name %}?q={{queries.sort|urlencode}}{% if not query|queryinclude:sortvalue %}{{' '|add:sortvalue|urlencode}}{% endif %}"
+                    class="dropdown-item d-flex align-items-center">
+                    <i style="margin-left:-5px;margin-right:5px"
+                        class="bi bi-check-lg {% if not query|queryinclude:sortvalue %}hidden{% endif %}">
+                    </i>
+                    <span class="fs-small">{{message}}</span>
+                </a>
+                {% endfor %}
             </div>
         </div>
     </div>
 </div>
+{% endwith %}

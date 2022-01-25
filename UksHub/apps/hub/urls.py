@@ -4,7 +4,7 @@ from django.views.generic import RedirectView
 from .views.home import home
 from .views.profile import profile_overview
 from .views.profile_settings import settings_keys, settings_profile
-from .views.repository import actions, blob, create_issue, insights, issue, issues, pull_requests, tree, repository_projects, repository_settings, security, wiki
+from .views.repository import actions, blob, create_issue, create_pull_request, insights, issue, issues, pull_request, pull_requests, tree, repository_projects, repository_settings, security, wiki
 
 urlpatterns = [
     # Home
@@ -23,7 +23,8 @@ urlpatterns = [
     path('<username>/<reponame>/issues/<int:id>', issue, name='issue'),
     path('<username>/<reponame>/issues/new', create_issue, name='create-issue'),
     path('<username>/<reponame>/pulls', pull_requests, name='pull-requests'),
-    path('<username>/<reponame>/pulls/<int:id>', pull_requests, name='pull-request'),
+    path('<username>/<reponame>/pulls/<int:id>', pull_request, name='pull-request'),
+    path('<username>/<reponame>/pulls/new', create_pull_request, name='create-pull-request'),
     path('<username>/<reponame>/actions', actions, name='actions'),
     path('<username>/<reponame>/projects', repository_projects, name='repository-projects'),
     path('<username>/<reponame>/wiki', wiki, name='wiki'),

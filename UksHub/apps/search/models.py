@@ -14,7 +14,6 @@ class Query:
         self.project = []
         self.milestone = []
         self.assignee = []
-        self.no = []
         self.review = []
 
     def __str__(self):
@@ -30,7 +29,6 @@ class Query:
             *self.project,
             *self.milestone,
             *self.assignee,
-            *self.no,
             *self.review
         ])
 
@@ -44,9 +42,9 @@ class Query:
         e.state = _get_as_list(state)
         return e
 
-    def set_sort(self, sort):
+    def clear_sort(self):
         e = copy(self)
-        e.sort = _get_as_list(sort)
+        e.sort = []
         return e
 
     def set_exclude(self, exclude):
@@ -87,11 +85,6 @@ class Query:
     def clear_assignee(self):
         e = copy(self)
         e.assignee = []
-        return e
-
-    def set_no(self, no):
-        e = copy(self)
-        e.no = _get_as_list(no)
         return e
 
     def set_review(self, review):

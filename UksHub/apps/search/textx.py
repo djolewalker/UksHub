@@ -29,9 +29,12 @@ sort_values = {
     'comments-desc': '-comments_count',
 }
 
-single_values = {
+m_2_m = {
     'author': 'creator__username',
-    'assignee': 'assignees__username'
+    'assignee': 'assignees__username',
+    'milestone': '',
+    'project': '',
+    'label': ''
 }
 
 
@@ -43,8 +46,12 @@ def _get_sort(word):
     return sort_values.get(word, None)
 
 
-def _get_sv(word):
-    return single_values.get(word, None)
+def _get_sv_condition(word):
+    return m_2_m.get(word, None)
+
+
+def _get_no_value(word):
+    return m_2_m.get(word, None)
 
 
 def map_query_to_filter(query):
@@ -57,60 +64,73 @@ def map_query_to_filter(query):
     query = Query()
     for expression in model.expressions:
         if textx_isinstance(expression, _meta_model['IsExpression']):
-            if expression.value in ['pr', 'issue']:
-                query.entity.append(f'is:{expression.value}')
+            value = expression.value.value
+            if value in ['pr', 'issue']:
+                query.entity.append(f'is:{value}')
                 if 'polymorphic_ctype' in filter:
                     continue  # Implement multiple OR
-                filter['polymorphic_ctype'] = _get_is(expression.value)
-            elif expression.value in ['open', 'closed']:
-                query.state.append(f'is:{expression.value}')
+                filter['polymorphic_ctype'] = _get_is(value)
+            elif value in ['open', 'closed']:
+                query.state.append(f'is:{value}')
                 if 'state' in filter:
                     continue  # Implement multiple OR
-                filter['state'] = _get_is(expression.value)
+                filter['state'] = _get_is(value)
             else:
-                query.match.append(f'is:{expression.value}')
+                query.match.append(f'is:{value}')
 
         elif textx_isinstance(expression, _meta_model['SortExpression']):
-            query.sort.append(f'sort:{expression.value}')
-            value = _get_sort(expression.value)
+            query.sort.append(f'sort:{expression.value.value}')
+            value = _get_sort(expression.value.value)
             if value:
-                if expression.value in ['comments-asc', 'comments-desc']:
+                if expression.value.value in ['comments-asc', 'comments-desc']:
                     annotate['comments_count'] = Count('event_set', filter=Q(
                         event_set__polymorphic_ctype=ContentType.objects.get_for_model(Comment)))
                 sort.append(value)
 
+        # Label specific
         elif textx_isinstance(expression, _meta_model['ExcludingExpression']):
             query.exclude.append(
-                f'-{expression.condition.value}:{expression.value}')
+                f'-{expression.condition.value}:{expression.value.value}')
 
+        # Label specific
         elif textx_isinstance(expression, _meta_model['MultyValueExpression']):
             query.multi.append(
                 f'{expression.condition.value}:{",".join(v.value for v in expression.value.values)}')
 
         elif textx_isinstance(expression, _meta_model['SingleValueExpression']):
+            # Check for quotes in expression, use value without them but have them in dispaly query again
+            if textx_isinstance(expression.value, _meta_model['QuotedValue']):
+                value = expression.value.value.replace('"', '')
+            else:
+                value = expression.value.value
+
+            # Same as on GH, match only last expression of same type, ignores all previous occurrences
             if expression.condition:
-                condition = _get_sv(expression.condition.value)
+                condition = _get_sv_condition(expression.condition.value)
                 if condition:
-                    filter[condition] = expression.value.value
+                    filter[condition] = value
                     setattr(query,
                             expression.condition.value,
-                            [
-                                *getattr(query, expression.condition.value),
-                                f'{expression.condition.value}:{expression.value.value}'
-                            ])
-                    continue
+                            [f'{expression.condition.value}:{expression.value.value}'])
             else:
-                match.append(Q(name__contains=expression.value.value) |
-                             Q(message__message__contains=expression.value.value))
+                match.append(Q(name__contains=value) |
+                             Q(message__message__contains=value))
+                query.match.append('{}{}'.format(
+                    f"{expression.condition.value}:" if expression.condition else "", expression.value.value))
 
-            query.match.append('{}{}'.format(
-                f"{expression.condition.value}:" if expression.condition else "", expression.value.value))
-
+        # Same as on GH, match only last expression of same type, ignores all previous occurrences
         elif textx_isinstance(expression, _meta_model['NoEntityExpression']):
-            query.no.append(f'no:{expression.value}')
+            value = expression.value.value
+            m_2_m_value = _get_no_value(value)
+            if m_2_m_value:
+                filter[m_2_m_value] = None
+                setattr(query, value, [f'no:{value}'])
+            else:
+                query.match.append(f'no:{value}')
 
+        # RP only
         elif textx_isinstance(expression, _meta_model['ReviewExpression']):
             query.review.append(
-                f'{expression.condition.value}:{expression.value}')
+                f'{expression.condition.value}:{expression.value.value}')
 
     return filter, sort, exclude, annotate, match, query

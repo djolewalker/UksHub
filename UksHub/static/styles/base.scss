@@ -34,6 +34,13 @@ a:hover .link-hover-underline {
     text-decoration: underline;
 }
 
+a:hover button.link-hover-underline {
+    background-color: var(--primary) !important;
+    text-decoration: none;
+    color: var(--white);
+    border-color: var(--primary) !important;
+}
+
 .fs {
     font-size: 16px;
 }
@@ -69,6 +76,7 @@ a:hover .link-hover-underline {
     align-items: center;
     font-size: 1.3em;
     font-weight: 500;
+
     &.initials-s {
         width: 36px;
         height: 36px;
