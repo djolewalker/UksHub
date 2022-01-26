@@ -205,7 +205,7 @@ else:
 LOGIN_URL = "/login"
 
 GIT_REPOSITORIES = BASE_DIR / 'git-repos'
-USE_DEV_GIT = False
+USE_DEV_GIT = True
 
 GIT_ADMIN_SUPERUSER = 'random.user.admin'
 GIT_ADMIN = BASE_DIR / 'gitolite-admin'
