@@ -1,6 +1,6 @@
 from django import template
 from django.contrib.contenttypes.models import ContentType
-import base64
+from base64 import b64encode
 import hashlib
 
 from UksHub.apps.core.enums import BASE_STATE
@@ -31,7 +31,7 @@ def decode(text, format):
 
 @register.filter(name='base64')
 def encode_base64(text):
-    return base64.b64encode(text)
+    return b64encode(text)
 
 
 @register.filter(name='split')
@@ -67,3 +67,12 @@ def count_pr(repo):
 @register.filter(name='queryinclude')
 def query_include(query, word):
     return query == word or query.startswith(f'{word} ') or query.endswith(f' {word}') or f' {word} ' in query
+
+
+@register.filter(name='userordefault')
+def user_or_default(repo, actor):
+    try:
+        user = repo.contributors.get(email=actor.email)
+        return user.username if user else None
+    except:
+        return None

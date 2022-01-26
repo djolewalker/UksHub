@@ -49,6 +49,10 @@ a:hover button.link-hover-underline {
     font-size: 14px;
 }
 
+.fs-xs {
+    font-size: 12px;
+}
+
 .centered-content {
     width: 100%;
     max-width: 1280px;
@@ -111,4 +115,8 @@ a:hover button.link-hover-underline {
 
 .hidden {
     visibility: hidden;
+}
+
+.hide-first-border {
+    border: 0 !important;
 }

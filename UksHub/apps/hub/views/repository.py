@@ -3,6 +3,8 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from UksHub.apps.events.forms import CommentForm
 from UksHub.apps.events.services import event_user_to_artefact
+from UksHub.apps.gitcore.models import Commit
+from base64 import b64decode
 
 from UksHub.apps.gitcore.services import get_repository
 from UksHub.apps.hub.forms import IssueForm
@@ -124,6 +126,34 @@ def blob(request, username, reponame, path=None):
             'commit': commit,
             'blob': blob_obj,
             'hierarchy': generate_hierarchy(branch_obj, path)[0]})
+    raise Http404
+
+
+def commits(request, username, reponame, branch=None):
+    if request.method == 'GET':
+        repo = find_repo(request.user, username, reponame)
+        repo_obj = get_repository(repo.creator, repo.name)
+        branch_name = find_branch_from_path(
+            repo_obj, branch) if branch else repo.default_branch
+        commits = list(repo_obj.iter_commits(branch_name))
+
+        return render(request, 'hub/repository/commits.html', {
+            'repository': repo,
+            'repo': repo_obj,
+            'branch': branch_name,
+            'commits': commits
+        })
+
+    raise Http404
+
+
+def commit(request, username, reponame, commit):
+    if request.method == 'GET':
+        repo = find_repo(request.user, username, reponame)
+        repo_obj = get_repository(repo.creator, repo.name)
+        commit = Commit(repo_obj, b64decode(commit.encode()))
+        return render(request, 'hub/repository/commit.html', {'repository': repo})
+
     raise Http404
 
 
