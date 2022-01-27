@@ -30,7 +30,7 @@
     <div class="d-flex align-items-center">
         <a href="{% url 'commit' repository.creator.username repository.name commit.binsha|base64|decode:'utf-8' %}">
             <button type="button" class="btn btn-outline-secondary" style="width:100px">
-                {{commit.hexsha|slice:"0:7"}}
+                {{commit.binsha|base64|decode:'utf-8'|slice:"0:7"}}
             </button>
         </a>
     </div>

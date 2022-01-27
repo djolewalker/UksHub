@@ -152,7 +152,9 @@ def commit(request, username, reponame, commit):
         repo = find_repo(request.user, username, reponame)
         repo_obj = get_repository(repo.creator, repo.name)
         commit = Commit(repo_obj, b64decode(commit.encode()))
-        return render(request, 'hub/repository/commit.html', {'repository': repo})
+        diffs = commit.parents[0].diff(commit, paths=list(
+            commit.stats.files.keys()), create_patch=True)
+        return render(request, 'hub/repository/commit.html', {'repository': repo, 'commit': commit, 'diffs': diffs})
 
     raise Http404
 

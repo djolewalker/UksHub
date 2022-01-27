@@ -19,9 +19,24 @@ def get_msg(dictionary, key):
     return dictionary.get(key).message
 
 
+@register.filter(name='cmt_id')
+def get_id(dictionary, key):
+    return dictionary.get(key).binsha
+
+
 @register.filter(name='cmt_time')
 def get_time(dictionary, key):
     return dictionary.get(key).committed_datetime
+
+
+@register.filter(name='diff_inserted')
+def diff_inserted(dictionary, key):
+    return dictionary.get(key).get('insertions')
+
+
+@register.filter(name='diff_deleted')
+def diff_deleted(dictionary, key):
+    return dictionary.get(key).get('deletions')
 
 
 @register.filter(name='decode')
