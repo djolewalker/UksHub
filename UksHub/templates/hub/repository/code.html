@@ -12,6 +12,7 @@
 
 {% block repocontent %}
 {% if repo.branches %}
+{% with request.resolver_match.url_name as path_name  %}
 
 <div class="code-wrpper d-flex">
     <div class="main-content d-flex mr-4 flex-column">
@@ -84,6 +85,7 @@
                 </a>
                 {% endif %}
             </div>
+            {% if path_name == 'repository' %}
             <div>
                 <div class="dropdown show">
                     <button class="btn btn-success btn-sm dropdown-toggle px-3" role="button" id="dropdownMenuLink"
@@ -123,6 +125,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
         <div class="mb-3 fs-small border rounded">
             <div class="p-3 bg-light d-flex justify-content-between">
@@ -130,7 +133,8 @@
                     <b class="text-truncate" style="width:120px;flex-shrink:0">
                         {{commit.committer}}
                     </b>
-                    <a href="" class="text-truncate">
+                    <a href="{% url 'commit' repository.creator.username repository.name commit.binsha|base64|decode:'utf-8' %}"
+                        class="text-truncate">
                         <span class="link-hover-underline">
                             {{commit.message}}
                         </span>
@@ -138,7 +142,7 @@
                 </div>
                 <div class="d-flex justify-content-end" style="width:250px;flex-shrink:0;">
                     <span>{{commit.committed_datetime|naturaltime}}</span>
-                    <a href="">
+                    <a href="{% url 'commits' repository.creator.username repository.name %}">
                         {% if blob %}
                         <b class="ml-2 link-hover">
                             <i class="bi bi-clock-history"></i> History
@@ -165,8 +169,12 @@
                     </a>
                 </div>
                 <div class="text-truncate text-muted flex-auto min-width-0 d-none d-md-block col-5 mr-3">
-                    {{ stats|cmt_msg:tree.name }}</div>
-                <div class="text-right text-muted">{{ stats|cmt_time:tree.name|naturaltime }}</div>
+                    <a
+                        href="{% url 'commit' repository.creator.username repository.name stats|cmt_id:tree.name|base64|decode:'utf-8' %}">
+                        <span class="link-hover-underline">{{ stats|cmt_msg:tree.name }}</span>
+                    </a>
+                </div>
+                <div class="text-right text-muted" style="width:140px">{{ stats|cmt_time:tree.name|naturaltime }}</div>
             </div>
             {% endfor %}
             {% for blob in tree.blobs %}
@@ -179,9 +187,12 @@
                     </a>
                 </div>
                 <div class="text-truncate text-muted flex-auto min-width-0 d-none d-md-block col-5 mr-3">
-                    {{ stats|cmt_msg:blob.name }}
+                    <a
+                        href="{% url 'commit' repository.creator.username repository.name stats|cmt_id:blob.name|base64|decode:'utf-8' %}">
+                        <span class="link-hover-underline">{{ stats|cmt_msg:blob.name }}</span>
+                    </a>
                 </div>
-                <div class="text-right text-muted" style="width:130px">
+                <div class="text-right text-muted" style="width:140px">
                     {{ stats|cmt_time:blob.name|naturaltime }}
                 </div>
             </div>
@@ -205,10 +216,18 @@
 
                 </div>
             </div>
-            <div class="p-3 overflow-auto">
+            <div class="border-top">
                 {% if blob.size %}
                 {% if type == 'text' %}
-                <pre class="m-0">{{blob.data_stream.read|decode:'utf-8'|safe}}</pre>
+                {% for line in blob.data_stream.stream.readlines %}
+                <div class="d-flex fs-xs">
+                    <div style="width:50px; text-align:end; font-family: Consolas;"
+                        class="d-flex justify-content-end align-items-center text-muted px-2">
+                        {{forloop.counter}}
+                    </div>
+                    <div style="white-space:pre-wrap; line-height:20px;" class="flex-auto pl-1">{{line|decode:'utf-8'}}</div>
+                </div>
+                {% endfor %}
                 {% elif type == 'image' %}
                 <img src="data:{{blob.mime_type}};base64,{{blob.data_stream.read|base64|decode:'utf-8'}}"
                     alt="{{blob.name}}">
@@ -224,7 +243,7 @@
         {% endif %}
     </div>
 
-
+    {% if path_name == 'repository' %}
     <div class="about-side-bar d-table">
         <div class="pb-3">
             <h2 class="mb-3 h4 fs font-weight-bold">About</h2>
@@ -280,8 +299,10 @@
             <h2 class="mb-3 h4 fs font-weight-bold">Languages</h2>
         </div>
     </div>
+    {% endif %}
 </div>
 
+{% endwith %}
 {% else %}
 <div class="d-flex align-items-center flex-column">
     <h2 class="h4 mt-3">Reposiotry is empty!</h2>

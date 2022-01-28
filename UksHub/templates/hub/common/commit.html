@@ -1,0 +1,37 @@
+{% load humanize hub_filters static %}
+<div class="px-3 py-2 d-flex justify-content-between align-items-center">
+    <div class="flex-column">
+        <a href="{% url 'commit' repository.creator.username repository.name commit.binsha|base64|decode:'utf-8' %}">
+            <b class="link-hover-underline">{{ commit.message }}</b>
+        </a>
+        <span class="d-flex fs-xs mt-1 align-items-center">
+            {% with repository|userordefault:commit.author as username %}
+            {% if username %}
+            <a class="d-flex mr-1 align-items-center" href="{% url 'profile' username %}">
+                <div style="width:20px;height:20px">
+                    {% with commit.author as user %}
+                    <span>{% include 'hub/common/profile-picture.html' %}</span>
+                    {% endwith %}
+                </div>
+                <b class="link-hover-underline ml-1">{{username}}</b>
+            </a>
+            {% else %}
+            <div class="d-flex mr-1" style="width:20px;height:20px">
+                <img src="{% static 'img/hub-icon.svg' %}" alt="Hub icon">
+            </div>
+            <b class="link-hover-underline mr-1">{{commit.author.name}}</b>
+            {% endif %}
+            {% endwith %}
+            commited
+            <span class="ml-1">{{commit.committed_datetime|naturaltime}}</span>
+        </span>
+    </div>
+
+    <div class="d-flex align-items-center">
+        <a href="{% url 'commit' repository.creator.username repository.name commit.binsha|base64|decode:'utf-8' %}">
+            <button type="button" class="btn btn-outline-secondary" style="width:100px">
+                {{commit.binsha|base64|decode:'utf-8'|slice:"0:7"}}
+            </button>
+        </a>
+    </div>
+</div>

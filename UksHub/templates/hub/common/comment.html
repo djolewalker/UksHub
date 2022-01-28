@@ -4,7 +4,7 @@
         <div class="d-flex px-3 text-white py-2 justify-content-between border-bottom border-info" 
         style="background-color:#4ca3b1">
             <div class="d-flex align-items-center">
-                <a class="d-flex align-items-center" href="{% url 'profile' 1 %}">
+                <a class="d-flex align-items-center" href="{% url 'profile' comment.creator.username %}">
                     <div style="height: 32px; width: 32px" >
                         {% with comment.creator as user %}
                             {% include 'hub/common/profile-picture.html' %}

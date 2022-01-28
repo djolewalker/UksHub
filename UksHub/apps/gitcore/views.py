@@ -40,6 +40,7 @@ def add_contributor(request, repoId):
         contr_form = RepositoryContributorsForm(repo.creator, request.POST, instance=repo)
         if contr_form.is_valid():
             repo = contr_form.save()
+            repo.contributors.add(repo.creator)
             sync_repo(repo)
             return HttpResponse(status=200)
     if request.method == 'GET':
