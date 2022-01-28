@@ -154,7 +154,9 @@ def commit(request, username, reponame, commit):
         commit = Commit(repo_obj, b64decode(commit.encode()))
         diffs = commit.parents[0].diff(commit, paths=list(
             commit.stats.files.keys()), create_patch=True)
-        return render(request, 'hub/repository/commit.html', {'repository': repo, 'commit': commit, 'diffs': diffs})
+        splitted = [i.diff.decode().splitlines() for i in diffs]
+
+        return render(request, 'hub/repository/commit.html', {'repository': repo, 'commit': commit, 'diffs': diffs, 'splitted': splitted})
 
     raise Http404
 

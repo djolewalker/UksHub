@@ -174,7 +174,7 @@
                         <span class="link-hover-underline">{{ stats|cmt_msg:tree.name }}</span>
                     </a>
                 </div>
-                <div class="text-right text-muted">{{ stats|cmt_time:tree.name|naturaltime }}</div>
+                <div class="text-right text-muted" style="width:140px">{{ stats|cmt_time:tree.name|naturaltime }}</div>
             </div>
             {% endfor %}
             {% for blob in tree.blobs %}
@@ -192,7 +192,7 @@
                         <span class="link-hover-underline">{{ stats|cmt_msg:blob.name }}</span>
                     </a>
                 </div>
-                <div class="text-right text-muted" style="width:130px">
+                <div class="text-right text-muted" style="width:140px">
                     {{ stats|cmt_time:blob.name|naturaltime }}
                 </div>
             </div>
@@ -216,16 +216,16 @@
 
                 </div>
             </div>
-            <div class="p-3 overflow-auto">
+            <div>
                 {% if blob.size %}
                 {% if type == 'text' %}
                 {% for line in blob.data_stream.stream.readlines %}
-                <div class="d-flex">
-                    <div style="min-width:40px;font-family: Consolas;"
-                        class="d-flex justify-content-end align-items-center pr-2 fs-xs">
+                <div class="d-flex fs-xs">
+                    <div style="width:50px; text-align:end; font-family: Consolas;"
+                        class="d-flex justify-content-end align-items-center text-muted px-2">
                         {{forloop.counter}}
                     </div>
-                    <div style="white-space:pre-wrap; line-height:20px" class="fs-xs pl-1">{{line|decode:'utf-8'}}</div>
+                    <div style="white-space:pre-wrap; line-height:20px;" class="flex-auto pl-1">{{line|decode:'utf-8'}}</div>
                 </div>
                 {% endfor %}
                 {% elif type == 'image' %}

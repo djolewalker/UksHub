@@ -59,9 +59,16 @@
 {% endfor %}
 
 {% for diff in diffs %}
+{% if diff.deleted_file %}
 <div class="border rounded mb-3">
-
-    {% with inserted=commit.stats.files|diff_inserted:diff.b_path deleted=commit.stats.files|diff_deleted:diff.b_path  %}
+    <div class="px-3 py-2 bg-light fs-small">
+        <b>{{ diff|pathfromdiff }}</b> file deleted
+    </div>
+</div>
+{% else %}
+<div class="border rounded mb-3">
+    {% with diff|pathfromdiff as path %}
+    {% with inserted=commit.stats.files|diff_inserted:path deleted=commit.stats.files|diff_deleted:path  %}
     <div class="px-3 py-2 bg-light fs-small">
         {% if inserted or deleted %}
         {% if deleted %}
@@ -73,43 +80,32 @@
         {% else %}
         <span class="badge badge-pill badge-success">created</span>
         {% endif %}
-        {{diff.b_path}}
+        {{path}}
     </div>
     {% if inserted or deleted %}
-    <div class="px-3 border-top fs-small d-flex">
-        <div style="white-space:pre-wrap; line-height:20px" class="fs-xs pl-1">
-            {{diff.diff|decode:'ascii'|linebreaksbr|safe}}
+    <div class="border-top fs-xs">
+        {% with splitted|byindex:forloop.counter0|getlineindexes as line_indexes %}
+        {% for line in splitted|byindex:forloop.counter0 %}
+        {% with minus=line_indexes|byindex:forloop.counter0|byindex:0 plus=line_indexes|byindex:forloop.counter0|byindex:1 %}
+        {% if not line|startswith:'\\' %}
+        <div class="d-flex">
+            <div
+                class="d-flex {% if not minus and plus %} bg-success-medium{% elif not plus and minus%} bg-danger-medium{% elif not plus and not minus%} py-2 bg-primary-medium{% endif %}">
+                <div class="text-muted px-2" style="width:50px; text-align:end; font-family: Consolas;">{{minus}}</div>
+                <div class="text-muted px-2" style="width:50px; text-align:end; font-family: Consolas;">{{plus}}</div>
+            </div>
+            <div class="pl-1 flex-auto {% if not minus and plus %} bg-success-light{% elif not plus and minus%} bg-danger-light{% elif not plus and not minus%} py-2 bg-primary-light{% endif %}"
+                style="white-space:pre-wrap; line-height:20px;">{{line}}</div>
         </div>
+        {% endif %}
+        {% endwith %}
+        {% endfor %}
+        {% endwith %}
     </div>
     {% endif %}
-
-    {% comment %} {% if inserted or deleted %}
-    <div class="px-3 border-top fs-small d-flex justify-content-between">
-        <div class="w-50">
-            {% for line in diff.b_blob.data_stream.stream.readlines %}
-            <div class="d-flex">
-                <div style="min-width:40px;font-family: Consolas;"
-                    class="d-flex justify-content-end align-items-center pr-2 fs-xs">
-                    {{forloop.counter}}
-                </div>
-                <div style="white-space:pre-wrap; line-height:20px" class="fs-xs pl-1">{{line|decode:'utf-8'}}</div>
-            </div>
-            {% endfor %}
-        </div>
-        <div class="w-50 border-left d-flex flex-column">
-            {% for line in diff.a_blob.data_stream.stream.readlines %}
-            <div class="d-flex">
-                <div style="min-width:40px;font-family: Consolas;"
-                    class="d-flex justify-content-end align-items-center pr-2 fs-xs">
-                    {{forloop.counter}}
-                </div>
-                <div style="white-space:pre-wrap; line-height:20px" class="fs-xs pl-1">{{line|decode:'utf-8'}}</div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %} {% endcomment %}
+    {% endwith %}
     {% endwith %}
 </div>
+{% endif %}
 {% endfor %}
-{% endblock repocontent %}}
+{% endblock repocontent %}

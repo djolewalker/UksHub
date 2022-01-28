@@ -22,6 +22,7 @@ def get_last_commits(repo, branch, tree, nest_index):
     paths = [obj.path for obj in tree]
     commits = {}
     splits = 0
+    deletes = 0
 
     for commit in repo.iter_commits(branch, paths=paths):
         for f in commit.stats.files.keys():
@@ -29,12 +30,13 @@ def get_last_commits(repo, branch, tree, nest_index):
                 p = i.split('/')[nest_index] if '/' in i else i
                 if p in commits:
                     continue
+                if p not in paths:
+                    deletes += 1
                 commits[p] = commit
-            splits += len(f.split(' => ')) - 1
+            splits += len(f.split(' => ')) - 1 + deletes
         if len(commits) == len(paths) + splits:
             break
 
-    print(paths, commits)
     return commits
 
 
