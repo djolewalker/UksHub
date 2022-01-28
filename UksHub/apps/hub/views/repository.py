@@ -264,11 +264,44 @@ def pull_request(request, username, reponame, id):
     raise Http404
 
 
-def create_pull_request(request, username, reponame):
+def compare(request, username, reponame, comparation=None):
     if request.method == 'GET':
-        repository = find_repo(request.user, username, reponame)
-        return render(request, 'hub/repository/new-pull-request.html', {'repository': repository})
+        repo = find_repo(request.user, username, reponame)
+        repo_obj = get_repository(repo.creator, repo.name)
 
+        if comparation != None and '...' not in comparation:
+            raise Http404
+
+        base, comparator = comparation.split('...') if comparation else (
+            repo.default_branch, repo.default_branch)
+
+        base_br = find_branch_from_path(repo_obj, base)
+        comparator_br = find_branch_from_path(repo_obj, comparator)
+
+        if not base_br or not comparator_br:
+            raise Http404
+
+        context = {
+            'repository': repo,
+            'repo': repo_obj,
+            'base': base,
+            'comparator': comparator
+        }
+
+        if base_br != comparator_br:
+            base_obj = next(filter(lambda head: head.name ==
+                                   base_br, repo_obj.branches), None)
+            comparator_obj = next(filter(lambda head: head.name ==
+                                         comparator_br, repo_obj.branches), None)
+
+            diffs = base_obj.commit.diff(
+                comparator_obj.commit, create_patch=True)
+            splitted = [i.diff.decode().splitlines() for i in diffs]
+            context['diffs'] = diffs
+            context['splitted'] = splitted
+            context['commit'] = comparator_obj.commit
+
+        return render(request, 'hub/repository/compare.html', context)
     raise Http404
 
 

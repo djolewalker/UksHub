@@ -1,0 +1,48 @@
+{% extends 'hub/repository/base.html' %}
+{% load hub_filters %}
+
+{% block repocontent %}
+<h2 class="h4">Compare changes</h2>
+<p class="fs-small pb-2 border-bottom mb-3">Compare changes across branches, commits, tags, and more below. </p>
+
+<div class="p-2 border rounded bg-light d-flex align-items-center">
+    <i class="bi bi-bezier2 mx-2"></i>
+    <div class="dropdown mx-2">
+        <a class="main-content-branches text-truncate btn btn-secondary btn-sm dropdown-toggle pl-3 pr-4" href=""
+            role="button" data-toggle="dropdown">
+            <i class="bi bi-diagram-2"></i>
+            {{base}}
+        </a>
+        <div class="dropdown-menu">
+            {% for brch in repo.branches %}
+            <a class="dropdown-item"
+                href="{% url 'compare-branches' repository.creator.username repository.name brch.name|add:'...'|add:comparator %}">
+                <i class="bi bi-check-lg{% if brch.name != base %} hidden{% endif %}"></i>
+                {{ brch.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    <i class="bi bi-arrow-left mx-1"></i>
+    <div class="dropdown mx-2">
+        <a class="main-content-branches text-truncate btn btn-secondary btn-sm dropdown-toggle pl-3 pr-4" href=""
+            role="button" data-toggle="dropdown">
+            <i class="bi bi-diagram-2"></i>
+            {{comparator}}
+        </a>
+        <div class="dropdown-menu">
+            {% for brch in repo.branches %}
+            <a class="dropdown-item"
+                href="{% url 'compare-branches' repository.creator.username repository.name base|add:'...'|add:brch.name %}">
+                <i class="bi bi-check-lg{% if brch.name != comparator %} hidden{% endif %}"></i>
+                {{ brch.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% if diffs %}
+{% include 'hub/common/file-diff.html' %}
+{% endif %}
+{% endblock repocontent %}

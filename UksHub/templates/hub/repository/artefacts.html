@@ -14,7 +14,7 @@
   </form>
   {% if request.user.is_authenticated and request.user == user %}
   {% if ispr %}
-  <a href="{% url 'create-pull-request' repository.creator.username repository.name %}" class="ml-3">
+  <a href="{% url 'compare' repository.creator.username repository.name %}" class="ml-3">
     <button type="button" class="btn d-flex btn-sm btn-success px-3">
       New pull request
     </button>
