@@ -3,25 +3,46 @@
 
 {% block repocontent %}
 <div class="d-flex pb-3 justify-content-between align-items-center">
-  <form method="get" class="input-group input-group-sm mw-0" style="flex: 1">
+  <form
+    method="get"
+    class="input-group input-group-sm mw-0"
+    style="flex: 1"
+  >
     <div class="input-group-prepend">
       <span class="input-group-text">
         <i class="bi bi-search"></i>
       </span>
     </div>
-    <input name="q" type="text" class="form-control"
-      placeholder="Search a {% if ispr %}pull requests{% else %}issues{% endif %}" value="{{query}}">
+    <input
+      name="q"
+      type="text"
+      class="form-control"
+      placeholder="Search a {% if ispr %}pull requests{% else %}issues{% endif %}"
+      value="{{query}}"
+    >
   </form>
   {% if request.user.is_authenticated and request.user == user %}
   {% if ispr %}
-  <a href="{% url 'create-pull-request' repository.creator.username repository.name %}" class="ml-3">
-    <button type="button" class="btn d-flex btn-sm btn-success px-3">
+  <a
+    href="{% url 'compare' repository.creator.username repository.name %}"
+    class="ml-3"
+  >
+    <button
+      type="button"
+      class="btn d-flex btn-sm btn-success px-3"
+    >
       New pull request
     </button>
   </a>
   {% else %}
-  <a href="{% url 'create-issue' repository.creator.username repository.name %}" class="ml-3">
-    <button type="button" class="btn d-flex btn-sm btn-success px-3">
+  <a
+    href="{% url 'create-issue' repository.creator.username repository.name %}"
+    class="ml-3"
+  >
+    <button
+      type="button"
+      class="btn d-flex btn-sm btn-success px-3"
+    >
       New issue
     </button>
   </a>
@@ -31,14 +52,20 @@
 
 {% if not is_default_query %}
 <div class="d-flex mb-3">
-  <a class="d-flex align-items-center" href="
+  <a
+    class="d-flex align-items-center"
+    href="
   {% if ispr %}
   {% url 'pull-requests' repository.creator.username repository.name %}
   {% else %}
   {% url 'issues' repository.creator.username repository.name %}
   {% endif %}
-  ">
-    <button class="link-hover-underline btn btn-secondary btn-sm p-0 fs" style="width:18px;height:18px">
+  "
+  >
+    <button
+      class="link-hover-underline btn btn-secondary btn-sm p-0 fs"
+      style="width:18px;height:18px"
+    >
       <i class="bi bi-x d-flex justify-content-center align-items-center"></i>
     </button>
     <span class="ml-1 fs-small link-hover-underline font-weight-bold">Clear current search query, filters, and
@@ -49,20 +76,37 @@
 
 <div class="border rounded-top p-3">
   <div class="d-flex col-12 pr-0">
-    <div class="col-7 pl-1 mw-0 flex-auto" style="max-width:unset">
-      <a href="{% if ispr %}
-      {% url 'pull-requests' repository.creator.username repository.name %}{% else %}
-      {% url 'issues' repository.creator.username repository.name %}{% endif %}?q={{queries.open|urlencode}}"
-        {% if query|queryinclude:'is:open'%} class="font-weight-bold" {% endif %}>
+    <div
+      class="col-7 pl-1 mw-0 flex-auto"
+      style="max-width:unset"
+    >
+      <a
+        {% if ispr %}
+        href="{% url 'pull-requests' repository.creator.username repository.name %}?q={{queries.open|urlencode}}"
+        {% else %}
+        href="{% url 'issues' repository.creator.username repository.name %}?q={{queries.open|urlencode}}"
+        {% endif %}
+        {% if query|queryinclude:'is:open'%}
+        class="font-weight-bold"
+        {% endif %}
+      >
+
+        {% if ispr %}
+        <i class="bi bi-bezier2"></i>
+        {% else %}
         <i class="bi bi-record-circle"></i>
+        {% endif %}
         {% if query|queryinclude:'is:open'%}{{artefacts|length}}{% endif %}
         Open
       </a>
-      <a href="
-      {% if ispr %}
-      {% url 'pull-requests' repository.creator.username repository.name %}{% else %}
-      {% url 'issues' repository.creator.username repository.name %}{% endif %}?q={{queries.closed|urlencode}}
-      " class="ml-3{% if query|queryinclude:'is:closed' %} font-weight-bold{% endif %}">
+      <a
+        {% if ispr %}
+        href="{% url 'pull-requests' repository.creator.username repository.name %}?q={{queries.closed|urlencode}}"
+        {% else %}
+        href="{% url 'issues' repository.creator.username repository.name %}?q={{queries.closed|urlencode}}"
+        {% endif %}
+        class="ml-3{% if query|queryinclude:'is:closed' %} font-weight-bold{% endif %}"
+      >
         <i class="bi bi-check-circle"></i>
         {% if query|queryinclude:'is:closed' %}{{artefacts|length}}{% endif %}
         Closed
@@ -78,7 +122,7 @@
 <ul class="p-0 border-left border-right">
   {% for artefact in artefacts %}
   <li class="d-flex py-1 border-bottom">
-    {% include 'hub/common/artefact.html' %}
+    {% include 'hub/common/artefact-inline.html' %}
   </li>
   {% endfor %}
 </ul>

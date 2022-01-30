@@ -18,7 +18,7 @@
     <div class="main-content d-flex mr-4 flex-column">
         <div class="content-header mb-3 d-flex justify-content-between w-100">
             <div class="d-flex">
-                <div class="dropdown show">
+                <div class="dropdown">
                     <a class="main-content-branches text-truncate btn btn-secondary btn-sm dropdown-toggle pl-3 pr-4"
                         href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown">
                         <i class="bi bi-diagram-2"></i>
@@ -87,7 +87,7 @@
             </div>
             {% if path_name == 'repository' %}
             <div>
-                <div class="dropdown show">
+                <div class="dropdown">
                     <button class="btn btn-success btn-sm dropdown-toggle px-3" role="button" id="dropdownMenuLink"
                         data-toggle="dropdown">
                         Code
@@ -142,7 +142,13 @@
                 </div>
                 <div class="d-flex justify-content-end" style="width:250px;flex-shrink:0;">
                     <span>{{commit.committed_datetime|naturaltime}}</span>
-                    <a href="{% url 'commits' repository.creator.username repository.name %}">
+                    <a 
+                    {% if path_name == 'repository' %}
+                    href="{% url 'commits' repository.creator.username repository.name %}"
+                    {% else %}
+                    href="{% url 'branch-commits' repository.creator.username repository.name branch %}"
+                    {% endif %}
+                    >
                         {% if blob %}
                         <b class="ml-2 link-hover">
                             <i class="bi bi-clock-history"></i> History

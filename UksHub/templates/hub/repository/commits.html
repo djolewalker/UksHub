@@ -2,39 +2,29 @@
 
 {% block repocontent %}
 <div class="d-flex mb-3">
-    <div class="dropdown show">
-        <a class="main-content-branches text-truncate btn btn-secondary btn-sm dropdown-toggle pl-3 pr-4" href="#"
-            role="button" id="dropdownMenuLink" data-toggle="dropdown">
-            <i class="bi bi-diagram-2"></i>
-            {{branch}}
-        </a>
-        <div class="dropdown-menu">
-            {% for brch in repo.branches %}
-            <a class="dropdown-item"
-                href="{% url 'branch-commits' repository.creator.username repository.name brch.name %}">
-                <i class="bi bi-check-lg{% if brch.name != branch %} hidden{% endif %}"></i>
-                {{ brch.name }}
-            </a>
-            {% endfor %}
-        </div>
+  <div class="dropdown">
+    <a
+      class="main-content-branches text-truncate btn btn-secondary btn-sm dropdown-toggle pl-3 pr-4"
+      href="#"
+      role="button"
+      id="dropdownMenuLink"
+      data-toggle="dropdown"
+    >
+      <i class="bi bi-diagram-2"></i>
+      {{branch}}
+    </a>
+    <div class="dropdown-menu">
+      {% for brch in repo.branches %}
+      <a
+        class="dropdown-item"
+        href="{% url 'branch-commits' repository.creator.username repository.name brch.name %}"
+      >
+        <i class="bi bi-check-lg{% if brch.name != branch %} hidden{% endif %}"></i>
+        {{ brch.name }}
+      </a>
+      {% endfor %}
     </div>
+  </div>
 </div>
-{% regroup commits by committed_datetime.date as commit_list %}
-<ul class="p-0">
-    {% for commits_by_date in commit_list  %}
-    <li class="py-2 border-left fs-small" style="border-width:2px !important">
-        <div class="d-flex pb-2">
-            <div class="bg-white " style="margin-left:-8px"><i class="bi bi-plus-circle-fill text-secondary"></i></div>
-            <span class="ml-3 ">Commits on {{ commits_by_date.grouper  }}:</span>
-        </div>
-        <ul class="p-0 ml-4 border rounded">
-            {% for commit in commits_by_date.list %}
-            <li {% if commit != commits_by_date.list|first %}class="border-top" {% endif %}>
-                {% include 'hub/common/commit.html' %}
-            </li>
-            {% endfor %}
-        </ul>
-    </li>
-    {% endfor %}
-</ul>
+{% include 'hub/common/commits.html' %}
 {% endblock repocontent %}}
