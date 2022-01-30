@@ -37,13 +37,20 @@
             </div>
             <ul class="d-flex pl-0 mb-0">
                 <li class="mr-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-eye mx-1"></i>
-                        Watch
-                        <span class="mx-1 badge badge-pill badge-secondary">
-                            0
-                        </span>
-                    </button>
+                    <form action="{% url 'watch_repo' repository.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-secondary" name="repo_id" value="{{ repository.pk }}">
+                            <i class="bi bi-eye mx-1"></i>
+                            {% is_watched repository user %}
+                            {% with repository|watchcount as watch_count %}
+                            <span class="mx-1 badge badge-pill badge-secondary">
+                                {{watch_count}}
+                            </span>
+                            {% endwith %}
+
+                        </button>
+                    </form>
+
                 </li>
                 <li class="mr-2">
                     <button type="button" class="btn btn-sm btn-outline-secondary">
@@ -55,13 +62,19 @@
                     </button>
                 </li>
                 <li class="mr-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-star mx-1"></i>
-                        Star
-                        <span class="mx-1 badge badge-pill badge-secondary">
-                            0
-                        </span>
-                    </button>
+                    <form action="{% url 'star_repo' repository.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-secondary" name="repo_id" value="{{ repository.pk }}">
+                            <i class="bi bi-star mx-1"></i>
+                                {% is_starred repository user %}
+                            {% with repository|starcount as star_count %}
+                            <span class="mx-1 badge badge-pill badge-secondary">
+                                {{star_count}}
+                            </span>
+                            {% endwith %}
+                        </button>
+                    </form>
+
                 </li>
             </ul>
         </div>

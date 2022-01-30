@@ -1,8 +1,9 @@
 from django.http.response import Http404, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.conf import settings
+
 
 from .models import Repository, PublicKey
 from .services import init_repository, init_repository_dev, sync_repo, sync_user_keys
@@ -70,4 +71,6 @@ def public_key(request):
             note = 'You have set unlabeled public key. Create new one with specified label. Otherwise current unlabeled public key will be overridden!' 
         key_form = KeyForm()
     return render(request, 'hub/user-settings/settings-new-ssh.html', { 'form': key_form, 'note': note }) if key_form else Http404
-        
+
+
+

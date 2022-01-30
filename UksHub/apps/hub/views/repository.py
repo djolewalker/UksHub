@@ -1,9 +1,9 @@
-from django.http.response import Http404
-from django.shortcuts import redirect, render
+from django.http.response import Http404, HttpResponse
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from UksHub.apps.events.forms import CommentForm
 from UksHub.apps.events.services import event_user_to_artefact
-from UksHub.apps.gitcore.models import Commit
+from UksHub.apps.gitcore.models import Commit, Repository
 from base64 import b64decode
 
 from UksHub.apps.gitcore.services import get_repository
@@ -312,3 +312,28 @@ def repository_settings(request, username, reponame):
         repository = find_repo(request.user, username, reponame)
         return render(request, 'hub/repository/repository-settings.html', {'repository': repository})
     raise Http404
+
+
+def star_view(request, pk):
+    if request.method == 'POST':
+        repo = get_object_or_404(Repository, id=pk)
+
+        if request.user in repo.stars.all():
+            repo.stars.remove(request.user)
+        else:
+            repo.stars.add(request.user)
+        return HttpResponse(status=204)
+    else:
+        raise Http404
+
+
+def watch_view(request, pk):
+    if request.method == 'POST':
+        repo = get_object_or_404(Repository, id=pk)
+        if request.user in repo.watch.all():
+            repo.watch.remove(request.user)
+        else:
+            repo.watch.add(request.user)
+        return HttpResponse(status=204)
+    else:
+        raise Http404
