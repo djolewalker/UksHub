@@ -8,7 +8,6 @@ enum ProjectState {
 enum ArtefactState {
     OPEN
     CLOSE
-    MERGED
 }
 enum ReviewState {
     COMMENT

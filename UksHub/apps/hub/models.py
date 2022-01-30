@@ -58,6 +58,7 @@ class PullRequest(Artefact):
     issues = models.ManyToManyField(Issue)
     target = models.CharField(max_length=200)
     source = models.CharField(max_length=200)
+    is_merged = models.BooleanField(default=False)
 
 
 class Label(TimeStampModel):

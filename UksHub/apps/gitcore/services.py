@@ -110,7 +110,10 @@ def can_merge(repo, repo_obj, target, source):
         git.execute(f'git --work-tree={repo_path} merge --abort')
         return True
     except:
-        git.execute(f'git --work-tree={repo_path} merge --abort')
+        try:
+            git.execute(f'git --work-tree={repo_path} merge --abort')
+        except:
+            pass
         return False
 
 

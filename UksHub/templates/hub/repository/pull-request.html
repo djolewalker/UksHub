@@ -24,7 +24,7 @@
   <div class="d-flex align-items-center mt-2">
     {% if pr.state == 1 %}
     <span class="badge badge-pill badge-success fs-small px-3 py-2">
-      <i class="bi bi-record-circle"></i>
+      <i class="bi bi-bezier2"></i>
       Open
     </span>
     {% else %}
@@ -84,7 +84,7 @@
     class="tab-pane fade show active"
     id="nav-conversation"
   >
-    {% with pr as artefact  %}
+    {% with artefact=pr ispr=True  %}
     {% include 'hub/common/artefact.html' %}
     {% endwith %}
   </div>

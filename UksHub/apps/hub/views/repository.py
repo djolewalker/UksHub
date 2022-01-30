@@ -1,12 +1,14 @@
 import binascii
 from base64 import b64decode
+from django.http import HttpRequest
 from django.http.response import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 from UksHub.apps.core.constants import EMPTY_TREE_SHA
 from UksHub.apps.core.enums import BASE_STATE
 from UksHub.apps.events.forms import CommentForm
-from UksHub.apps.events.services import event_user_to_artefact
+from UksHub.apps.events.services import event_artefact_state_change, event_user_to_artefact
 from UksHub.apps.gitcore.models import Commit
 from UksHub.apps.gitcore.services import can_merge, get_repository, merge
 from UksHub.apps.hub.forms import IssueForm, PullRequestForm
@@ -100,8 +102,6 @@ def _get_compare_context(requestor, username, reponame, comparation, pr=None, co
     repo = find_repo(requestor, username, reponame)
     repo_obj = get_repository(repo.creator, repo.name)
 
-    print(comparation)
-
     if comparation != None and '...' not in comparation:
         raise Http404
 
@@ -114,7 +114,7 @@ def _get_compare_context(requestor, username, reponame, comparation, pr=None, co
         'base': base,
         'comparator': comparator
     }
-   
+
     if repo_obj.branches:
         base_br = find_branch_from_path(repo_obj, base)
         comparator_br = find_branch_from_path(repo_obj, comparator)
@@ -129,7 +129,7 @@ def _get_compare_context(requestor, username, reponame, comparation, pr=None, co
             comparator_obj = next(filter(lambda head: head.name ==
                                          comparator_br, repo_obj.branches), None)
 
-            if comparator_obj.commit in base_obj.commit.parents:
+            if comparator_obj.commit in [base_obj.commit, *base_obj.commit.iter_parents()]:
                 context['is_child'] = True
             else:
                 commits = [comparator_obj.commit]
@@ -148,7 +148,7 @@ def _get_compare_context(requestor, username, reponame, comparation, pr=None, co
                     pr_form = PullRequestForm()
                     pr_form.fields['assignees'].queryset = repo.contributors
 
-                if not pr or pr.state != BASE_STATE.MERGED.value:
+                if not pr or not pr.is_merged:
                     context['can_merge'] = can_merge(
                         repo, repo_obj, base, comparator)
 
@@ -318,6 +318,22 @@ def issue(request, username, reponame, id):
     raise Http404
 
 
+@login_required
+def close_issue(request, username, reponame, id):
+    if request.method == 'POST':
+        repo = find_repo(request.user, username, reponame)
+        pr = repo.artefact_set.get(pk=id)
+        if not pr:
+            raise Http404
+        pr.state = BASE_STATE.CLOSED.value
+        pr.save()
+        event_artefact_state_change(request.user, pr, pr.state)
+        return redirect(reverse('issue', kwargs={'username': username, 'reponame': reponame, 'id': pr.id}))
+    else:
+        raise Http404
+
+
+@login_required
 def create_issue(request, username, reponame):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
@@ -361,6 +377,7 @@ def pull_requests(request, username, reponame):
     raise Http404
 
 
+@login_required
 def compare(request, username, reponame, comparation=None):
     if request.method == 'GET':
         context = _get_compare_context(
@@ -372,7 +389,7 @@ def compare(request, username, reponame, comparation=None):
         pr = _create_artefact_from_form(
             request.user, repo, pr_form, comment_form)
         context = _get_compare_context(
-            request.user, username, reponame, comparation, pr_form, comment_form)
+            request.user, username, reponame, comparation, pr, comment_form)
         if pr:
             pr.source = context['comparator']
             pr.target = context['base']
@@ -393,6 +410,7 @@ def pull_request(request, username, reponame, id):
             request.user, username, reponame, '...'.join([pr.target, pr.source]), pr)
         context['pr'] = pr
 
+    # TODO: permissions
     elif request.method == 'POST':
         repo = find_repo(request.user, username, reponame)
         pr = repo.artefact_set.get(pk=id)
@@ -402,7 +420,8 @@ def pull_request(request, username, reponame, id):
             request.user, username, reponame, '...'.join([pr.target, pr.source]), pr)
         merge_status = merge(repo, context['repo'], pr.target, pr.source)
         if merge_status:
-            pr.status = BASE_STATE.MERGED.value
+            pr.state = BASE_STATE.CLOSED.value
+            pr.is_merged = True
             pr.save()
             context['pr'] = pr
         else:
@@ -410,6 +429,21 @@ def pull_request(request, username, reponame, id):
     else:
         raise Http404
     return render(request, 'hub/repository/pull-request.html', context)
+
+
+@login_required
+def close_pull_request(request, username, reponame, id):
+    if request.method == 'POST':
+        repo = find_repo(request.user, username, reponame)
+        pr = repo.artefact_set.get(pk=id)
+        if not pr:
+            raise Http404
+        pr.state = BASE_STATE.CLOSED.value
+        pr.save()
+        event_artefact_state_change(request.user, pr, pr.state)
+        return redirect(reverse('pull-request', kwargs={'username': username, 'reponame': reponame, 'id': pr.id}))
+    else:
+        raise Http404
 
 
 def actions(request, username, reponame):

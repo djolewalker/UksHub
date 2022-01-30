@@ -13,7 +13,7 @@
       {% endif %}
     </div>
 
-    {% if artefact.state == 3 %}
+    {% if artefact.is_merged %}
     <div class="border border-primary rounded my-3 p-3">
       <h3 class="h4 fs mb-1">Pull request successfully merged and closed</h3>
       <span class="fs-small">
@@ -22,7 +22,27 @@
     </div>
     {% elif artefact.state == 2 %}
     <div class="border border-primary rounded my-3 p-3">
-      <h3 class="h4 fs mb-1">Pull request is closed</h3>
+      <h3 class="h4 fs mb-1">{% if ispr %}Pull request{% else %}Issue{% endif %} is closed</h3>
+    </div>
+    {% elif is_child %}
+    <div class="border border-primary rounded my-3">
+      <div class="p-3 rounded-top border-bottom d-flex">
+        <div class="ml-2">
+          <h3 class="h4 fs mb-0">No differences between branches</h3>
+        </div>
+      </div>
+      <div class="p-3 bg-light rounded-bottom">
+        <form
+          method="post"
+          action="{% url 'close-pull-request' repository.creator.username repository.name artefact.id %}"
+        >
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="btn btn-primary px-3"
+          >Close pull request</button>
+        </form>
+      </div>
     </div>
     {% else %}
     {% if can_merge != None %}
@@ -60,7 +80,48 @@
       </div>
     </div>
     {% endif %}
+    <div class="border rounded mb-3">
+      <div class="p-3 rounded-top border-bottom d-flex">
+        <div class="ml-2">
+          <h3 class="h4 fs mb-0">No more need for pull request? Just close it then!</h3>
+        </div>
+      </div>
+      <div class="p-3 bg-light rounded-bottom">
+        <form
+          method="post"
+          action="{% url 'close-pull-request' repository.creator.username repository.name artefact.id %}"
+        >
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="btn btn-danger px-3"
+          >Close pull request</button>
+        </form>
+      </div>
+    </div>
+    {% else %}
+    <div class="border rounded my-3">
+      <div class="p-3 rounded-top border-bottom d-flex">
+        <div class="ml-2">
+          <h3 class="h4 fs mb-0">Issue is done? Just close it then!</h3>
+        </div>
+      </div>
+      <div class="p-3 bg-light rounded-bottom">
+        <form
+          method="post"
+          action="{% url 'close-issue' repository.creator.username repository.name artefact.id %}"
+        >
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="btn btn-danger px-3"
+          >Close issue</button>
+        </form>
+      </div>
+    </div>
     {% endif %}
+
+
     {% endif %}
   </div>
   <div class="about-side-bar">

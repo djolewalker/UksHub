@@ -54,8 +54,24 @@
       {% endfor %}
       {% endif %}
     </span>
-
-
+    {% elif event.get_type == "StateChange" %}
+    {% if event.new_state == 1 %}
+    <span
+      class="badge order-0 badge-secondary rounded-circle p-2"
+      style="margin-left:3px"
+    >
+      <i class="bi bi-record-circle"></i>
+    </span>
+    <span class="ml-1 order-3"> reopened this issue</span>
+    {% else %}
+    <span
+      class="badge order-0 badge-secondary rounded-circle p-2"
+      style="margin-left:3px"
+    >
+      <i class="bi bi-check-circle"></i>
+    </span>
+    <span class="ml-1 order-3"> closed this {% if ispr %}pull request{% else %}issue{% endif %}</span>
+    {% endif %}
     {% else %}
     <span
       class="badge order-0 badge-secondary rounded-circle p-2"
@@ -63,7 +79,7 @@
     >
       <i class="bi bi-question-circle"></i>
     </span>
-    <span class="ml-1">Uknown event</span>
+    <span class="ml-1 order-3">Uknown event</span>
     {% endif %}
   </div>
 </div>
