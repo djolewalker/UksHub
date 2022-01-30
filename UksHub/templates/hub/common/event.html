@@ -1,52 +1,69 @@
 {% load humanize %}
-<div class="position-relative lined-item w-100 py-3" style="margin-left:16px">
-    <div class="fs-small w-100 d-flex bg-white align-items-center" style="margin-left:-16px;z-index:10;padding:2px 0">
-        
-        <a href="{% url 'profile' event.creator.username %}" 
-            class="order-1 ml-2 d-flex align-items-center">
-           <div style="width:20px;heigh:20px">
-            {% with event.creator as user %}
-                {% include 'hub/common/profile-picture.html' %}
-            {% endwith %}
-           </div>
-           <b class="link-hover-underline ml-1">
-               {{event.creator.username}}
-           </b>
-        </a>
+<div
+  class="position-relative lined-item w-100 py-3"
+  style="margin-left:16px"
+>
+  <div
+    class="fs-small w-100 d-flex bg-white align-items-center"
+    style="margin-left:-16px;z-index:10;padding:2px 0"
+  >
 
-        <span class="order-4 ml-1">
-            {{ event.created_at | naturaltime }}
-        </span>
+    <a
+      href="{% url 'profile' event.creator.username %}"
+      class="order-1 ml-2 d-flex align-items-center"
+    >
+      <div style="width:20px;heigh:20px">
+        {% with event.creator as user %}
+        {% include 'hub/common/profile-picture.html' %}
+        {% endwith %}
+      </div>
+      <b class="link-hover-underline ml-1">
+        {{event.creator.username}}
+      </b>
+    </a>
 
-        
-        {% if event.get_type == "UserAssignment" %}
-        <span class="badge order-0 badge-secondary rounded-circle p-2" style="margin-left:3px">
-            <i class="bi bi-person"></i>
-        </span>
-        <span class="ml-1 order-3 d-flex">
-            {% if events.users.all|length == 1 and event.artefact.creator == event.creator %}
-                self-assigned this
-            {% else %}
-                assigned
-                {% for user in event.users.all %}
-                    {% if event.users.all|length > 1 and forloop.last %}
-                        <span class="ml-1">and</span>
-                    {% elif event.users.all|length > 1 and not forloop.first %}
-                        <span>,</span>
-                    {% endif %}
-                    <a href="{% url 'profile' user.username %}" class="ml-1">
-                        <b class="link-hover-underline">{{user.username}}</b>
-                    </a>
-                {% endfor %}
-            {% endif %}
-        </span>
+    <span class="order-4 ml-1">
+      {{ event.created_at | naturaltime }}
+    </span>
 
-        
-        {% else %}
-        <span class="badge order-0 badge-secondary rounded-circle p-2" style="margin-left:3px">
-            <i class="bi bi-question-circle"></i>
-        </span>
-        <span class="ml-1">Uknown event</span>
-        {% endif %}
-    </div>
+
+    {% if event.get_type == "UserAssignment" %}
+    <span
+      class="badge order-0 badge-secondary rounded-circle p-2"
+      style="margin-left:3px"
+    >
+      <i class="bi bi-person"></i>
+    </span>
+    <span class="ml-1 order-3 d-flex">
+      {% if events.users.all|length == 1 and event.artefact.creator == event.creator %}
+      self-assigned this
+      {% else %}
+      assigned
+      {% for user in event.users.all %}
+      {% if event.users.all|length > 1 and forloop.last %}
+      <span class="ml-1">and</span>
+      {% elif event.users.all|length > 1 and not forloop.first %}
+      <span>,</span>
+      {% endif %}
+      <a
+        href="{% url 'profile' user.username %}"
+        class="ml-1"
+      >
+        <b class="link-hover-underline">{{user.username}}</b>
+      </a>
+      {% endfor %}
+      {% endif %}
+    </span>
+
+
+    {% else %}
+    <span
+      class="badge order-0 badge-secondary rounded-circle p-2"
+      style="margin-left:3px"
+    >
+      <i class="bi bi-question-circle"></i>
+    </span>
+    <span class="ml-1">Uknown event</span>
+    {% endif %}
+  </div>
 </div>

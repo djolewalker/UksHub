@@ -12,7 +12,8 @@ from .forms import KeyForm, RepositoryForm, RepositoryContributorsForm
 @login_required
 def init_repo(request):
     if request.method == 'POST':
-        repo_form = RepositoryForm(request.POST, initial={'isPublic': True, 'owner': request.user.username })
+        repo_form = RepositoryForm(request.POST, initial={
+                                   'isPublic': True, 'owner': request.user.username})
         if repo_form.is_valid():
             try:
                 repo = repo_form.save(commit=False)
@@ -26,10 +27,14 @@ def init_repo(request):
                     init_repository(repo)
                 return redirect(f'/{request.user.username}?tab=repositories')
             except IntegrityError:
-                repo_form.add_error('name', 'You have already created repository with this name!')
+                repo_form.add_error(
+                    'name', 'You have already created repository with this name!')
     if request.method == 'GET':
-        repo_form = RepositoryForm(initial={'isPublic': True, 'owner': request.user.username })
-    return render(request, 'git-core/create-repo.html', {'form': repo_form }) if repo_form  else HttpResponse(status=409)
+        repo_form = RepositoryForm(
+            initial={'isPublic': True, 'owner': request.user.username})
+    else:
+        raise Http404
+    return render(request, 'git-core/create-repo.html', {'form': repo_form}) if repo_form else HttpResponse(status=409)
 
 
 # TODO: just a test, should be integrated in HUB
@@ -37,16 +42,19 @@ def init_repo(request):
 def add_contributor(request, repoId):
     if request.method == 'POST':
         repo = get_object_or_404(Repository, pk=repoId)
-        contr_form = RepositoryContributorsForm(repo.creator, request.POST, instance=repo)
+        contr_form = RepositoryContributorsForm(
+            repo.creator, request.POST, instance=repo)
         if contr_form.is_valid():
             repo = contr_form.save()
             repo.contributors.add(repo.creator)
             sync_repo(repo)
             return HttpResponse(status=200)
-    if request.method == 'GET':
+    elif request.method == 'GET':
         repo = get_object_or_404(Repository, pk=repoId)
         contr_form = RepositoryContributorsForm(repo.creator, instance=repo)
-    return render(request, 'git-core/create-form.html', {'form': contr_form }) if contr_form else Http404
+    else:
+        raise Http404
+    return render(request, 'git-core/create-form.html', {'form': contr_form}) if contr_form else Http404
 
 
 @login_required
@@ -57,17 +65,20 @@ def public_key(request):
         if key_form.is_valid():
             try:
                 if PublicKey.objects.filter(owner=request.user, label=None).exists():
-                    PublicKey.objects.filter(owner=request.user, label=None).delete()
+                    PublicKey.objects.filter(
+                        owner=request.user, label=None).delete()
                 key = key_form.save(commit=False)
                 key.owner = request.user
                 key.save()
                 sync_user_keys(request.user)
                 return redirect('settings-keys')
             except IntegrityError:
-                key_form.add_error('label', 'Only one key can be labeled with same label!')
+                key_form.add_error(
+                    'label', 'Only one key can be labeled with same label!')
     if request.method == 'GET':
         if PublicKey.objects.filter(owner=request.user, label=None).exists():
-            note = 'You have set unlabeled public key. Create new one with specified label. Otherwise current unlabeled public key will be overridden!' 
+            note = 'You have set unlabeled public key. Create new one with specified label. Otherwise current unlabeled public key will be overridden!'
         key_form = KeyForm()
-    return render(request, 'hub/user-settings/settings-new-ssh.html', { 'form': key_form, 'note': note }) if key_form else Http404
-        
+    else:
+        raise Http404
+    return render(request, 'hub/user-settings/settings-new-ssh.html', {'form': key_form, 'note': note}) if key_form else Http404

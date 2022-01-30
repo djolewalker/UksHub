@@ -142,7 +142,13 @@
                 </div>
                 <div class="d-flex justify-content-end" style="width:250px;flex-shrink:0;">
                     <span>{{commit.committed_datetime|naturaltime}}</span>
-                    <a href="{% url 'commits' repository.creator.username repository.name %}">
+                    <a 
+                    {% if path_name == 'repository' %}
+                    href="{% url 'commits' repository.creator.username repository.name %}"
+                    {% else %}
+                    href="{% url 'branch-commits' repository.creator.username repository.name branch %}"
+                    {% endif %}
+                    >
                         {% if blob %}
                         <b class="ml-2 link-hover">
                             <i class="bi bi-clock-history"></i> History

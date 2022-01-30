@@ -5,44 +5,178 @@
 <h2 class="h4">Compare changes</h2>
 <p class="fs-small pb-2 border-bottom mb-3">Compare changes across branches, commits, tags, and more below. </p>
 
+{% if is_empty %}
+<div
+  class="d-flex flex-column align-items-center"
+  style="margin-top: 200px"
+>
+  <h2 class="h4">There are no branches!</h2>
+</div>
+{% else %}
 <div class="p-2 border rounded bg-light d-flex align-items-center">
-    <i class="bi bi-bezier2 mx-2"></i>
-    <div class="dropdown mx-2">
-        <a class="main-content-branches text-truncate btn btn-secondary btn-sm dropdown-toggle pl-3 pr-4" href=""
-            role="button" data-toggle="dropdown">
-            <i class="bi bi-diagram-2"></i>
-            {{base}}
-        </a>
-        <div class="dropdown-menu">
-            {% for brch in repo.branches %}
-            <a class="dropdown-item"
-                href="{% url 'compare-branches' repository.creator.username repository.name brch.name|add:'...'|add:comparator %}">
-                <i class="bi bi-check-lg{% if brch.name != base %} hidden{% endif %}"></i>
-                {{ brch.name }}
-            </a>
-            {% endfor %}
-        </div>
+  <i class="bi bi-bezier2 mx-2"></i>
+  <div class="dropdown mx-2">
+    <a
+      class="main-content-branches text-truncate btn btn-secondary btn-sm dropdown-toggle pl-3 pr-4"
+      href="#"
+      role="button"
+      data-toggle="dropdown"
+    >
+      <i class="bi bi-diagram-2"></i>
+      {{base}}
+    </a>
+    <div class="dropdown-menu">
+      {% for brch in repo.branches %}
+      <a
+        class="dropdown-item"
+        href="{% url 'compare-branches' repository.creator.username repository.name brch.name|add:'...'|add:comparator %}"
+      >
+        <i class="bi bi-check-lg{% if brch.name != base %} hidden{% endif %}"></i>
+        {{ brch.name }}
+      </a>
+      {% endfor %}
     </div>
-    <i class="bi bi-arrow-left mx-1"></i>
-    <div class="dropdown mx-2">
-        <a class="main-content-branches text-truncate btn btn-secondary btn-sm dropdown-toggle pl-3 pr-4" href=""
-            role="button" data-toggle="dropdown">
-            <i class="bi bi-diagram-2"></i>
-            {{comparator}}
-        </a>
-        <div class="dropdown-menu">
-            {% for brch in repo.branches %}
-            <a class="dropdown-item"
-                href="{% url 'compare-branches' repository.creator.username repository.name base|add:'...'|add:brch.name %}">
-                <i class="bi bi-check-lg{% if brch.name != comparator %} hidden{% endif %}"></i>
-                {{ brch.name }}
-            </a>
-            {% endfor %}
-        </div>
+  </div>
+  <i class="bi bi-arrow-left mx-1"></i>
+  <div class="dropdown mx-2">
+    <a
+      class="main-content-branches text-truncate btn btn-secondary btn-sm dropdown-toggle pl-3 pr-4"
+      href="#"
+      role="button"
+      data-toggle="dropdown"
+    >
+      <i class="bi bi-diagram-2"></i>
+      {{comparator}}
+    </a>
+    <div class="dropdown-menu">
+      {% for brch in repo.branches %}
+      <a
+        class="dropdown-item"
+        href="{% url 'compare-branches' repository.creator.username repository.name base|add:'...'|add:brch.name %}"
+      >
+        <i class="bi bi-check-lg{% if brch.name != comparator %} hidden{% endif %}"></i>
+        {{ brch.name }}
+      </a>
+      {% endfor %}
     </div>
+  </div>
 </div>
 
+{% if is_child %}
+<div
+  class="d-flex flex-column align-items-center"
+  style="margin-top: 160px"
+>
+  <h2 class="h4">There isn't anything to compare.</h2>
+  <p><b>{{base}}</b> is up to date with all commits from <b>{{comparator}}</b>. Try switching the base for your
+    comparison.</p>
+</div>
+{% elif is_same %}
+<div
+  class="d-flex flex-column align-items-center"
+  style="margin-top: 160px"
+>
+  <h2 class="h4">There isn't anything to compare.</h2>
+  <p>You'll need to use two different branch names to get a valid comparison.</p>
+</div>
+{% elif can_merge == False %}
+<div class="border border-danger rounded my-3">
+  <div class="p-3 rounded-top border-bottom d-flex">
+    <div style="font-size:26px;  margin-top:-6px">
+      <i class="bi bi-x-circle-fill text-danger"></i>
+    </div>
+    <div class="ml-2">
+      <h3 class="h4 fs mb-1">This branch has conflicts that must be resolved</h3>
+      <span class="fs-small">Use your local repository to solve conflicts</span>
+    </div>
+  </div>
+</div>
+{% else %}
 {% if diffs %}
-{% include 'hub/common/file-diff.html' %}
+<div id="create-pr-intro">
+  <div
+    class="p-3 d-flex justify-content-between fs-small align-items-center rounded border border-primary my-3"
+    style="background-color: rgba(56, 139, 253, 0.15)"
+  >
+    <span>Discuss and review the changes in this comparison with others</span>
+    <button
+      id="create-pr-intro-btn"
+      type="button"
+      class="btn btn-success btn-sm px-2 "
+    >Create pull request</button>
+  </div>
+</div>
+<div
+  id="create-pr-form"
+  class="my-3 d-none"
+>
+  {% include 'hub/common/new-artefact.html' %}
+</div>
+
+<nav>
+  <div
+    class="nav nav-tabs"
+    id="nav-tab"
+    role="tablist"
+  >
+    <a
+      style="margin-bottom: -1px;"
+      class="nav-link active"
+      id="nav-home-tab"
+      data-bs-target="#nav-commits"
+      ref="#nav-file-changes"
+      type="button"
+    >Commits</a>
+    <a
+      style="margin-bottom: -1px;"
+      class="nav-link"
+      id="nav-profile-tab"
+      data-bs-target="#nav-file-changes"
+      href="#nav-file-changes"
+      type="button"
+    >Files changed</a>
+  </div>
+</nav>
+<div
+  class="tab-content"
+  id="nav-tabContent"
+>
+  <div
+    class="tab-pane fade show active"
+    id="nav-commits"
+  >{% include 'hub/common/commits.html' %}</div>
+  <div
+    class="tab-pane fade"
+    id="nav-file-changes"
+  >
+    {% include 'hub/common/file-diff.html' %}
+  </div>
+</div>
 {% endif %}
+{% endif %}
+{% endif %}
+
+
+<script>
+  document
+    .getElementById("create-pr-intro-btn")
+    .addEventListener("click", function () {
+      document.getElementById("create-pr-intro").classList.add("d-none");
+      document.getElementById("create-pr-form").classList.remove("d-none");
+    });
+
+
+  document.querySelectorAll("#nav-tab a").forEach(btn =>
+    btn.addEventListener("click", function (event) {
+      event.preventDefault();
+      document.querySelector(".nav-tabs .nav-link.active").classList.remove("active");
+      const activeTab = document.querySelector(".tab-content .tab-pane.show.active")
+      activeTab.classList.remove("show");
+      activeTab.classList.remove("active");
+      this.classList.add("active");
+      const toActivate = document.querySelector(this.getAttribute("data-bs-target"))
+      toActivate.classList.add("show");
+      toActivate.classList.add("active");
+    }))
+</script>
 {% endblock repocontent %}
