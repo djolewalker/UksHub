@@ -487,6 +487,7 @@ def repository_settings(request, username, reponame):
     raise Http404
 
 
+@login_required
 def star_view(request, pk):
     if request.method == 'POST':
         repo = get_object_or_404(Repository, id=pk)
@@ -495,11 +496,13 @@ def star_view(request, pk):
             repo.stars.remove(request.user)
         else:
             repo.stars.add(request.user)
-        return HttpResponse(status=204)
+
+        return redirect(request.GET['next'])
     else:
         raise Http404
 
 
+@login_required
 def watch_view(request, pk):
     if request.method == 'POST':
         repo = get_object_or_404(Repository, id=pk)
@@ -507,6 +510,6 @@ def watch_view(request, pk):
             repo.watch.remove(request.user)
         else:
             repo.watch.add(request.user)
-        return HttpResponse(status=204)
+        return redirect(request.GET['next'])
     else:
         raise Http404
