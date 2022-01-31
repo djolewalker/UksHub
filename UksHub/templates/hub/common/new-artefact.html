@@ -1,0 +1,22 @@
+{% load crispy_forms_tags%}
+
+<form
+  class="artefact-form d-flex ignore-asterics"
+  method="post"
+>
+  {% csrf_token %}
+  <div class="main-content d-flex mr-4 flex-column border rounded p-2">
+    {{ artefact_form.name | as_crispy_field }}
+    {{ comment_form | crispy }}
+    <button
+      class="btn btn-success"
+      style="align-self:end"
+      type="submit"
+    >Create</button>
+  </div>
+  <div class="about-side-bar">
+    <div class="pb-3">
+      {{ artefact_form.assignees | as_crispy_field }}
+    </div>
+  </div>
+</form>

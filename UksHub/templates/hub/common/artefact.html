@@ -1,64 +1,151 @@
-{% load hub_filters humanize %}
-{% with artefact|isissue as is_issue %}
-<div class="d-flex col-12">
-  <div>
-    <span
-      class="badge badge-pill {% if artefact.state == 1 %}badge-success{% else %}badge-primary{% endif %} ml-3 p-1 mt-1 fs"
-      style="height:24px; width:24px">
-      {% if is_issue %}
-      {% if artefact.state == 1 %}
-      <i class="bi bi-record-circle"></i>
-      {% else %}
-      <i class="bi bi-check-circle"></i>
+<div class="d-flex mt-5">
+  <div class="main-content d-flex mr-4 flex-column position-relative">
+    {% with artefact.message as comment %}
+    {% include 'hub/common/comment.html' %}
+    {% endwith %}
+    <div class="border-bottom border-secondary">
+      {% if artefact.event_set %}
+      {% for event in artefact.sorted_event_set %}
+      {% if event != artefact.message %}
+      {% include 'hub/common/event.html' %}
       {% endif %}
-      {% else %}
-      <i class="bi bi-bezier2"></i>
+      {% endfor %}
       {% endif %}
-    </span>
-  </div>
-  <div class="col-8 pl-2 mw-0 flex-auto" style="max-width:unset">
-    <div class="d-flex mb-1 align-items-center mt-2">
-      <h3 class="text-truncate fs h4 m-0">
-        {% if is_issue %}
-        <a href="{% url 'issue' repository.creator.username repository.name artefact.id %}">
-          <b class="link-hover-underline">{{artefact.name}}</b>
-        </a>
-        {% else %}
-        <a href="{% url 'pull-request' repository.creator.username repository.name artefact.id %}">
-          <b class="link-hover-underline">{{artefact.name}}</b>
-        </a>
-        {% endif %}
-      </h3>
     </div>
-    <p class="col-9 d-inline-block color-fg-muted pl-0 pr-4 fs-small">
-      #{{artefact.id}} opened {{artefact.created_at|naturaltime}} by
-      <a href="{% url 'profile' artefact.creator.username %}">
-        <span class="link-hover-underline">
-          {{artefact.creator.username}}
-        </span>
-      </a>
-    </p>
-  </div>
-  <div class="col-3 p-0">
-    <div class="col-12 d-flex h-100 p-0">
-      <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
-      <div class="col-4 d-flex align-items-center justify-content-end px-1">
-        {% for user in artefact.assignees.all %}
-        {% with 'assignee:'|add:user.username as username %}
-        <a href="
-          {% if is_issue %}
-          {% url 'issues' repository.creator.username repository.name %}?q={{queries.assignee|urlencode}}{{' '|add:username|urlencode}}
-          {% else %}
-          {% url 'pull-requests' repository.creator.username repository.name %}?q={{queries.assignee|urlencode}}{{' '|add:username|urlencode}}
-          {% endif %}
-          " style="width:20px;height:20px">
-          <span>{% include 'hub/common/profile-picture.html' %}</span>
-        </a>
-        {% endwith %}
-        {% endfor %}
+
+    {% if artefact.is_merged %}
+    <div class="border border-primary rounded my-3 p-3">
+      <h3 class="h4 fs mb-1">Pull request successfully merged and closed</h3>
+      <span class="fs-small">
+        You're all set—the <b>{{artefact.source}}</b> branch can be safely deleted.
+      </span>
+    </div>
+    {% elif artefact.state == 2 %}
+    <div class="border border-primary rounded my-3 p-3">
+      <h3 class="h4 fs mb-1">{% if ispr %}Pull request{% else %}Issue{% endif %} is closed</h3>
+    </div>
+    {% elif is_child %}
+    <div class="border border-primary rounded my-3">
+      <div class="p-3 rounded-top border-bottom d-flex">
+        <div class="ml-2">
+          <h3 class="h4 fs mb-0">No differences between branches</h3>
+        </div>
       </div>
-      <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
+      <div class="p-3 bg-light rounded-bottom">
+        <form
+          method="post"
+          action="{% url 'close-pull-request' repository.creator.username repository.name artefact.id %}"
+        >
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="btn btn-primary px-3"
+          >Close pull request</button>
+        </form>
+      </div>
+    </div>
+    {% else %}
+    {% if can_merge != None %}
+    {% if can_merge %}
+    <div class="border border-success rounded my-3">
+      <div class="p-3 rounded-top border-bottom d-flex">
+        <div style="font-size:26px; margin-top:-6px">
+          <i class="bi bi-check-circle-fill text-success"></i>
+        </div>
+        <div class="ml-2">
+          <h3 class="h4 fs mb-1">This branch has no conflicts with the base branch</h3>
+          <span class="fs-small">Merging can be performed automatically.</span>
+        </div>
+      </div>
+      <div class="p-3 bg-light rounded-bottom">
+        <form method="post">
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="btn btn-success px-3"
+          >Merge pull request</button>
+        </form>
+      </div>
+    </div>
+    {% else %}
+    <div class="border border-danger rounded my-3">
+      <div class="p-3 rounded-top border-bottom d-flex">
+        <div style="font-size:26px;  margin-top:-6px">
+          <i class="bi bi-x-circle-fill text-danger"></i>
+        </div>
+        <div class="ml-2">
+          <h3 class="h4 fs mb-1">This branch has conflicts that must be resolved</h3>
+          <span class="fs-small">Use your local repository to solve conflicts</span>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    <div class="border rounded mb-3">
+      <div class="p-3 rounded-top border-bottom d-flex">
+        <div class="ml-2">
+          <h3 class="h4 fs mb-0">No more need for pull request? Just close it then!</h3>
+        </div>
+      </div>
+      <div class="p-3 bg-light rounded-bottom">
+        <form
+          method="post"
+          action="{% url 'close-pull-request' repository.creator.username repository.name artefact.id %}"
+        >
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="btn btn-danger px-3"
+          >Close pull request</button>
+        </form>
+      </div>
+    </div>
+    {% else %}
+    <div class="border rounded my-3">
+      <div class="p-3 rounded-top border-bottom d-flex">
+        <div class="ml-2">
+          <h3 class="h4 fs mb-0">Issue is done? Just close it then!</h3>
+        </div>
+      </div>
+      <div class="p-3 bg-light rounded-bottom">
+        <form
+          method="post"
+          action="{% url 'close-issue' repository.creator.username repository.name artefact.id %}"
+        >
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="btn btn-danger px-3"
+          >Close issue</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+
+    {% endif %}
+  </div>
+  <div class="about-side-bar">
+    <div class="pb-3">
+      <h2 class="mb-3 h4 fs font-weight-bold">Assignees</h2>
+      {% if artefact.assignees.all %}
+      <ul class="p-0 fs-small m-0">
+        {% for assignee in artefact.assignees.all %}
+        <li class="contributor mb-2">
+          {% with user=assignee %}
+          <div class="h-100 mr-2">
+            <a href="{% url 'profile' user.username %}">{% include 'hub/common/profile-picture.html' %}</a>
+          </div>
+          <a href="{% url 'profile' user.username %}">
+            <b class="link-hover">{{user.username}}</b>
+            {% if user.userprofile.name %}user.userprofile.name{% endif %}
+          </a>
+          {% endwith %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      No assignees
+      {% endif %}
     </div>
   </div>
 </div>
-{% endwith %}
