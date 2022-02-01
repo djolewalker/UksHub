@@ -65,3 +65,5 @@ def generate_hierarchy(branch, path):
             raise Http404
         hierarchy.append({'path': tree.path, 'name': tree.name})
     return hierarchy, tree
+
+

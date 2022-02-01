@@ -26,6 +26,16 @@
         {% for repository in sorted_watched_repos_limit %}
             {% include './repo-cards.html' %}
         {% endfor %}
+
+    <div class="panel-title" class="w-100  mb-3 py-2 d-flex justify-content-between">
+            <h3 class="h3 m-0">
+                Last updated #starred repositories
+            </h3>
+        </div>
+        {% for repository in sorted_starred_repos_limit %}
+            {% include './repo-cards.html' %}
+        {% endfor %}
+
     </div>
 
 </div>
