@@ -1,0 +1,18 @@
+.home-hub-container {
+
+    width: 100%;
+
+    .navigation {
+        width: 400px;
+        padding: 25px;
+    }
+
+
+    .verticalLine {
+        border-left: thin solid #232323;
+}
+
+    .main-content {
+        width: calc(100% - 400px);
+    }
+}
