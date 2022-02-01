@@ -21,6 +21,7 @@ def home_hub_view(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
             repositories = request.user.repository_set.all()
+
             watched_repositories = []
             for repo in repositories:
                 if request.user in repo.watch.all():
@@ -28,13 +29,14 @@ def home_hub_view(request):
             sorted_watched_repos = sorted(watched_repositories, key=lambda x: x.updated_at, reverse=True)
             sorted_watched_repos_limit = sorted_watched_repos[:5]
 
-
             starred_repositories = []
             for repo in repositories:
                 if request.user in repo.stars.all():
                     starred_repositories.append(repo)
             sorted_starred_repos = sorted(starred_repositories, key=lambda x: x.updated_at, reverse=True)
             sorted_starred_repos_limit = sorted_starred_repos[:5]
+
+
 
             context = {
                 'repositories': repositories,

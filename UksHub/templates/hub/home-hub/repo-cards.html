@@ -16,7 +16,7 @@
                                     <div>
                                         {% if repository.updated_at %}
                                         <p class="col-9 d-inline-block color-fg-muted mb-2 pl-0 pr-4" style="font-size:12px">
-                                            Last updated at {{repository.updated_at|naturaltime}}
+                                            Last updated {{repository.updated_at|naturaltime}}
                                         </p>
                                         {% endif %}
                                     </div>
@@ -46,7 +46,11 @@
                                         {% endif %}
                                     </i>
                                 </div>
+
                             </li>
                         </div>
                 </div>
             </div>
+
+
+

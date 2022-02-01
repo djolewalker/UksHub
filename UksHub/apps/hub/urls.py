@@ -9,8 +9,9 @@ from .views.repository import actions, blob, close_issue, close_pull_request, co
 
 urlpatterns = [
     # Home
-    path('', home, name='home'),
-    path('home-hub', home_hub_view, name='home_hub'),
+    path('home_hub', home_hub_view, name='home'),
+    path('x', home, name='homex'),
+
 
     # User profile
     path('<username>', profile_overview, name='profile'),
