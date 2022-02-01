@@ -20,9 +20,17 @@
 
     .verticalLine {
         border-left: thin solid #232323;
-}
+    }
 
     .main-content {
         width: calc(100% - 400px);
     }
+
+    .inline {
+        display: inline;
+        padding-right: 20px;
+    }
+
+
+
 }

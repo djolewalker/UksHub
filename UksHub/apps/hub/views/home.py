@@ -25,7 +25,14 @@ def home_hub_view(request):
                 if request.user in repo.watch.all():
                     watched_repositories.append(repo)
             sorted_watched_repos = sorted(watched_repositories, key=lambda x: x.updated_at, reverse=True)
-            return render(request, 'hub/home-hub/home-hub.html', {'repositories': repositories, 'watched_repositories': watched_repositories, 'sorted_watched_repos': sorted_watched_repos})
+            sorted_watched_repos_limit = sorted_watched_repos[:5]
+            context = {
+                'repositories': repositories,
+                'watched_repositories': watched_repositories,
+                'sorted_watched_repos': sorted_watched_repos,
+                'sorted_watched_repos_limit': sorted_watched_repos_limit
+            }
+            return render(request, 'hub/home-hub/home-hub.html', context)
         return render(request, 'hub/home-hub/home-hub.html', {'form': SignupForm()})
     if request.method == 'POST':
         return register(request)
