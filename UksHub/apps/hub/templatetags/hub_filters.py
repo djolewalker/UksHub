@@ -125,6 +125,11 @@ def string_startswith(text, word):
     return text.startswith(word)
 
 
+@register.filter(name='user_can_modify')
+def user_can_modify(repository, user):
+    return repository.creator == user or repository.contributors.filter(pk=user.id).exists()
+
+
 @register.filter(name='userordefault')
 def user_or_default(repo, actor):
     try:
