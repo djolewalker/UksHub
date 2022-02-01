@@ -1,0 +1,166 @@
+{% extends 'hub/repository/repository-settings.html' %}
+
+{% block settingsTitle %}
+<h2 class="h3">Settings</h2>
+{% endblock settingsTitle %}
+
+
+{% block settingsContent %}
+
+<h2 class="h4 mb-4">Danger zone</h2>
+
+<div class="danger-settings border border-danger rounded">
+  <div class="p-3 border-bottom">
+    <div class="to-replace d-flex align-items-center">
+      <div class="d-flex flex-auto mw-0 flex-column">
+        <b>Change repository visibility</b>
+        <span>This repository is currently public.</span>
+      </div>
+      <button
+        data-controls="replace-form-1"
+        class="to-replace-btn btn btn-dark btn-sm text-danger font-weight-bold"
+      >
+        {% if repository.private %}
+        Make public
+        {% else %}
+        Make private
+        {% endif %}
+      </button>
+    </div>
+    <form
+      id="replace-form-1"
+      class="replace-form d-none"
+      method="post"
+      data-repo="{{repository.creator.username}}/{{repository.name}}"
+      action="{% url 'repository-private-status' repository.id %}?next={{request.path}}"
+    >
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="exampleInputEmail1"> Warning: this is a potentially destructive action! </br> Please type
+          <b>{{repository.creator.username}}/{{repository.name}}</b> to
+          confirm change to <i>{% if repository.private %}public{% else %}private{% endif %}</i> status.</label>
+        <label for="exampleInputEmail1"> </label>
+        <input
+          class="form-control"
+          data-repo="{{repository.creator.username}}/{{repository.name}}"
+        >
+      </div>
+    </form>
+  </div>
+  <div class="p-3 border-bottom">
+    <div class="to-replace d-flex align-items-center">
+      <div class="d-flex flex-auto mw-0 flex-column">
+        {% if repository.archived %}
+        <b>Make this repo active again</b>
+        {% else %}
+        <b>Archive this repository</b>
+        <span>Mark this repository as archived and read-only.</span>
+        {% endif %}
+      </div>
+      <button
+        data-controls="replace-form-2"
+        class="to-replace-btn btn btn-dark btn-sm text-danger font-weight-bold"
+      >
+        {% if repository.archived %}
+        Unarchive
+        {% else %}
+        Archive
+        {% endif %}
+      </button>
+    </div>
+    <form
+      id="replace-form-2"
+      class="replace-form d-none"
+      method="post"
+      data-repo="{{repository.creator.username}}/{{repository.name}}"
+      action="{% url 'archive-repository' repository.id %}?next={{request.path}}"
+    >
+      {% csrf_token %}
+      <div class="form-group">
+        {% if repository.archived %}
+        <label>Make this repo active again</label></br>
+        {% else %}
+        <label>This repository will become read-only.</br>
+          You will still be able to fork the repository and unarchive it at any time.</label>
+        {% endif %}
+        <label>Please type <b>{{repository.creator.username}}/{{repository.name}}</b> to
+          confirm.</label>
+        <input
+          class="form-control"
+          data-repo="{{repository.creator.username}}/{{repository.name}}"
+        >
+      </div>
+    </form>
+  </div>
+  <div class="p-3 rounded-bottom">
+    <div class="to-replace  d-flex align-items-center">
+      <div class="d-flex flex-auto mw-0 flex-column">
+        <b>Delete this repository</b>
+        <span>Once you delete a repository, there is no going back. Please be certain.</span>
+      </div>
+      <button
+        data-controls="replace-form-3"
+        class="to-replace-btn font-weight-bold to-replace btn btn-dark btn-sm text-danger"
+      >
+        Delete this repository
+      </button>
+    </div>
+
+    <form
+      id="replace-form-3"
+      class="replace-form d-none"
+      method="post"
+      data-repo="{{repository.creator.username}}/{{repository.name}}"
+      action="{% url 'delete-repository' repository.id %}?next={% url 'profile' user.username %}"
+    >
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="exampleInputEmail1">Are you absolutely sure?</label>
+        <small
+          id="emailHelp"
+          class="form-text text-muted mb-2"
+        >This action cannot be undone. This will permanently delete the djolewalker/zmijica repository, wiki, issues,
+          comments, packages, secrets, workflow runs, and remove all collaborator associations.</small>
+        <label for="exampleInputEmail1">Please type <b>{{repository.creator.username}}/{{repository.name}}</b> to
+          confirm.</label>
+        <input
+          class="form-control"
+          name="asd"
+        >
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document
+    .querySelectorAll(".danger-settings .to-replace-btn")
+    .forEach(e => {
+      e.addEventListener('click', (event) => {
+        document.querySelectorAll(".danger-settings .replace-form").forEach((form) => {
+          form.classList.add("d-none");
+        });
+
+        document.querySelectorAll(".danger-settings .to-replace").forEach((form) => {
+          form.classList.remove("d-none");
+          form.classList.add("d-flex");
+        });
+
+        const controledForm = event.target.getAttribute("data-controls")
+        document.getElementById(controledForm).classList.remove("d-none")
+        event.target.parentElement.classList.remove("d-flex");
+        event.target.parentElement.classList.add("d-none");
+      })
+    })
+
+
+  document
+    .querySelectorAll(".danger-settings .replace-form")
+    .forEach(input => {
+      input.addEventListener('submit', (v) => {
+        if (v.target.querySelector(".form-control").value !== v.target.getAttribute("data-repo"))
+          v.preventDefault()
+      })
+    })
+</script>
+{% endblock settingsContent %}
