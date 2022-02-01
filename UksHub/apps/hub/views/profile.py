@@ -31,9 +31,9 @@ def _redirect_to_tab(request, tab, context):
 
 def _repositories(request, context):
     if request.user == context['user']:
-        repositories = context['user'].repository_set.all()
+        repositories = context['user'].repository_set.filter(archived=False).all()
     else:
-        repositories = context['user'].repository_set.filter(private=False).all()
+        repositories = context['user'].repository_set.filter(private=False, archived=False).all()
     return render(request, 'hub/profile/repositories.html', {**context, 'repositories': repositories})
 
 def _projects(request, context):
@@ -44,7 +44,7 @@ def _packages(request, context):
 
 def _stars(request, context):
     if request.user == context['user']:
-        repositories = context['user'].repository_set.filter(private=False, stars=context['user']).all()
+        repositories = context['user'].repository_set.filter(archived=False, stars=context['user']).all()
     else:
-        repositories = context['user'].repository_set.filter(private=False, stars=context['user']).all()
+        repositories = context['user'].repository_set.filter(private=False, archived=False, stars=context['user']).all()
     return render(request, 'hub/profile/stars.html', {**context, 'repositories': repositories})
