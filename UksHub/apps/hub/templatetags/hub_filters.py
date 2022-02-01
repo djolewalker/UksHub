@@ -94,6 +94,32 @@ def query_include(query, word):
     return query == word or query.startswith(f'{word} ') or query.endswith(f' {word}') or f' {word} ' in query
 
 
+@register.filter(name='starcount')
+def star_counter(repository):
+    return repository.stars.all().count()
+
+
+@register.filter(name='watchcount')
+def watch_counter(repository):
+    return repository.watch.all().count()
+
+
+@register.simple_tag
+def is_starred(repository, user):
+    if user in repository.stars.all():
+        return 'Unstar'
+    else:
+        return 'Star'
+
+
+@register.simple_tag
+def is_watched(repository, user):
+    if user in repository.watch.all():
+        return 'Unwatch'
+    else:
+        return 'Watch'
+
+
 @register.filter(name='startswith')
 def string_startswith(text, word):
     return text.startswith(word)

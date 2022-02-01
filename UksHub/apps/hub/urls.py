@@ -4,7 +4,8 @@ from django.views.generic import RedirectView
 from .views.home import home
 from .views.profile import profile_overview
 from .views.profile_settings import settings_keys, settings_profile
-from .views.repository import actions, blob, close_issue, close_pull_request, commit, commits, compare, create_issue, insights, issue, issues, pull_request, pull_requests, tree, repository_projects, repository_settings, security, wiki
+
+from .views.repository import actions, blob, close_issue, close_pull_request, commit, commits, compare, create_issue, insights, issue, issues, pull_request, pull_requests, tree, repository_projects, repository_settings, security, wiki, star_view, watch_view
 
 urlpatterns = [
     # Home
@@ -16,6 +17,8 @@ urlpatterns = [
     path('settings/profile', settings_profile, name='settings-profile'),
     path('settings/keys', settings_keys, name='settings-keys'),
     # Repository
+    path('star/<int:pk>', star_view, name = 'star_repo'),
+    path('watch/<int:pk>', watch_view, name = 'watch_repo'),
     path('<username>/<reponame>', tree, name='repository'),
     path('<username>/<reponame>/tree/<path:path>', tree, name='repository-tree'),
     path('<username>/<reponame>/blob/<path:path>', blob, name='repository-blob'),
@@ -36,5 +39,6 @@ urlpatterns = [
     path('<username>/<reponame>/wiki', wiki, name='wiki'),
     path('<username>/<reponame>/security', security, name='security'),
     path('<username>/<reponame>/insights', insights, name='insights'),
-    path('<username>/<reponame>/settings', repository_settings, name='repository-settings')
+    path('<username>/<reponame>/settings', repository_settings, name='repository-settings'),
+
 ]

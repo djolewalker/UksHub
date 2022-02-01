@@ -1,5 +1,35 @@
 {% extends 'hub/profile/base.html' %}
 
+{% block title %}
+
+{% endblock title %}
+
 {% block profilecontent %}
-Stars works
+
+
+<ul class="p-0">
+    {% for repository in repositories %}
+    <li class="d-flex py-4 border-bottom">
+        <div class="col-10">
+            <div class="d-flex mb-1 align-items-center">
+                <h3 class="wb-break-all" style="font-size:24px">
+                    <a href="{% url 'repository' repository.creator.username repository.name %}">{{repository.name}}</a>
+                </h3>
+                <span class="badge badge-pill badge-secondary ml-3 px-2">
+                    {% if repository.private %}Private{% else %}Public{% endif %}
+                </span>
+            </div>
+            <div>
+                {% if repository.description %}
+                <p class="col-9 d-inline-block color-fg-muted mb-2 pl-0 pr-4" style="font-size:14px">
+                    {{repository.description}}
+                </p>
+                {% endif %}
+            </div>
+
+        </div>
+        <div class="col-2"></div>
+    </li>
+    {% endfor %}
+</ul>
 {% endblock profilecontent %}

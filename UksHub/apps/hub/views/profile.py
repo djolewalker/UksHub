@@ -43,4 +43,8 @@ def _packages(request, context):
     return render(request, 'hub/profile/packages.html', context)
 
 def _stars(request, context):
-    return render(request, 'hub/profile/stars.html', context)
+    if request.user == context['user']:
+        repositories = context['user'].repository_set.filter(private=False, stars=context['user']).all()
+    else:
+        repositories = context['user'].repository_set.filter(private=False, stars=context['user']).all()
+    return render(request, 'hub/profile/stars.html', {**context, 'repositories': repositories})

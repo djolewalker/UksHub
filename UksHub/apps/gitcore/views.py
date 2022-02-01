@@ -1,8 +1,9 @@
 from django.http.response import Http404, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.conf import settings
+
 
 from .models import Repository, PublicKey
 from .services import init_repository, init_repository_dev, sync_repo, sync_user_keys

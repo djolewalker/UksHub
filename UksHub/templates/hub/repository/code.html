@@ -263,8 +263,16 @@
                 </i>
             </div>
             <ul class="p-0 fs-small m-0">
-                <li class="mb-1"> <i class="bi bi-star mr-2"></i>0 stars</li>
-                <li class="mb-1"> <i class="bi bi-eye mr-2"></i>0 watching</li>
+                {% with repository|starcount as star_count %}
+                <li class="mb-1"> <i class="bi bi-star mr-2"></i>
+                    {{ star_count }} stars
+                </li>
+                {% endwith %}
+                {% with repository|watchcount as watch_count %}
+                <li class="mb-1"> <i class="bi bi-eye mr-2"></i>
+                    {{ watch_count }} watching
+                </li>
+                {% endwith %}
                 <li class="mb-1"> <i class="bi bi-diagram-2 mr-2"></i>0 forks</li>
             </ul>
         </div>
