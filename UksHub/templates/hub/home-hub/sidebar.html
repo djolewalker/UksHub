@@ -1,16 +1,8 @@
-{% extends 'hub/hub-base.html' %}
-{% load compress static thumbnail %}
-{% block header %}
-{{ block.super }}
-{% compress css %}
-<link type="text/x-scss" href="{% static 'styles/hub/home-hub.scss' %}" rel="stylesheet" media="screen" />
-{% endcompress %}
-{% endblock %}
-{% block hubcontent %}
-<div class="d-flex flex-row home-hub-container">
 
-    <div class="navigation">
 
+<div class="navigation">
+
+        <!--Search and new repo button-->
         <div class="d-flex py-3 justify-content-between border-bottom align-items-center">
             <div class="input-group-sm mw-0" style="flex: 1">
                 <input type="text" class="form-control w-100" placeholder="Find a repository...">
@@ -25,12 +17,14 @@
             {% endif %}
         </div>
 
+
+        <!--repos listed out-->
         <ul class="p-0">
             {% for repository in repositories %}
-            <li class="d-flex py-4 border-bottom">
-                <div class="col-10">
+            <li class="d-flex py-3 border-bottom">
+                <div class="col-9">
                     <div class="d-flex mb-1 align-items-center">
-                        <h3 class="wb-break-all" style="font-size:15px">
+                        <h3 class="wb-break-all" style="font-size:14px">
                             <a href="{% url 'repository' repository.creator.username repository.name %}">{{repository.name}}</a>
                         </h3>
                         <span class="badge badge-pill badge-secondary ml-3 px-2">
@@ -39,7 +33,7 @@
                     </div>
                     <div>
                         {% if repository.description %}
-                        <p class="col-9 d-inline-block color-fg-muted mb-2 pl-0 pr-4" style="font-size:10px">
+                        <p class="col-9 d-inline-block color-fg-muted mb-2 pl-0 pr-4" style="font-size:11px">
                             {{repository.description}}
                         </p>
                         {% endif %}
@@ -50,24 +44,4 @@
             </li>
             {% endfor %}
         </ul>
-
-
-
-    </div>
-
-    <div class="verticalLine"></div>
-
-
-
-    <div class="main-content">
-
-    </div>
-
 </div>
-
-
-
-</div>
-
-
-{% endblock hubcontent  %}

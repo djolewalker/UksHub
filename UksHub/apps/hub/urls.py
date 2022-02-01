@@ -12,8 +12,6 @@ urlpatterns = [
     path('', home, name='home'),
     path('home-hub', home_hub_view, name='home_hub'),
 
-
-
     # User profile
     path('<username>', profile_overview, name='profile'),
     # User profile settings

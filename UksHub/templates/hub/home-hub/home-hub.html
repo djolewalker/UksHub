@@ -1,0 +1,34 @@
+{% extends 'hub/hub-base.html' %}
+{% load compress static thumbnail %}
+{% load humanize static hub_filters %}
+{% block header %}
+{{ block.super }}
+{% compress css %}
+<link type="text/x-scss" href="{% static 'styles/hub/home-hub.scss' %}" rel="stylesheet" media="screen" />
+{% endcompress %}
+{% endblock %}
+{% block hubcontent %}
+
+
+<div class="d-flex flex-row home-hub-container">
+
+    {% include './sidebar.html' %}
+
+    <div class="verticalLine"></div>
+
+    <div class="main-content">
+
+        <div class="panel-title" class="w-100  mb-3 py-2 d-flex justify-content-between">
+            <h2 class="h3 m-0">
+                Last updated #watched repositories
+            </h2>
+        </div>
+        {% for repository in sorted_watched_repos %}
+            {% include './repo-cards.html' %}
+        {% endfor %}
+    </div>
+
+</div>
+
+
+{% endblock hubcontent  %}

@@ -1,0 +1,29 @@
+{% load humanize static hub_filters %}
+
+<div class="cards">
+                    <div class="card w-75">
+                        <div class="card-body">
+                            <li  class="d-flex py-3">
+                                <div class="col-9">
+                                    <div class="d-flex mb-1 align-items-center">
+                                        <h3 class="wb-break-all" style="font-size:14px">
+                                            <a href="{% url 'repository' repository.creator.username repository.name %}">{{repository.name}}</a>
+                                        </h3>
+                                        <span class="badge badge-pill badge-secondary ml-3 px-2">
+                                            {% if repository.private %}Private{% else %}Public{% endif %}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        {% if repository.updated_at %}
+                                        <p class="col-9 d-inline-block color-fg-muted mb-2 pl-0 pr-4" style="font-size:11px">
+                                            Last updated at {{repository.updated_at|naturaltime}}
+                                        </p>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+                                <div class="col-2"></div>
+                            </li>
+                        </div>
+                </div>
+            </div>
