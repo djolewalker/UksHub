@@ -11,7 +11,7 @@ class Repository(TimeStampModel):
     name = models.CharField(max_length=250, validators=[path_validator])
     description = models.TextField(blank=True, null=True)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
-    contributors = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='contributors')
+    contributors = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='contributors', blank=True, null=True)
     private = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
     default_branch = models.CharField(max_length=400, default='master')

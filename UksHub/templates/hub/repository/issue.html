@@ -1,5 +1,5 @@
 {% extends 'hub/repository/base.html' %}
-{% load static compress humanize%}
+{% load static compress humanize hub_filters%}
 
 {% block header %}
 {{ block.super }}
@@ -18,10 +18,12 @@
   <div class="w-100 d-flex justify-content-between">
     <h2 class="mw-0 flex-auto text-truncate">{{issue.name}} <span class="text-secondary ml-1">#{{issue.id}}</span></h2>
     <div style="min-width:130px">
+      {% if repository|user_can_modify:user %}
       <button class="btn btn-secondary btn-sm">Edit</button>
       <a href="{% url 'create-issue' repository.creator.username repository.name %}"><button
           class="btn btn-success btn-sm"
         >New issue</button></a>
+      {% endif %}
     </div>
   </div>
   <div class="d-flex align-items-center mt-2">

@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.http.response import Http404
 from git.objects.blob import Blob
@@ -8,13 +9,13 @@ from UksHub.apps.gitcore.models import Repository
 def find_repo(requestor, username, reponame):
     user = get_object_or_404(get_user_model(), username=username)
     if user == requestor:
-        return get_object_or_404(Repository, creator=user, name=reponame, archived=False)
+        return get_object_or_404(Repository, creator=user, name=reponame)
     else:
         repo = get_object_or_404(
             Repository, creator=user, name=reponame, archived=False)
         if repo.private:
             if requestor not in repo.contributors:
-                raise Http404
+                raise PermissionDenied()
         return repo
 
 
@@ -67,3 +68,15 @@ def generate_hierarchy(branch, path):
     return hierarchy, tree
 
 
+def can_modify_repo(user, repository):
+    if not user or not repository:
+        raise Http404
+    if repository.creator != user and not repository.contributors.filter(pk=user.id).exists():
+        raise PermissionDenied()
+
+
+def can_delete_repo(user, repository):
+    if not user or not repository:
+        raise Http404
+    if repository.creator != user:
+        raise PermissionDenied()

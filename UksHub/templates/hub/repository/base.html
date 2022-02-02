@@ -8,168 +8,220 @@
 {% block header %}
 {{ block.super }}
 {% compress css %}
-<link type="text/x-scss" href="{% static 'styles/hub/repository/base.scss' %}" rel="stylesheet" media="screen" />
+<link
+  type="text/x-scss"
+  href="{% static 'styles/hub/repository/base.scss' %}"
+  rel="stylesheet"
+  media="screen"
+/>
 {% endcompress %}
 {% endblock %}
 
 {% block hubcontent %}
 
 <div class="d-flex flex-column h-100 w-100">
-    <div class="pt-3 w-100 mb-5 repo-header border-bottom">
-        <div class="d-flex mb-3 px-3 px-md-4 px-lg-5">
-            <div class="flex-auto mw-0 mr-3 d-flex align-items-center">
-                <i class="bi bi-journal-bookmark"></i>
-                <span class="ml-2 text-primary">
-                    <a href="{% url 'profile' repository.creator.username %}" style="font-size: 20px">
-                        {{repository.creator.username}}
-                    </a>
+  <div class="pt-3 w-100 mb-5 repo-header border-bottom">
+    <div class="d-flex mb-3 px-3 px-md-4 px-lg-5">
+      <div class="flex-auto mw-0 mr-3 d-flex align-items-center">
+        <i class="bi bi-journal-bookmark"></i>
+        <span class="ml-2 text-primary">
+          <a
+            href="{% url 'profile' repository.creator.username %}"
+            style="font-size: 20px"
+          >
+            {{repository.creator.username}}
+          </a>
+        </span>
+        <span
+          class="mx-1"
+          style="font-size: 20px"
+        >/</span>
+        <strong class="text-primary">
+          <a
+            href="{% url 'repository' repository.creator.username repository.name %}"
+            style="font-size: 20px"
+          >
+            {{repository.name}}
+          </a>
+        </strong>
+        <span class="ml-3 badge badge-pill badge-secondary">
+          {% if repository.private %}Private{% else %}Public{% endif %}
+        </span>
+      </div>
+      <ul class="d-flex pl-0 mb-0">
+        <li class="mr-2">
+          <form
+            action="{% url 'watch_repo' repository.pk %}?next={{request.path }}"
+            method="post"
+          >
+            {% csrf_token %}
+            <div class="btn-group">
+              <button
+                type="submit"
+                class="btn btn-sm btn-outline-secondary"
+                name="repo_id"
+                value="{{ repository.pk }}"
+              >
+                <i class="bi bi-eye mx-1"></i>
+                {% is_watched repository user %}
+                {% with repository|watchcount as watch_count %}
+                <span class="mx-1 badge badge-pill badge-secondary">
+                  {{watch_count}}
                 </span>
-                <span class="mx-1" style="font-size: 20px">/</span>
-                <strong class="text-primary">
-                    <a href="{% url 'repository' repository.creator.username repository.name %}"
-                        style="font-size: 20px">
-                        {{repository.name}}
-                    </a>
-                </strong>
-                <span class="ml-3 badge badge-pill badge-secondary">
-                    {% if repository.private %}Private{% else %}Public{% endif %}
-                </span>
+                {% endwith %}
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <div class="dropdown-menu">
+                <a
+                  class="dropdown-item"
+                  href="#"
+                >Participating and @mentions</a>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                >All activity</a>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                >Ignore</a>
+                <div class="dropdown-divider"></div>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                >
+                  Custom
+                </a>
+              </div>
             </div>
-            <ul class="d-flex pl-0 mb-0">
-                <li class="mr-2">
-                    <form action="{% url 'watch_repo' repository.pk %}?next={{request.path }}" method="post">
-                        {% csrf_token %}
-                        <div class="btn-group">
-                            <button type="submit"  class="btn btn-sm btn-outline-secondary"  name="repo_id" value="{{ repository.pk }}" >
-                                <i class="bi bi-eye mx-1"></i>
-                                {% is_watched repository user %}
-                                {% with repository|watchcount as watch_count %}
-                                <span class="mx-1 badge badge-pill badge-secondary">
-                                    {{watch_count}}
-                                </span>
-                                {% endwith %}
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                                  <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">Participating and @mentions</a>
-                                        <a class="dropdown-item" href="#">All activity</a>
-                                        <a class="dropdown-item" href="#">Ignore</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">
-                                            Custom
-                                        </a>
-                                  </div>
-                        </div>
-                    </form>
-                </li>
-                <li class="mr-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-diagram-2 mx-1"></i>
-                        Fork
-                        <span class="mx-1 badge badge-pill badge-secondary">
-                            0
-                        </span>
-                    </button>
-                </li>
-                <li class="mr-2">
-                    <form action="{% url 'star_repo' repository.pk %}?next={{request.path }}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-outline-secondary" name="repo_id" value="{{ repository.pk }}">
-                            <i class="bi bi-star mx-1"></i>
-                                {% is_starred repository user %}
-                            {% with repository|starcount as star_count %}
-                            <span class="mx-1 badge badge-pill badge-secondary">
-                                {{star_count}}
-                            </span>
-                            {% endwith %}
-                        </button>
-                    </form>
+          </form>
+        </li>
+        <li class="mr-2">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+          >
+            <i class="bi bi-diagram-2 mx-1"></i>
+            Fork
+            <span class="mx-1 badge badge-pill badge-secondary">
+              0
+            </span>
+          </button>
+        </li>
+        <li class="mr-2">
+          <form
+            action="{% url 'star_repo' repository.pk %}?next={{request.path }}"
+            method="post"
+          >
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="btn btn-sm btn-outline-secondary"
+              name="repo_id"
+              value="{{ repository.pk }}"
+            >
+              <i class="bi bi-star mx-1"></i>
+              {% is_starred repository user %}
+              {% with repository|starcount as star_count %}
+              <span class="mx-1 badge badge-pill badge-secondary">
+                {{star_count}}
+              </span>
+              {% endwith %}
+            </button>
+          </form>
 
-                </li>
-            </ul>
-        </div>
-        <nav class="px-3 px-md-4 px-lg-5">
-            {% with request.resolver_match.url_name as path_name %}
-            <ul class="pl-0 mb-0 d-flex">
-                <a href="{% url 'repository' repository.creator repository.name %}">
-                    <li class="{% if path_name in 'repository,repository-tree,repository-blob,branch-commits' %}active-url {% endif %}px-3 py-2">
-                        <i class="bi bi-code"></i>
-                        Code
-                    </li>
-                </a>
-                <a href="{% url 'issues' repository.creator repository.name %}">
-                    <li class="{% if path_name in 'issues,create-issue' %}active-url {% endif %} px-3 py-2">
-                        <i class="bi bi-ticket"></i>
-                        Issues
-                        {% with repository|issuecount as issue_count %}
-                        {% if issue_count %}
-                            <span class="mx-1 badge badge-pill badge-secondary">
-                                {{issue_count}}
-                            </span>
-                        {% endif %}
-                        {% endwith %}
-                    </li>
-                </a>
-                <a href="{% url 'pull-requests' repository.creator repository.name %}">
-                    <li class="{% if path_name in 'pull-requests,compare-branches' %}active-url {% endif %}px-3 py-2">
-                        <i class="bi bi-bezier2"></i>
-                        Pull requests
-                        {% with repository|prcount as issue_count %}
-                        {% if issue_count %}
-                            <span class="mx-1 badge badge-pill badge-secondary">
-                                {{issue_count}}
-                            </span>
-                        {% endif %}
-                        {% endwith %}
-                    </li>
-                </a>
-                <a href="{% url 'actions' repository.creator repository.name %}">
-                    <li class="{% if path_name == 'actions' %}active-url {% endif %}px-3 py-2">
-                        <i class="bi bi-play-circle"></i>
-                        Actions
-                    </li>
-                </a>
-                <a href="{% url 'repository-projects' repository.creator repository.name %}">
-                    <li class="{% if path_name == 'repository-projects' %}active-url {% endif %}px-3 py-2">
-                        <i class="bi bi-kanban"></i>
-                        Projects
-                    </li>
-                </a>
-                <a href="{% url 'wiki' repository.creator repository.name %}">
-                    <li class="{% if path_name == 'wiki' %}active-url {% endif %}px-3 py-2">
-                        <i class="bi bi-book"></i>
-                        Wiki
-                    </li>
-                </a>
-                <a href="{% url 'security' repository.creator repository.name %}">
-                    <li class="{% if path_name == 'security' %}active-url {% endif %}px-3 py-2">
-                        <i class="bi bi-shield-exclamation"></i>
-                        Security
-                    </li>
-                </a>
-                <a href="{% url 'insights' repository.creator repository.name %}">
-                    <li class="{% if path_name == 'insights' %}active-url {% endif %}px-3 py-2">
-                        <i class="bi bi-graph-up"></i>
-                        Insights
-                    </li>
-                </a>
-                {% if request.user == repository.creator %}
-                <a href="{% url 'repository-settings' repository.creator repository.name %}">
-                    <li class="{% if path_name == 'repository-settings' %}active-url {% endif %}px-3 py-2">
-                        <i class="bi bi-gear"></i>
-                        Settings
-                    </li>
-                </a>
-                {% endif %}
-            </ul>
+        </li>
+      </ul>
+    </div>
+    <nav class="px-3 px-md-4 px-lg-5">
+      {% with request.resolver_match.url_name as path_name %}
+      <ul class="pl-0 mb-0 d-flex">
+        <a href="{% url 'repository' repository.creator repository.name %}">
+          <li
+            class="{% if path_name in 'repository,repository-tree,repository-blob,branch-commits' %}active-url {% endif %}px-3 py-2"
+          >
+            <i class="bi bi-code"></i>
+            Code
+          </li>
+        </a>
+        <a href="{% url 'issues' repository.creator repository.name %}">
+          <li class="{% if path_name in 'issues,create-issue' %}active-url {% endif %} px-3 py-2">
+            <i class="bi bi-ticket"></i>
+            Issues
+            {% with repository|issuecount as issue_count %}
+            {% if issue_count %}
+            <span class="mx-1 badge badge-pill badge-secondary">
+              {{issue_count}}
+            </span>
+            {% endif %}
             {% endwith %}
-        </nav>
-    </div>
-    <div class="repo-content centered-content">
-        {% block repocontent %}{% endblock repocontent %}
-    </div>
+          </li>
+        </a>
+        <a href="{% url 'pull-requests' repository.creator repository.name %}">
+          <li class="{% if path_name in 'pull-requests,compare-branches' %}active-url {% endif %}px-3 py-2">
+            <i class="bi bi-bezier2"></i>
+            Pull requests
+            {% with repository|prcount as issue_count %}
+            {% if issue_count %}
+            <span class="mx-1 badge badge-pill badge-secondary">
+              {{issue_count}}
+            </span>
+            {% endif %}
+            {% endwith %}
+          </li>
+        </a>
+        <a href="{% url 'actions' repository.creator repository.name %}">
+          <li class="{% if path_name == 'actions' %}active-url {% endif %}px-3 py-2">
+            <i class="bi bi-play-circle"></i>
+            Actions
+          </li>
+        </a>
+        <a href="{% url 'repository-projects' repository.creator repository.name %}">
+          <li class="{% if path_name == 'repository-projects' %}active-url {% endif %}px-3 py-2">
+            <i class="bi bi-kanban"></i>
+            Projects
+          </li>
+        </a>
+        <a href="{% url 'wiki' repository.creator repository.name %}">
+          <li class="{% if path_name == 'wiki' %}active-url {% endif %}px-3 py-2">
+            <i class="bi bi-book"></i>
+            Wiki
+          </li>
+        </a>
+        <a href="{% url 'security' repository.creator repository.name %}">
+          <li class="{% if path_name == 'security' %}active-url {% endif %}px-3 py-2">
+            <i class="bi bi-shield-exclamation"></i>
+            Security
+          </li>
+        </a>
+        <a href="{% url 'insights' repository.creator repository.name %}">
+          <li class="{% if path_name == 'insights' %}active-url {% endif %}px-3 py-2">
+            <i class="bi bi-graph-up"></i>
+            Insights
+          </li>
+        </a>
+        {% if request.user == repository.creator %}
+        <a href="{% url 'repository-settings' repository.creator repository.name %}">
+          <li class="{% if path_name in 'repository-settings,repository-collaborators' %}active-url {% endif %}px-3 py-2">
+            <i class="bi bi-gear"></i>
+            Settings
+          </li>
+        </a>
+        {% endif %}
+      </ul>
+      {% endwith %}
+    </nav>
+  </div>
+  <div class="repo-content centered-content">
+    {% block repocontent %}{% endblock repocontent %}
+  </div>
 
 </div>
 {% endblock hubcontent %}

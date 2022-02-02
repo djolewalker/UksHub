@@ -1,3 +1,4 @@
+{% load hub_filters %}
 <div class="d-flex mt-5">
   <div class="main-content d-flex mr-4 flex-column position-relative">
     {% with artefact.message as comment %}
@@ -13,6 +14,7 @@
       {% endif %}
     </div>
 
+    {% if repository|user_can_modify:user %}
     {% if artefact.is_merged %}
     <div class="border border-primary rounded my-3 p-3">
       <h3 class="h4 fs mb-1">Pull request successfully merged and closed</h3>
@@ -122,6 +124,7 @@
     {% endif %}
 
 
+    {% endif %}
     {% endif %}
   </div>
   <div class="about-side-bar">

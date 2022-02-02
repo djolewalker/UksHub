@@ -1,5 +1,5 @@
 import binascii
-from django.http.response import Http404, HttpResponse
+from django.http.response import Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from base64 import b64decode
 from django.urls import reverse
@@ -7,11 +7,12 @@ from django.contrib.auth.decorators import login_required
 from UksHub.apps.core.constants import EMPTY_TREE_SHA
 from UksHub.apps.core.enums import BASE_STATE
 from UksHub.apps.events.forms import CommentForm
+from UksHub.apps.gitcore.forms import RepositoryContributorsForm
 from UksHub.apps.gitcore.models import Commit, Repository
 from UksHub.apps.events.services import event_artefact_state_change, event_user_to_artefact
-from UksHub.apps.gitcore.services import can_merge, get_repository, merge
+from UksHub.apps.gitcore.services import can_merge, get_repository, merge, sync_repo
 from UksHub.apps.hub.forms import IssueForm, PullRequestForm
-from UksHub.apps.hub.services import find_branch_from_path, find_repo, generate_hierarchy, get_last_commits, is_user_ssh_enabled
+from UksHub.apps.hub.services import can_delete_repo, can_modify_repo, find_branch_from_path, find_repo, generate_hierarchy, get_last_commits, is_user_ssh_enabled
 from UksHub.apps.advancedsearch.models import Query
 from UksHub.apps.advancedsearch.mapper import map_query_to_filter
 
@@ -97,8 +98,7 @@ def _generate_stats(commits):
     return stats
 
 
-def _get_compare_context(requestor, username, reponame, comparation, pr=None, comment=None):
-    repo = find_repo(requestor, username, reponame)
+def _get_compare_context(repo, comparation, pr=None, comment=None):
     repo_obj = get_repository(repo.creator, repo.name)
 
     if comparation != None and '...' not in comparation:
@@ -336,12 +336,14 @@ def close_issue(request, username, reponame, id):
 def create_issue(request, username, reponame):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repository)
         issue_form = IssueForm()
         issue_form.fields['assignees'].queryset = repository.contributors
         comment_form = CommentForm()
 
     elif request.method == 'POST':
         repository = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repository)
         issue_form = IssueForm(request.POST)
         comment_form = CommentForm(request.POST)
         issue = _create_artefact_from_form(
@@ -379,16 +381,17 @@ def pull_requests(request, username, reponame):
 @login_required
 def compare(request, username, reponame, comparation=None):
     if request.method == 'GET':
-        context = _get_compare_context(
-            request.user, username, reponame, comparation)
+        repo = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repo)
+        context = _get_compare_context(repo, comparation)
     elif request.method == 'POST':
         repo = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repo)
         pr_form = PullRequestForm(request.POST)
         comment_form = CommentForm(request.POST)
         pr = _create_artefact_from_form(
             request.user, repo, pr_form, comment_form)
-        context = _get_compare_context(
-            request.user, username, reponame, comparation, pr, comment_form)
+        context = _get_compare_context(repo, comparation, pr, comment_form)
         if pr:
             pr.source = context['comparator']
             pr.target = context['base']
@@ -406,17 +409,17 @@ def pull_request(request, username, reponame, id):
         if not pr:
             raise Http404
         context = _get_compare_context(
-            request.user, username, reponame, '...'.join([pr.target, pr.source]), pr)
+            repo, '...'.join([pr.target, pr.source]), pr)
         context['pr'] = pr
 
-    # TODO: permissions
     elif request.method == 'POST':
         repo = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repo)
         pr = repo.artefact_set.get(pk=id)
         if not pr:
             raise Http404
         context = _get_compare_context(
-            request.user, username, reponame, '...'.join([pr.target, pr.source]), pr)
+            repo, '...'.join([pr.target, pr.source]), pr)
         merge_status = merge(repo, context['repo'], pr.target, pr.source)
         if merge_status:
             pr.state = BASE_STATE.CLOSED.value
@@ -434,6 +437,7 @@ def pull_request(request, username, reponame, id):
 def close_pull_request(request, username, reponame, id):
     if request.method == 'POST':
         repo = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repo)
         pr = repo.artefact_set.get(pk=id)
         if not pr:
             raise Http404
@@ -480,11 +484,75 @@ def insights(request, username, reponame):
     raise Http404
 
 
+@login_required
 def repository_settings(request, username, reponame):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
-        return render(request, 'hub/repository/repository-settings.html', {'repository': repository})
+        can_modify_repo(request.user, repository)
+        print(repository.private)
+        return render(request, 'hub/repository/settings/repo-main-settings.html', {'repository': repository})
     raise Http404
+
+
+@login_required
+def change_private_status(request, pk):
+    if request.method == 'POST':
+        repo = get_object_or_404(Repository, id=pk)
+        can_delete_repo(request.user, repo)
+
+        repo.private = not repo.private
+        repo.save()
+
+        return redirect(request.GET['next'])
+    else:
+        raise Http404
+
+
+@login_required
+def archive_repo(request, pk):
+    if request.method == 'POST':
+        repo = get_object_or_404(Repository, id=pk)
+        can_delete_repo(request.user, repo)
+
+        repo.archived = not repo.archived
+        repo.save()
+
+        return redirect(request.GET['next'])
+    else:
+        raise Http404
+
+
+@login_required
+def delete_repo(request, pk):
+    if request.method == 'POST':
+        repo = get_object_or_404(Repository, id=pk)
+        can_delete_repo(request.user, repo)
+
+        repo.delete()
+
+        return redirect(request.GET['next'])
+    else:
+        raise Http404
+
+
+@login_required
+def collaborators(request, username, reponame):
+    if request.method == 'GET':
+        repo = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repo)
+        contr_form = RepositoryContributorsForm(repo.creator, instance=repo)
+    elif request.method == 'POST':
+        repo = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repo)
+        contr_form = RepositoryContributorsForm(
+            repo.creator, request.POST, instance=repo)
+        if contr_form.is_valid():
+            repo = contr_form.save()
+            repo.contributors.add(repo.creator)
+            sync_repo(repo)
+    else:
+        raise Http404
+    return render(request, 'hub/repository/settings/collaborators.html', {'repository': repo, "form": contr_form})
 
 
 @login_required
