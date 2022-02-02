@@ -167,3 +167,10 @@ def get_line_indexes(lines):
         plus_counter += 1
         minus_counter += 1
     return data
+
+
+@register.filter(name='milestonecount')
+def milestone_counter(repository):
+    return repository.milestone_set.all().count()
+
+

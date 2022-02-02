@@ -1,5 +1,7 @@
 import binascii
-from django.http.response import Http404
+import datetime
+
+from django.http.response import Http404, HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from base64 import b64decode
 from django.urls import reverse
@@ -11,10 +13,11 @@ from UksHub.apps.gitcore.forms import RepositoryContributorsForm
 from UksHub.apps.gitcore.models import Commit, Repository
 from UksHub.apps.events.services import event_artefact_state_change, event_user_to_artefact
 from UksHub.apps.gitcore.services import can_merge, get_repository, merge, sync_repo
-from UksHub.apps.hub.forms import IssueForm, PullRequestForm
+from UksHub.apps.hub.forms import IssueForm, PullRequestForm, MilestonesForm
 from UksHub.apps.hub.services import can_delete_repo, can_modify_repo, find_branch_from_path, find_repo, generate_hierarchy, get_last_commits, is_user_ssh_enabled
 from UksHub.apps.advancedsearch.models import Query
 from UksHub.apps.advancedsearch.mapper import map_query_to_filter
+from django.db import IntegrityError
 
 _sort_options = [
     ('sort:created-desc', 'Newest'),
@@ -581,3 +584,45 @@ def watch_view(request, pk):
         return redirect(request.GET['next'])
     else:
         raise Http404
+
+
+@login_required
+def create_milestone(request, username, reponame):
+    if request.method == 'POST':
+        repository = find_repo(request.user, username, reponame)
+        milestone_form = MilestonesForm(request.POST)
+        if milestone_form.is_valid():
+            try:
+                milestone = milestone_form.save()
+                milestone.repository = repository
+                milestone.save()
+                return redirect(reverse('milestones', kwargs={'username': username, 'reponame': reponame}))
+            except IntegrityError:
+                milestone_form.add_error(
+                    'name', 'You have already created a milestone with this name!')
+    if request.method == 'GET':
+        milestone_form = MilestonesForm()
+    else:
+        raise Http404
+    return render(request, 'hub/milestones/create-milestone.html', {'form': milestone_form}) if milestone_form else HttpResponse(status=409)
+
+
+
+@login_required
+def milestones(request, username, reponame):
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+        state = request.GET.get('state') if 'state' in request.GET else 'open'
+        today = datetime.datetime.now()
+        if state == 'closed':
+            milestones_list = repository.milestone_set.filter(due_date__lte=today).all()
+        else:
+            milestones_list = repository.milestone_set.filter(due_date__gte=today).all()
+
+        return render(request, 'hub/milestones/milestones.html', {
+            'repository': repository,
+            'milestones_list': milestones_list,
+
+        })
+    raise Http404
+

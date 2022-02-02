@@ -1,0 +1,25 @@
+{% load hub_filters humanize %}
+
+<div class="d-flex col-12">
+  <div>
+    <span
+      class="badge badge-pill {% if milestone.state == 1 %}badge-success{% else %}badge-primary{% endif %} ml-3 p-1 mt-1 fs"
+      style="height:24px; width:24px"
+    >
+
+      <i class="bi bi-signpost"></i>
+
+    </span>
+  </div>
+  <div
+    class="col-8 pl-2 mw-0 flex-auto"
+    style="max-width:unset"
+  >
+
+    <p class="col-9 d-inline-block color-fg-muted pl-0 pr-4 fs-small">
+      {{milestone.name}} created {{milestone.created_at|naturaltime}}
+
+    </p>
+  </div>
+
+</div>

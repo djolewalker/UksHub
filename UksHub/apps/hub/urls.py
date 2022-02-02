@@ -5,7 +5,10 @@ from .views.home import home_hub_view
 from .views.profile import profile_overview
 from .views.profile_settings import settings_keys, settings_profile
 
-from .views.repository import actions, archive_repo, blob, change_private_status, close_issue, close_pull_request, collaborators, commit, commits, compare, create_issue, delete_repo, insights, issue, issues, pull_request, pull_requests, tree, repository_projects, repository_settings, security, wiki, star_view, watch_view
+from .views.repository import actions, archive_repo, blob, change_private_status, close_issue, close_pull_request, \
+    collaborators, commit, commits, compare, create_issue, delete_repo, insights, issue, issues, pull_request, \
+    pull_requests, tree, repository_projects, repository_settings, security, wiki, star_view, watch_view, \
+    create_milestone, milestones
 
 urlpatterns = [
     # Home
@@ -19,12 +22,15 @@ urlpatterns = [
 
     
     # Repository
+
     path('star/<int:pk>', star_view, name = 'star_repo'),
     path('watch/<int:pk>', watch_view, name = 'watch_repo'),
     path('repo-settings/delete/<int:pk>', delete_repo, name='delete-repository'),
     path('repo-settings/archive/<int:pk>', archive_repo, name='archive-repository'),
     path('repo-settings/private_status/<int:pk>', change_private_status, name='repository-private-status'),
     path('<username>/<reponame>', tree, name='repository'),
+    path('<username>/<reponame>/milestones', milestones, name='milestones'),
+    path('<username>/<reponame>/new-milestone', create_milestone, name='new-milestone'),
     path('<username>/<reponame>/tree/<path:path>', tree, name='repository-tree'),
     path('<username>/<reponame>/blob/<path:path>', blob, name='repository-blob'),
     path('<username>/<reponame>/commits', commits, name='commits'),

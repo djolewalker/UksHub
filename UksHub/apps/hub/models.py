@@ -30,6 +30,7 @@ class Milestone(TimeStampModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
     due_date = models.DateTimeField()
+    repository = models.ForeignKey(Repository, on_delete=models.CASCADE, null=True)
 
 
 class Artefact(PolymorphicModel):

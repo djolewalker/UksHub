@@ -21,6 +21,24 @@
       value="{{query}}"
     >
   </form>
+
+<a href="{% url 'milestones' repository.creator.username repository.name %}">
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary px-3 ml-3"
+      name="repo_id"
+      value="{{ repository.pk }}"
+    >
+      <i class="bi bi-signpost mx-1"></i>
+      Milestones
+      {% with repository|milestonecount as milestone_count %}
+      <span class="mx-1 badge badge-pill badge-secondary">
+        {{milestone_count}}
+      </span>
+      {% endwith %}
+    </button>
+</a>
+
   {% if request.user.is_authenticated and request.user == user %}
   {% if ispr %}
   <a
