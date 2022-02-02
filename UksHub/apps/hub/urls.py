@@ -8,7 +8,7 @@ from .views.profile_settings import settings_keys, settings_profile
 from .views.repository import actions, archive_repo, blob, change_private_status, close_issue, close_pull_request, \
     collaborators, commit, commits, compare, create_issue, delete_repo, insights, issue, issues, pull_request, \
     pull_requests, tree, repository_projects, repository_settings, security, wiki, star_view, watch_view, \
-    create_milestone, milestones
+    create_milestone, milestones, milestone
 
 urlpatterns = [
     # Home
@@ -31,6 +31,7 @@ urlpatterns = [
     path('<username>/<reponame>', tree, name='repository'),
     path('<username>/<reponame>/milestones', milestones, name='milestones'),
     path('<username>/<reponame>/new-milestone', create_milestone, name='new-milestone'),
+    path('<username>/<reponame>/milestones/<int:id>', milestone, name='milestone'),
     path('<username>/<reponame>/tree/<path:path>', tree, name='repository-tree'),
     path('<username>/<reponame>/blob/<path:path>', blob, name='repository-blob'),
     path('<username>/<reponame>/commits', commits, name='commits'),

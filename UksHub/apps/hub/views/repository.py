@@ -596,6 +596,7 @@ def create_milestone(request, username, reponame):
                 milestone = milestone_form.save()
                 milestone.repository = repository
                 milestone.save()
+
                 return redirect(reverse('milestones', kwargs={'username': username, 'reponame': reponame}))
             except IntegrityError:
                 milestone_form.add_error(
@@ -617,12 +618,16 @@ def milestones(request, username, reponame):
         if state == 'closed':
             milestones_list = repository.milestone_set.filter(due_date__lte=today).all()
         else:
-            milestones_list = repository.milestone_set.filter(due_date__gte=today).all()
+            milestones_list = repository.milestone_set.filter(due_date__gte=today).filter(is_open=True).all()
 
         return render(request, 'hub/milestones/milestones.html', {
             'repository': repository,
             'milestones_list': milestones_list,
-
         })
     raise Http404
 
+
+
+@login_required
+def milestone(request):
+    pass
