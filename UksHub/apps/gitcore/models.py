@@ -15,7 +15,7 @@ class Repository(TimeStampModel):
     private = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
     default_branch = models.CharField(max_length=400, default='master')
-    stars = models.ManyToManyField(User, default=None, blank=True,  related_name = 'repo_stars')
+    stars = models.ManyToManyField(User, default=None, blank=True, related_name='repo_stars')
     watch = models.ManyToManyField(User, default=None, blank=True, related_name='repo_watch')
 
     @property

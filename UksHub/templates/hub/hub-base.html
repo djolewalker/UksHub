@@ -126,7 +126,7 @@ UksHub
       {% endif %}
     </div>
   </div>
-  <div class="content d-flex flex-wrap">
+  <div class="content d-flex flex-wrap flex-auto mh-0">
     {% if notification %}
     <div
       id="hub-notification-panel"
@@ -154,10 +154,12 @@ UksHub
       <script src="{% static 'js/hub/base.js' %}"></script>
     </div>
     {% endif %}
-    {% block hubcontent %}{% endblock hubcontent %}
+    {% block hubcontent %}
   </div>
+
   <div class="footer centered-content d-flex justify-content-sm-center border-top mt-4 border-secondary py-4">
     <p>© 2022 UksHub</p>
   </div>
 </div>
+    {% endblock hubcontent %}
 {% endblock content %}
