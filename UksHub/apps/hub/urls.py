@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import RedirectView
 
-from .views.home import home, home_hub_view
+from .views.home import home_hub_view
 from .views.profile import profile_overview
 from .views.profile_settings import settings_keys, settings_profile
 
@@ -9,10 +9,7 @@ from .views.repository import actions, blob, close_issue, close_pull_request, co
 
 urlpatterns = [
     # Home
-    path('home_hub', home_hub_view, name='home'),
-    path('x', home, name='homex'),
-
-
+    path('', home_hub_view, name='home'),
     # User profile
     path('<username>', profile_overview, name='profile'),
     # User profile settings
