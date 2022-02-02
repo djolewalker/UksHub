@@ -16,7 +16,7 @@
           class="wb-break-all"
           style="font-size:24px"
         >
-          <a href="{% url 'repository' repository.creator.username repository.name %}">{{repository.name}}</a>
+          <a href="{% url 'repository' repository.creator.username repository.name %}">{{ repository.creator}}/{{repository.name}}</a>
         </h3>
         <span class="badge badge-pill badge-secondary ml-3 px-2">
           {% if repository.private %}Private{% else %}Public{% endif %}
