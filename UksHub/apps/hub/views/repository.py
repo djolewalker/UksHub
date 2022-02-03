@@ -6,7 +6,7 @@ from django.db.models.functions import TruncDay
 from base64 import b64decode
 from django.contrib.auth import get_user_model
 from django.db.models import Count
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db.models import Q
 from django.urls import reverse
@@ -17,7 +17,7 @@ from UksHub.apps.core.enums import BASE_STATE
 from UksHub.apps.events.forms import CommentForm
 from UksHub.apps.gitcore.forms import RepositoryContributorsForm
 from UksHub.apps.gitcore.models import Commit, Repository
-from UksHub.apps.events.services import event_artefact_state_change, event_user_to_artefact
+from UksHub.apps.events.services import event_artefact_state_change, event_artefact_to_milestone, event_user_to_artefact
 from UksHub.apps.gitcore.services import can_merge, delete_repository, get_repository, merge, sync_repo
 from UksHub.apps.hub.forms import IssueForm, PullRequestForm, MilestonesForm
 from UksHub.apps.hub.services import can_delete_repo, can_modify_repo, find_branch_from_path, find_repo, generate_hierarchy, get_last_commits, is_user_ssh_enabled
@@ -347,6 +347,8 @@ def create_issue(request, username, reponame):
         can_modify_repo(request.user, repository)
         issue_form = IssueForm()
         issue_form.fields['assignees'].queryset = repository.contributors
+        issue_form.fields['milestone'].queryset = repository.milestone_set.filter(
+            is_open=True).filter(due_date__gte=datetime.today())
         comment_form = CommentForm()
 
     elif request.method == 'POST':
@@ -357,6 +359,9 @@ def create_issue(request, username, reponame):
         issue = _create_artefact_from_form(
             request.user, repository, issue_form, comment_form)
         if issue:
+            if issue.milestone:
+                event_artefact_to_milestone(
+                    request.user, issue, issue.milestone)
             return redirect(reverse('issue', kwargs={'username': username, 'reponame': reponame, 'id': issue.id}))
     else:
         raise Http404
@@ -881,14 +886,38 @@ def milestone(request, username, reponame, id):
 
 
 @login_required
+def add_artefact_to_milestone(request, repo_id, artefact_id):
+    if request.method == 'POST':
+        repo = get_object_or_404(Repository, id=repo_id)
+        artefact = repo.artefact_set.get(pk=artefact_id)
+
+        if not artefact:
+            raise Http404
+        milestone = repo.milestone_set.get(pk=request.POST['milestone'])
+        if not milestone:
+            raise Http404
+
+        artefact.milestone = milestone
+        artefact.save()
+
+        event_artefact_to_milestone(request.user, artefact, milestone)
+
+        return redirect(request.GET['next'])
+    else:
+        raise Http404
+
+
+@login_required
 def add_new_issue_to_milestone(request, username, reponame, id):
     repository = find_repo(request.user, username, reponame)
     milestone = repository.milestone_set.get(pk=id)
+    comment_form = CommentForm()
     if request.method == 'GET':
         can_modify_repo(request.user, repository)
-        issue_form = IssueForm()
+        issue_form = IssueForm(initial={'milestone': milestone})
         issue_form.fields['assignees'].queryset = repository.contributors
-        comment_form = CommentForm()
+        issue_form.fields['milestone'].queryset = repository.milestone_set.filter(
+            is_open=True).filter(due_date__gte=datetime.today())
 
     elif request.method == 'POST':
         can_modify_repo(request.user, repository)

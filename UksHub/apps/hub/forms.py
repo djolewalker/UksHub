@@ -15,7 +15,7 @@ class IssueForm(forms.ModelForm):
 
     class Meta:
         model = Issue
-        fields = ('name', 'assignees')
+        fields = ('name', 'assignees', 'milestone')
         widgets = {'assignees': forms.CheckboxSelectMultiple}
 
 
@@ -24,7 +24,7 @@ class PullRequestForm(forms.ModelForm):
 
     class Meta:
         model = PullRequest
-        fields = ('name', 'assignees')
+        fields = ('name', 'assignees', 'milestone')
         widgets = {'assignees': forms.CheckboxSelectMultiple}
 
 

@@ -72,6 +72,14 @@
     </span>
     <span class="ml-1 order-3"> closed this {% if ispr %}pull request{% else %}issue{% endif %}</span>
     {% endif %}
+    {% elif event.get_type == "MilestoneAssignment" %}
+    <span
+      class="badge order-0 badge-secondary rounded-circle p-2"
+      style="margin-left:3px"
+    >
+      <i class="bi bi-ticket"></i>
+    </span>
+    <span class="ml-1 order-3"> added this issue to <b>{{event.milestone}}</b> milestone</span>
     {% else %}
     <span
       class="badge order-0 badge-secondary rounded-circle p-2"

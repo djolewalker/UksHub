@@ -150,5 +150,57 @@
       No assignees
       {% endif %}
     </div>
+
+    <div class="py-3 border-top">
+      <div id="milestone-display" style="position:relative">
+        <div id="milestone-edit-button" class="position-absolute" style="cursor:pointer;right:5px;top:0px">
+          <i class="bi bi-gear"></i>
+        </div>
+        <h2 class="mb-3 h4 fs font-weight-bold">Milestone</h2>
+        {% if artefact.milestone %}
+        <a href="{% url 'milestone' repository.creator.username repository.name artefact.milestone.id %}">
+          <h2 class="mb-2 h4 fs-small font-weight-bold"><b class="link-hover-underline">{{ artefact.milestone.name}}</b>
+          </h2>
+        </a>
+        <div class="progress position-relative">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            style="width: {% milestone_percent artefact.milestone %}%;"
+            aria-valuenow="{% milestone_percent artefact.milestone %}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+          <div
+            class="position-absolute"
+            style="top:-1px; right:45%"
+          >{% milestone_percent artefact.milestone %}%</div>
+        </div>
+        {% else %}
+        No milestones
+        {% endif %}
+      </div>
+      <div id="milestone-edit" class="d-none">
+        <form method="post" action="{% url 'set-milestone' repository.id artefact.id %}?next={{request.path}}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="mb-3 h4 fs font-weight-bold" for="milestoneControl">Milestone</label>
+            <select name="milestone" value="{{artefact.milestone.id}}" class="form-control" id="milestoneControl">
+              {% for milestone in repository.milestone_set.all %}
+                  <option {% if artefact.milestone == milestone%}selected{% endif %}  value="{{milestone.id}}">{{milestone}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success btn-sm">Set to this milestone</button>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
+
+<script>
+  document.getElementById("milestone-edit-button").addEventListener('click', () => {
+    document.getElementById("milestone-display").classList.add('d-none');
+    document.getElementById("milestone-edit").classList.remove('d-none');
+  })
+</script>

@@ -15,8 +15,11 @@
     >Create</button>
   </div>
   <div class="about-side-bar">
-    <div class="pb-3">
+    <div class="pb-2">
       {{ artefact_form.assignees | as_crispy_field }}
+    </div>
+    <div class="py-3 border-top">
+      {{ artefact_form.milestone | as_crispy_field }}
     </div>
   </div>
 </form>
