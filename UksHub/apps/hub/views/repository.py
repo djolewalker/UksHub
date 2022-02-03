@@ -771,10 +771,11 @@ def create_milestone(request, username, reponame):
             return redirect(reverse('milestones', kwargs={'username': username, 'reponame': reponame}))
 
     if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
         milestone_form = MilestonesForm()
     else:
         raise Http404
-    return render(request, 'hub/milestones/create-milestone.html', {'form': milestone_form}) if milestone_form else HttpResponse(status=409)
+    return render(request, 'hub/milestones/create-milestone.html', {'repository': repository, 'form': milestone_form}) if milestone_form else HttpResponse(status=409)
 
 
 @login_required
@@ -836,7 +837,7 @@ def edit_milestone(request, username, reponame, id):
         context['form'] = MilestonesForm(instance=milestone)
     else:
         raise Http404
-    return render(request, 'hub/milestones/create-milestone.html', context) if context else HttpResponse(status=409)
+    return render(request, 'hub/milestones/create-milestone.html', {'repository': repository, **context}) if context else HttpResponse(status=409)
 
 
 @login_required

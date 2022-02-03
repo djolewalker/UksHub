@@ -1,20 +1,16 @@
-{% extends 'hub/hub-base.html' %}
+{% extends 'hub/repository/base.html' %}
 {% load  crispy_forms_tags static compress %}
-
-
 
 {% block title %}
 Create a New Milestone
 {% endblock title %}
 
-
-
-{% block hubcontent %}
+{% block repocontent %}
 <div class="centered-content-s create-repo-content">
   <div class="pb-3 mb-4 border-bottom">
-    <h1 class="h3">Create a new Milestone</h1>
+    <h1 class="h3">Milestone</h1>
     <p style="font-size:14px">
-      Create a new milestone to help organize your issues and pull requests.
+      Milestone is the way how you can organize your issues and pull requests.
     </p>
   </div>
 
@@ -29,9 +25,9 @@ Create a New Milestone
       <button
         type="submit"
         class="btn btn-success"
-      >Create milestone</button>
+      >Save milestone</button>
     </div>
   </form>
 </div>
 
-{% endblock hubcontent %}
+{% endblock repocontent %}
