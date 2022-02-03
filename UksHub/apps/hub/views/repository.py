@@ -672,5 +672,18 @@ def edit_milestone(request, username, reponame, id):
 
 
 @login_required
+def delete_milestone(request, username, reponame, id):
+    if request.method == 'POST':
+        repo = find_repo(request.user, username, reponame)
+        milestone = repo.milestone_set.get(pk=id)
+        if not milestone:
+            raise Http404
+        milestone.delete()
+        return redirect(reverse('milestones', kwargs={'username': username, 'reponame': reponame}))
+    else:
+        raise Http404
+
+
+@login_required
 def milestone(request):
     pass
