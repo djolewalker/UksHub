@@ -610,7 +610,6 @@ def milestones(request, username, reponame):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
         state = request.GET.get('state') if 'state' in request.GET else 'open'
-        today = datetime.datetime.now()
         if state == 'closed':
             milestones_list = repository.milestone_set.filter(is_open=False).all()
         else:
@@ -685,5 +684,48 @@ def delete_milestone(request, username, reponame, id):
 
 
 @login_required
-def milestone(request):
-    pass
+def milestone(request, username, reponame, id):
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+
+        milestone = repository.milestone_set.get(pk=id)
+
+        state = request.GET.get('state') if 'state' in request.GET else 'open'
+        if state == 'closed':
+            artefacts = milestone.artefact_set.filter(state=2).all()
+        else:
+            artefacts = milestone.artefact_set.filter(state=1).all()
+
+
+        return render(request, 'hub/milestones/milestone.html', {
+            'milestone': milestone,
+            'id': id,
+            'repository': repository,
+            'artefacts': artefacts,
+        })
+
+    raise Http404
+
+
+@login_required
+def add_new_issue_to_milestone(request, username, reponame, id):
+    repository = find_repo(request.user, username, reponame)
+    milestone = repository.milestone_set.get(pk=id)
+    if request.method == 'GET':
+        can_modify_repo(request.user, repository)
+        issue_form = IssueForm()
+        issue_form.fields['assignees'].queryset = repository.contributors
+        comment_form = CommentForm()
+
+    elif request.method == 'POST':
+        can_modify_repo(request.user, repository)
+        issue_form = IssueForm(request.POST)
+        comment_form = CommentForm(request.POST)
+        issue = _create_artefact_from_form(
+            request.user, repository, issue_form, comment_form)
+        issue.milestone = milestone
+        if issue:
+            return redirect(reverse('issue', kwargs={'username': username, 'reponame': reponame, 'id': issue.id}))
+    else:
+        raise Http404
+    return render(request, 'hub/repository/new-issue.html', {'repository': repository, 'artefact_form': issue_form, 'comment_form': comment_form})
