@@ -592,15 +592,11 @@ def create_milestone(request, username, reponame):
         repository = find_repo(request.user, username, reponame)
         milestone_form = MilestonesForm(request.POST)
         if milestone_form.is_valid():
-            try:
                 milestone = milestone_form.save()
                 milestone.repository = repository
                 milestone.save()
-
                 return redirect(reverse('milestones', kwargs={'username': username, 'reponame': reponame}))
-            except IntegrityError:
-                milestone_form.add_error(
-                    'name', 'You have already created a milestone with this name!')
+
     if request.method == 'GET':
         milestone_form = MilestonesForm()
     else:
@@ -616,15 +612,62 @@ def milestones(request, username, reponame):
         state = request.GET.get('state') if 'state' in request.GET else 'open'
         today = datetime.datetime.now()
         if state == 'closed':
-            milestones_list = repository.milestone_set.filter(due_date__lte=today).all()
+            milestones_list = repository.milestone_set.filter(is_open=False).all()
         else:
-            milestones_list = repository.milestone_set.filter(due_date__gte=today).filter(is_open=True).all()
+            milestones_list = repository.milestone_set.filter(is_open=True).all()
 
         return render(request, 'hub/milestones/milestones.html', {
             'repository': repository,
             'milestones_list': milestones_list,
         })
     raise Http404
+
+
+
+
+
+
+@login_required
+def close_reopen_milestone(request, username, reponame, id):
+    if request.method == 'POST':
+        repo = find_repo(request.user, username, reponame)
+        milestone = repo.milestone_set.get(pk=id)
+        if not milestone:
+            raise Http404
+        if milestone.is_open:
+            milestone.is_open = False
+        else:
+            milestone.is_open = True
+        milestone.save()
+        return redirect(reverse('milestones', kwargs={'username': username, 'reponame': reponame}))
+    else:
+        raise Http404
+
+
+@login_required
+def edit_milestone(request, username, reponame, id):
+    context = {}
+    if request.method == 'POST':
+        repository = find_repo(request.user, username, reponame)
+        milestone = repository.milestone_set.get(pk=id)
+        if not milestone:
+            raise Http404
+        milestone_form = MilestonesForm(request.POST, instance=milestone)
+        if milestone_form.is_valid():
+                milestone = milestone_form.save(commit=True)
+                context['form'] = MilestonesForm(instance=milestone)
+                context['notification'] = 'Milestone successfully updated.'
+
+                return redirect(reverse('milestones', kwargs={'username': username, 'reponame': reponame}))
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+        milestone = repository.milestone_set.get(pk=id)
+        if not milestone:
+            raise Http404
+        context['form'] = MilestonesForm(instance=milestone)
+    else:
+        raise Http404
+    return render(request, 'hub/milestones/create-milestone.html', context) if context else HttpResponse(status=409)
 
 
 

@@ -36,7 +36,7 @@
                   href=""
                   style="width:20px;height:20px"
                 >
-                    <span><i class="bi bi-trash"></i>  delete</span>
+                    <span ><i class="bi bi-trash"></i>  <div class="fs-small ">delete</div></span>
                 </a>
               </div>
           <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
@@ -48,36 +48,48 @@
           <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
               <div class="col-3 d-flex align-items-center justify-content-end px-1">
                 <a
-                  href=""
+                  href="{% url 'edit_milestone' repository.creator.username repository.name milestone.id %}"
                   style="width:20px;height:20px"
                 >
-                   <span><i class="bi bi-pen"></i>  edit</span>
+                   <span><i class="bi bi-pen"></i>  <div class="fs-small ">edit</div></span>
                 </a>
               </div>
           <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
         </div>
     </div>
 
-    <div class="col-3 p-0">
-        <div class="col-12 d-flex h-100 p-0">
-          <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
-              <div class="col-3 d-flex align-items-center justify-content-end px-1">
-                <a
-                  href=""
-                  style="width:20px;height:20px"
-                >
-                   {% if not request.GET.state or request.GET.state == 'open'%}
-                   <span><i class="bi bi-check2-circle"></i>  close</span>
-                   {% endif %}
 
-                    {% if not request.GET.state or request.GET.state == 'closed'%}
-                   <span><i class="bi bi-envelope-open"></i>  reopen</span>
-                   {% endif %}
-                </a>
-              </div>
-          <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
+        <div class="col-3 p-0">
+            <div class="col-12 d-flex h-100 p-0">
+              <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
+                  <div class="col-3 d-flex align-items-center justify-content-end px-1">
+                    <form
+                        method="post"
+                      action="{% url 'close_reopen_milestone' repository.creator.username repository.name milestone.id %}"
+                      style="width:20px;height:20px"
+                    >
+                    {% csrf_token %}
+
+                       {% if not request.GET.state or request.GET.state == 'open'%}
+                       <button type="submit" class="d-flex pl-0 mb-0 inline btn btn-sm btn-outline-secondary" >
+                       <i class="mx-1 bi bi-check2-all "></i>
+                           close
+                       </button>
+                       {% endif %}
+
+                        {% if request.GET.state == 'closed'%}
+                            <button type="submit" class="d-flex pl-0 mb-0 inline btn btn-sm btn-outline-secondary" >
+                                <i class="mx-1 bi bi-envelope-open "></i>
+                                reopen
+                            </button>
+                       {% endif %}
+
+                    </form>
+                  </div>
+              <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
+            </div>
         </div>
-    </div>
+
 
 
 </div>
