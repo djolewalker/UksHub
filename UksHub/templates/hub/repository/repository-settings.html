@@ -1,5 +1,50 @@
 {% extends 'hub/repository/base.html' %}
+{% load thumbnail static compress %}
+
+{% block header %}
+{{ block.super }}
+{% compress css %}
+<link
+  type="text/x-scss"
+  href="{% static 'styles/hub/user-settings-base.scss' %}"
+  rel="stylesheet"
+  media="screen"
+/>
+{% endcompress %}
+{% endblock %}
 
 {% block repocontent %}
-Settings works
+<div class="settings-wrapper centered-content d-flex flex-column">
+  <div class="settings-content d-flex w-100">
+    <nav>
+      <ul class="settings-options rounded border border-secondary p-0">
+        {% with request.resolver_match.url_name as url_name %}
+        <a href="{% url 'repo-settings' repository.creator.username repository.name %}">
+          <li
+            class="{% if url_name == 'repo-settings' %}active-option{% endif %} d-flex p-2 pl-3 border-bottom border-secondary align-items-center"
+          >
+            Settings
+          </li>
+        </a>
+        <a href="{% url 'repo-collaborators' repository.creator.username repository.name %}">
+          <li
+            class="{% if 'repo-collaborators' in url_name %}active-option{% endif %} d-flex p-2 pl-3 border-bottom border-secondary align-items-center"
+          >
+            Collaborators
+          </li>
+        </a>
+        {% endwith %}
+      </ul>
+    </nav>
+    <div class="current-settings-content ">
+      <div class="d-flex w-100 flex-column">
+        <div class="w-100 border-bottom border-secondary mb-3 py-2 d-flex justify-content-between">
+          {% block settingsTitle %}{% endblock settingsTitle %}
+        </div>
+        {% block settingsContent %}
+        {% endblock settingsContent %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock repocontent %}}

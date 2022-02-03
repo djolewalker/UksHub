@@ -1,0 +1,55 @@
+{% extends 'hub/hub-base.html' %}
+{% load compress static thumbnail %}
+{% load humanize static hub_filters %}
+{% block header %}
+{{ block.super }}
+{% compress css %}
+<link
+  type="text/x-scss"
+  href="{% static 'styles/hub/home-hub.scss' %}"
+  rel="stylesheet"
+  media="screen"
+/>
+{% endcompress %}
+{% endblock %}
+{% block hubcontent %}
+
+
+<div
+  class="d-flex home-hub-container h-100"
+  style="overflow-y:scroll"
+>
+
+  {% include './sidebar.html' %}
+
+  <div class="main-content pb-5 border-left" style="height:fit-content;min-height:100%">
+    <div
+      class="panel-title"
+      class="w-100  mb-3 py-2 d-flex justify-content-between"
+    >
+      <h3 class="h3 m-0">
+        Last updated #watched repositories
+      </h3>
+    </div>
+    {% for repository in sorted_watched_repos_limit %}
+    {% include './repo-cards.html' %}
+    {% endfor %}
+
+    <div
+      class="panel-title"
+      class="w-100  mb-3 py-2 d-flex justify-content-between"
+    >
+      <h3 class="h3 m-0">
+        Last updated #starred repositories
+      </h3>
+    </div>
+    {% for repository in sorted_starred_repos_limit %}
+    {% include './repo-cards.html' %}
+    {% endfor %}
+
+  </div>
+
+</div>
+
+
+{% endblock hubcontent  %}

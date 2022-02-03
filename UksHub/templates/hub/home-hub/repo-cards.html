@@ -1,0 +1,56 @@
+{% load humanize static hub_filters %}
+
+<div class="cards">
+                    <div class="card w-75">
+                        <div class="card-body">
+                            <li  class="d-flex py-3">
+                                <div class="col-9">
+                                    <div class="d-flex mb-1 align-items-center">
+                                        <h3 class="wb-break-all" style="font-size:16px">
+                                            <a href="{% url 'repository' repository.creator.username repository.name %}">{{repository.name}}</a>
+                                        </h3>
+                                        <span class="badge badge-pill badge-secondary ml-3 px-2">
+                                            {% if repository.private %}Private{% else %}Public{% endif %}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        {% if repository.updated_at %}
+                                        <p class="col-9 d-inline-block color-fg-muted mb-2 pl-0 pr-4" style="font-size:12px">
+                                            Last updated {{repository.updated_at|naturaltime}}
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                    <ul class=" p-0 fs-small m-0 ">
+                                        {% with repository|starcount as star_count %}
+                                        <li class="inline mb-1"> <i class="bi bi-star mr-2"></i>
+                                            {{ star_count }} stars
+                                        </li>
+                                        {% endwith %}
+                                        {% with repository|watchcount as watch_count %}
+                                        <li class="inline mb-1"> <i class="bi bi-eye mr-2"></i>
+                                            {{ watch_count }} watching
+                                        </li>
+                                        {% endwith %}
+                                        <li class="inline mb-1"> <i class="bi bi-diagram-2 mr-2"></i>0 forks</li>
+                                    </ul>
+
+                                </div>
+
+                                <div class=" f4 my-3 color-fg-muted" style="font-size:13px">
+                                    <h2 class="mb-3 h4 fs font-weight-bold">About</h2>
+                                    <i>
+                                        {% if repository.description %}
+                                        {{repository.description}}
+                                        {% else %}
+                                        No description, website, or topics provided.
+                                        {% endif %}
+                                    </i>
+                                </div>
+
+                            </li>
+                        </div>
+                </div>
+            </div>
+
+
+
