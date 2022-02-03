@@ -2,10 +2,8 @@
 {% load hub_filters %}
 
 {% block repocontent %}
-<div class="d-flex pb-3 justify-content-between align-items-center">
-
+<div class="d-flex pb-3 justify-content-end align-items-center">
   {% if request.user.is_authenticated and request.user == user %}
-
   <a
     href="{% url 'new-milestone' repository.creator.username repository.name %}"
     class="ml-3"
@@ -14,10 +12,9 @@
       type="button"
       class=" btn d-flex btn-sm btn-success px-3"
     >
-       New milestone
+      New milestone
     </button>
   </a>
-
   {% endif %}
 </div>
 
@@ -40,9 +37,7 @@
         Open
       </a>
       <a
-
         href="{% url 'milestones' repository.creator.username repository.name %}?state=closed"
-
         class="ml-3{% if request.GET.state == 'closed' %} font-weight-bold{% endif %}"
       >
         <i class="bi bi-check-circle"></i>

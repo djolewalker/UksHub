@@ -11,35 +11,27 @@ Create a New Milestone
 
 {% block hubcontent %}
 <div class="centered-content-s create-repo-content">
-    <div class="pb-3 mb-4 border-bottom">
-        <h1 class="h3">Create a new Milestone</h1>
-        <p style="font-size:14px">
-            Create a new milestone to help organize your issues and pull requests.
-        </p>
+  <div class="pb-3 mb-4 border-bottom">
+    <h1 class="h3">Create a new Milestone</h1>
+    <p style="font-size:14px">
+      Create a new milestone to help organize your issues and pull requests.
+    </p>
+  </div>
+
+  <form
+    method="post"
+    class="position-relative"
+  >
+    {% csrf_token %}
+    {{form | crispy}}
+
+    <div class="pt-3 mt-4 d-flex justify-content-end">
+      <button
+        type="submit"
+        class="btn btn-success"
+      >Create milestone</button>
     </div>
-
-    <form method="post" class="position-relative">
-        <div class="username position-absolute"></div>
-        {% csrf_token %}
-        <div >
-            <div class="col-3 d-flex pr-0">
-              {{ form.name | as_crispy_field }}
-              <span class="pt-4 ml-2" style="font-size:2.3em"></span>
-            </div>
-
-            <div class="col-9 pl-2">
-              {{ form.description | as_crispy_field }}
-            </div>
-          </div>
-
-            {{ form.due_date | as_crispy_field }}
-
-
-
-        <div class="pt-3 mt-4 border-top">
-            <button type="submit" class="btn btn-primary">Create milestone</button>
-        </div>
-    </form>
+  </form>
 </div>
 
 {% endblock hubcontent %}

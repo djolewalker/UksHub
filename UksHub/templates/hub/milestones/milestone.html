@@ -3,15 +3,9 @@
 
 
 {% block repocontent %}
-
 <div class="d-flex pb-3 justify-content-between align-items-center">
-
-
- <h1 class="mx-2 bi bi-signpost">{{ milestone.name }}</h1>
-
-
+  <h1 class="mx-2 bi bi-signpost">{{ milestone.name }}</h1>
   {% if request.user.is_authenticated and request.user == user %}
-
   <a
     href="{% url 'add_new_issue_to_milestone' repository.creator.username repository.name id %}"
     class="ml-3"
@@ -23,24 +17,28 @@
       Add new issue to this milestone
     </button>
   </a>
-
   {% endif %}
 </div>
 
-
-  <div class="d-flex col-12 pr-0">
-    <div
-      class="col-7 pl-1 mw-0 flex-auto"
-      style=" padding-bottom: 40px max-width:unset"
-    >
-        <div class="progress" >
-          <div class="progress-bar" role="progressbar" style=" width: {{ percentage }}%;" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ percentage }}%</div>
-        </div>
+<div class="d-flex col-12 pr-0">
+  <div
+    class="col-7 pl-1 mw-0 flex-auto"
+    style=" padding-bottom: 40px max-width:unset"
+  >
+    <div class="progress">
+      <div
+        class="progress-bar"
+        role="progressbar"
+        style=" width: {{ percentage }}%;"
+        aria-valuenow="{{ percentage }}"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >{{ percentage }}%</div>
     </div>
   </div>
+</div>
 
-    <br>
-
+<br>
 
 <div class="border rounded-top p-3">
   <div class="d-flex col-12 pr-0">
@@ -59,9 +57,7 @@
         Open
       </a>
       <a
-
         href="{% url 'milestone' repository.creator.username repository.name id %}?state=closed"
-
         class="ml-3{% if request.GET.state == 'closed' %} font-weight-bold{% endif %}"
       >
         <i class="bi bi-check-circle"></i>
