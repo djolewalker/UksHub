@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.http.response import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -317,3 +318,24 @@ def create_label(request, username, reponame):
     else:
         raise Http404
     return render(request, 'hub/repository/new-label.html', {'repository': repository, 'label_form': label_form})
+
+def edit_label(request, username, reponame, label_name):
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+        label = Label.objects.get(name=label_name)
+        label_form = LabelForm(data={'name':label.name, 'description':label.description, 'color':label.color})
+
+    elif request.method == 'POST':
+        repository = find_repo(request.user, username, reponame)
+        label_form = LabelForm(request.POST)
+        label = Label.objects.get(name=label_name)
+        if label_form.is_valid():
+            label.name = label_form.data['name']
+            label.description = label_form.data['description']
+            label.save()
+
+            request.method = 'GET'
+            return redirect(request, 'hub/repository/labels.html', {'username': username, 'reponame': reponame})
+    else:
+        raise Http404
+    return render(request, 'hub/repository/edit-label.html', {'repository': repository, 'label_form': label_form})

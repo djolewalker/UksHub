@@ -4,7 +4,7 @@ from django.views.generic import RedirectView
 from .views.home import home
 from .views.profile import profile_overview
 from .views.profile_settings import settings_keys, settings_profile
-from .views.repository import actions, blob, create_issue, create_label, create_pull_request, insights, issue, issues, pull_request, pull_requests, tree, repository_projects, repository_settings, security, wiki, labels
+from .views.repository import actions, blob, create_issue, create_label, create_pull_request, edit_label, insights, issue, issues, pull_request, pull_requests, tree, repository_projects, repository_settings, security, wiki, labels
 
 urlpatterns = [
     # Home
@@ -32,5 +32,6 @@ urlpatterns = [
     path('<username>/<reponame>/insights', insights, name='insights'),
     path('<username>/<reponame>/settings', repository_settings, name='repository-settings'),
     path('<username>/<reponame>/labels', labels, name='labels'),
-    path('<username>/<reponame>/create_label', create_label, name='create_label')
+    path('<username>/<reponame>/create_label', create_label, name='create_label'),
+    path('<username>/<reponame>/edit_label/<path:label_name>', edit_label, name='edit_label')
 ]
