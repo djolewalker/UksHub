@@ -1,4 +1,5 @@
 from os import path, makedirs, rmdir
+import shutil
 import subprocess
 from git import Repo
 from django.conf import settings
@@ -30,6 +31,17 @@ def init_repository_dev(repo):
     repo_name = f'{repo.creator.username}/{repo.name}.git'
     repo_path = path.join(settings.GIT_REPOSITORIES, repo_name)
     Repo.init(repo_path, bare=True)
+
+
+def delete_repository(repo):
+    repo_config_dir = path.join(
+        settings.GIT_ADMIN_CONF_REPO, repo.creator.username)
+    if path.exists(repo_config_dir):
+        shutil.rmtree(repo_config_dir)
+    repoPath = path.join(settings.GIT_REPOSITORIES,
+                         repo.creator.username, f'{repo.name}.git')
+    if path.exists(repoPath):
+        shutil.rmtree(repoPath)
 
 
 @clone_or_pull_admin
