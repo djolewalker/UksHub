@@ -18,7 +18,7 @@ from UksHub.apps.events.forms import CommentForm
 from UksHub.apps.gitcore.forms import RepositoryContributorsForm
 from UksHub.apps.gitcore.models import Commit, Repository
 from UksHub.apps.events.services import event_artefact_state_change, event_user_to_artefact
-from UksHub.apps.gitcore.services import can_merge, get_repository, merge, sync_repo
+from UksHub.apps.gitcore.services import can_merge, delete_repository, get_repository, merge, sync_repo
 from UksHub.apps.hub.forms import IssueForm, PullRequestForm
 from UksHub.apps.hub.services import can_delete_repo, can_modify_repo, find_branch_from_path, find_repo, generate_hierarchy, get_last_commits, is_user_ssh_enabled
 from UksHub.apps.advancedsearch.models import Query
@@ -518,15 +518,16 @@ def pulse(request, username, reponame, period='weekly'):
         files = list()
         additions = 0
         deletions = 0
-        for commit in repo_obj.iter_commits(repo.default_branch):
-            if commit.committed_datetime.date() < after_day:
-                break
-            if commit.author not in authors:
-                authors.append(commit.author)
-            commits += 1
-            files = [*files, *list(commit.stats.files.keys())]
-            additions += commit.stats.total['insertions']
-            deletions -= commit.stats.total['deletions']
+        if repo_obj.branches:
+            for commit in repo_obj.iter_commits(repo.default_branch):
+                if commit.committed_datetime.date() < after_day:
+                    break
+                if commit.author not in authors:
+                    authors.append(commit.author)
+                commits += 1
+                files = [*files, *list(commit.stats.files.keys())]
+                additions += commit.stats.total['insertions']
+                deletions -= commit.stats.total['deletions']
 
         return render(request, 'hub/repository/insights/pulse.html', {
             'repository': repo,
@@ -554,44 +555,53 @@ def insights_commits(request, username, reponame):
         today = timezone.localdate()
         dates = list()
         total_day_dif = (today - repo.created_at.date()).days
-        slices = 5 if total_day_dif >= 5 else total_day_dif
-        if total_day_dif < 5:
+        slices = 6 if total_day_dif >= 6 else total_day_dif
+        if total_day_dif < 6:
+            if slices == 0:
+                total_day_dif = 1
+                slices = 1
             increment = 1
         else:
-            increment = total_day_dif / 5
+            increment = total_day_dif / 6
 
         for x in range(slices):
             dates.append({
-                'date': repo.created_at.date() + timedelta(days=math.ceil(increment*(x+1))),
+                'date': repo.created_at.date() + timedelta(days=math.ceil(increment*(x))),
                 'count': 0
             })
+
+        dates[-1]['date'] = today
 
         user_stats = list()
         selected_dates = [i['date'] for i in dates]
         cmt_count = 0
-        for commit in repo_obj.iter_commits(repo.default_branch):
-            cmt_count += 1
-            cmt_date = commit.committed_datetime.date()
-            for index, d in enumerate(selected_dates):
-                if cmt_date <= d:
-                    dates[index]['count'] += 1
-                    break
-            current_user = next(filter(
-                lambda u: u['user']['userprofile']['email'] == commit.author.email, user_stats), None)
-            if current_user:
-                current_user['stats']['commits'] += 1
-                current_user['stats']['insertions'] += commit.stats.total['insertions']
-                current_user['stats']['deletions'] += commit.stats.total['deletions']
-            elif get_user_model().objects.filter(email=commit.author.email).exists():
-                user_stats.append({
-                    'user': get_user_model().objects.get(email=commit.author.email),
-                    'stats': {'commits': 0, 'insertions': 0, 'deletions': 0}
-                })
-            else:
-                user_stats.append({
-                    'user': {'unknown': True, 'userprofile': {'username': commit.author.name, 'email': commit.author.email}},
-                    'stats': {'commits': 0, 'insertions': 0, 'deletions': 0}
-                })
+        if repo_obj.branches:
+            for commit in repo_obj.iter_commits(repo.default_branch):
+                cmt_count += 1
+                cmt_date = commit.committed_datetime.date()
+                for index, d in enumerate(selected_dates):
+                    if cmt_date <= d:
+                        dates[index]['count'] += 1
+                        break
+                current_user = next(filter(
+                    lambda u: u['user']['userprofile']['email'] == commit.author.email, user_stats), None)
+                if current_user:
+                    current_user['stats']['commits'] += 1
+                    current_user['stats']['insertions'] += commit.stats.total['insertions']
+                    current_user['stats']['deletions'] += commit.stats.total['deletions']
+                elif get_user_model().objects.filter(email=commit.author.email).exists():
+                    user_stats.append({
+                        'user': get_user_model().objects.get(email=commit.author.email),
+                        'stats': {'commits': 1, 'insertions': commit.stats.total['insertions'], 'deletions': commit.stats.total['deletions']}
+                    })
+                else:
+                    user_stats.append({
+                        'user': {'unknown': True, 'userprofile': {'username': commit.author.name, 'email': commit.author.email}},
+                        'stats': {'commits': 1, 'insertions': commit.stats.total['insertions'], 'deletions': commit.stats.total['deletions']}
+                    })
+
+        dates = [{'date': repo.created_at.date() - timedelta(days=1),
+                  'count': 0}, *dates]
 
         return render(request, 'hub/repository/insights/commits.html', {
             'repository': repo,
@@ -636,7 +646,7 @@ def insights_trafic(request, username, reponame):
         ).order_by(
             '-day'
         ).all()
-        
+
         for visit_date in list(visits):
             for store_date in dates:
                 if store_date['date'] == visit_date['day'].date():
@@ -694,6 +704,7 @@ def delete_repo(request, pk):
         repo = get_object_or_404(Repository, id=pk)
         can_delete_repo(request.user, repo)
 
+        delete_repository(repo)
         repo.delete()
 
         return redirect(request.GET['next'])
