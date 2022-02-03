@@ -17,8 +17,12 @@
                     <b class="link-hover-underline">{{milestone.name}}</b>
                 </a>
             </h3>
-        </div>
 
+
+        </div>
+ <div class="progress" >
+          <div class="progress-bar" role="progressbar" style=" width: {% milestone_percent milestone %}%;" aria-valuenow="{% milestone_percent milestone %}" aria-valuemin="0" aria-valuemax="100">{% milestone_percent milestone %}%</div>
+        </div>
         <p class="col-9 d-inline-block color-fg-muted pl-0 pr-4 fs-small">
             <i class="bi bi-clock"></i> Created {{milestone.created_at|naturaltime}}
         </p>
@@ -91,6 +95,12 @@
                        {% endif %}
 
                     </form>
+
+
+                    <div class="d-flex col-12 pr-0">
+
+
+
                   </div>
             </div>
         </div>
@@ -98,7 +108,5 @@
 
 
 </div>
-
-
 
 

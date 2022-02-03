@@ -687,9 +687,11 @@ def delete_milestone(request, username, reponame, id):
 def milestone(request, username, reponame, id):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
-
         milestone = repository.milestone_set.get(pk=id)
-
+        if len(milestone.artefact_set.all()) > 0:
+            percentage = round((len(milestone.artefact_set.filter(state=2).all()) / len(milestone.artefact_set.all()))*100)
+        else:
+            percentage = 100
         state = request.GET.get('state') if 'state' in request.GET else 'open'
         if state == 'closed':
             artefacts = milestone.artefact_set.filter(state=2).all()
@@ -698,6 +700,7 @@ def milestone(request, username, reponame, id):
 
 
         return render(request, 'hub/milestones/milestone.html', {
+            'percentage': percentage,
             'milestone': milestone,
             'id': id,
             'repository': repository,
