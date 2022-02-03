@@ -32,23 +32,21 @@
     </div>
 
 
-
-
+<a href="{% url 'edit_milestone' repository.creator.username repository.name milestone.id %}">
     <div class="col-3 p-0">
         <div class="col-12 d-flex h-100 p-0">
           <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
               <div class="col-3 d-flex align-items-center justify-content-end px-1">
-                <a
-                  href="{% url 'edit_milestone' repository.creator.username repository.name milestone.id %}"
-                  style="width:20px;height:20px"
-                >
-                   <span><i class="mx-2 bi bi-pen"></i>  <div class="fs-small ">edit</div></span>
-                </a>
+
+                   <button type="submit" class="d-flex pl-0 mb-0 inline btn btn-sm btn-outline-secondary" >
+                        <i class="mx-2 bi bi-pen"></i>  <div class="fs-small ">edit</div>
+                        </button>
+
               </div>
           <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
         </div>
     </div>
-
+</a>
 
         <div class="col-3 p-0">
             <div class="col-12 d-flex h-100 p-0">
@@ -104,9 +102,6 @@
                   </div>
             </div>
         </div>
-
-
-
 </div>
 
 
