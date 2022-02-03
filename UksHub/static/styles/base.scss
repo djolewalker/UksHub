@@ -82,7 +82,7 @@ a:hover button.link-hover-underline {
 .centered-content-s {
     width: 100%;
     max-width: 768px;
-    margin: 40px auto;
+    margin: auto;
     padding: 0 16px;
 }
 
@@ -145,4 +145,9 @@ a:hover button.link-hover-underline {
     font-size: 14px;
     font-weight: 600;
   }
+
+.inline {
+   display:inline;
+}
+
 }
