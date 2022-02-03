@@ -339,3 +339,8 @@ def edit_label(request, username, reponame, label_name):
     else:
         raise Http404
     return render(request, 'hub/repository/edit-label.html', {'repository': repository, 'label_form': label_form})
+
+def remove_label(request, username, reponame, label_name):
+    if request.method == 'GET':
+        Label.objects.filter(name=label_name).delete()
+        return redirect(request, 'hub/repository/labels.html', {'username': username, 'reponame': reponame})
