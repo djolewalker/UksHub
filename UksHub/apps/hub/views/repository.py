@@ -6,7 +6,7 @@ from UksHub.apps.events.services import event_user_to_artefact
 
 from UksHub.apps.gitcore.services import get_repository
 from UksHub.apps.hub.forms import IssueForm, LabelForm
-from UksHub.apps.hub.models import Label
+from UksHub.apps.hub.models import Label, Milestone
 from UksHub.apps.hub.services import find_branch_from_path, find_repo, generate_hierarchy, get_last_commits, is_user_ssh_enabled
 from UksHub.apps.advancedsearch.models import Query
 from UksHub.apps.advancedsearch.mapper import map_query_to_filter
@@ -137,6 +137,8 @@ def issues(request, username, reponame):
             repository,
             query
         )
+        labels = Label.objects.all()
+        milestones = Milestone.objects.all()
 
         return render(request, 'hub/repository/artefacts.html', {
             'repository': repository,
@@ -145,7 +147,9 @@ def issues(request, username, reponame):
             'queries': binding_queries,
             'ispr': False,
             'is_default_query': query == default_query,
-            'sort_options': _sort_options
+            'sort_options': _sort_options,
+            'labelscount': len(labels),
+            'milestonescount': len(milestones)
         })
 
     raise Http404
@@ -299,7 +303,6 @@ def create_label(request, username, reponame):
     if request.method == 'GET':
         repository = find_repo(request.user, username, reponame)
         label_form = LabelForm()
-        repository.contributors.add(repository.creator)
 
     elif request.method == 'POST':
         repository = find_repo(request.user, username, reponame)
@@ -309,7 +312,8 @@ def create_label(request, username, reponame):
             label.save()
             label_form.save_m2m()
 
-            return redirect(reverse('issue', kwargs={'username': username, 'reponame': reponame}))
+            request.method = 'GET'
+            return redirect(request, 'hub/repository/labels.html', {'username': username, 'reponame': reponame})
     else:
         raise Http404
     return render(request, 'hub/repository/new-label.html', {'repository': repository, 'label_form': label_form})
