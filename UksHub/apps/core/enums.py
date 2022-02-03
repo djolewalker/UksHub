@@ -1,8 +1,10 @@
 from enum import Enum
 
+
 class BASE_STATE(Enum):
     OPEN = 1
     CLOSED = 2
+
 
 class REVIEW_STATE(Enum):
     COMMENT = 1

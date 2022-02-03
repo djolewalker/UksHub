@@ -3,16 +3,24 @@ from django.conf import settings
 from git import Commit as cmt, Head
 from UksHub.apps.core.models import TimeStampModel
 from UksHub.apps.core.validators import path_validator
+from UksHub.apps.hubauth.models import User
+
 
 # Create your models here.
 class Repository(TimeStampModel):
     name = models.CharField(max_length=250, validators=[path_validator])
     description = models.TextField(blank=True, null=True)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
-    contributors = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='contributors')
+    contributors = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='contributors', blank=True, null=True)
     private = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
     default_branch = models.CharField(max_length=400, default='master')
+    stars = models.ManyToManyField(User, default=None, blank=True, related_name='repo_stars')
+    watch = models.ManyToManyField(User, default=None, blank=True, related_name='repo_watch')
+
+    @property
+    def star_count(self):
+        self.stars.all().count()
     
     class Meta:
         unique_together = ('name', 'creator')

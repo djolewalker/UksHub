@@ -1,0 +1,33 @@
+{% extends 'hub/repository/base.html' %}
+{% load  crispy_forms_tags static compress %}
+
+{% block title %}
+Create a New Milestone
+{% endblock title %}
+
+{% block repocontent %}
+<div class="centered-content-s create-repo-content">
+  <div class="pb-3 mb-4 border-bottom">
+    <h1 class="h3">Milestone</h1>
+    <p style="font-size:14px">
+      Milestone is the way how you can organize your issues and pull requests.
+    </p>
+  </div>
+
+  <form
+    method="post"
+    class="position-relative"
+  >
+    {% csrf_token %}
+    {{form | crispy}}
+
+    <div class="pt-3 mt-4 d-flex justify-content-end">
+      <button
+        type="submit"
+        class="btn btn-success"
+      >Save milestone</button>
+    </div>
+  </form>
+</div>
+
+{% endblock repocontent %}

@@ -1,38 +1,67 @@
-{% load humanize %}
-<div class="position-relative lined-item w-100 pb-3" style="margin-left:16px">
-    <div class="w-100 d-flex flex-column border rounded border-info" style="margin-left:-16px;z-index:10">
-        <div class="d-flex px-3 text-white py-2 justify-content-between border-bottom border-info" 
-        style="background-color:#4ca3b1">
-            <div class="d-flex align-items-center">
-                <a class="d-flex align-items-center" href="{% url 'profile' 1 %}">
-                    <div style="height: 32px; width: 32px" >
-                        {% with comment.creator as user %}
-                            {% include 'hub/common/profile-picture.html' %}
-                        {% endwith %}
-                    </div>
-                    <b class="link-hover-underline ml-1">{{comment.creator.username}}</b>
-                </a>
-                <span class="ml-1">commented {{comment.created_at | naturaltime}}</span>
-            </div>
-            <div class="d-flex align-items-center">
-                <span class="badge badge-pill badge-info fs-small px-2 py-1 bg-white text-info border-info mr-2" style="">
-                    {% if comment.creator == repository.creator %}
-                    Owner
-                    {% else %}
-                    Collaborator
-                    {% endif %}
-                </span>
-                <a href="" class="badge badge-pill badge-info fs-small p-1 bg-white text-info border-info" style="">
-                    <i class="bi bi-three-dots"></i>
-                </a>
-            </div>
-        </div>
-        <div class="p-3 rounded" style="background-color:white">
-            {% if comment.message %}
-                {{ comment.message }}
-            {% else %}
-                <i>No description provided.</i>
-            {% endif %}
-        </div>
+{% load humanize hub_filters%}
+<div
+  class="position-relative lined-item w-100 pb-3"
+  style="margin-left:16px"
+>
+  <div
+    class="w-100 d-flex flex-column border rounded border-primary"
+    style="margin-left:-16px;z-index:10"
+  >
+
+    <div
+      class="d-flex px-3 text-primary py-2 justify-content-between border-bottom border-primary position-relative bg-white rounded-top"
+    >
+      <div
+        class="w-100 h-100 position-absolute rounded-top"
+        style="top:0; left:0; background-color:rgba(56, 139, 253, 0.15); z-index: 1"
+      ></div>
+      <div
+        class="d-flex align-items-center"
+        style="z-index: 2"
+      >
+        <a
+          class="d-flex align-items-center"
+          href="{% url 'profile' comment.creator.username %}"
+        >
+          <div style="height: 32px; width: 32px">
+            {% with comment.creator as user %}
+            {% include 'hub/common/profile-picture.html' %}
+            {% endwith %}
+          </div>
+          <b class="link-hover-underline ml-1">{{comment.creator.username}}</b>
+        </a>
+        <span class="ml-1">commented {{comment.created_at | naturaltime}}</span>
+      </div>
+      <div
+        class="d-flex align-items-center"
+        style="z-index: 2"
+      >
+        <span class="badge badge-pill badge-info fs-small px-2 py-1 bg-white text-primary border-info mr-2">
+          {% if comment.creator == repository.creator %}
+          Owner
+          {% else %}
+          Collaborator
+          {% endif %}
+        </span>
+        {% if repository|user_can_modify:user %}
+        <a
+          href="#"
+          class="badge badge-pill badge-primary fs-small p-1 bg-white text-primary "
+        >
+          <i class="bi bi-three-dots"></i>
+        </a>
+        {% endif %}
+      </div>
     </div>
+    <div
+      class="p-3 rounded"
+      style="background-color:white"
+    >
+      {% if comment.message %}
+      {{ comment.message }}
+      {% else %}
+      <i>No description provided.</i>
+      {% endif %}
+    </div>
+  </div>
 </div>

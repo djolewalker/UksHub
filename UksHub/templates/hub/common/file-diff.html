@@ -1,0 +1,75 @@
+{% load humanize static hub_filters %}
+<div class="my-3 fs-small">
+  Showing
+  <b>{{stats.total.files}} changed file</b>
+  with <b>{{stats.total.insertions}} additions</b> and
+  <b>{{stats.total.deletions}} deletions</b>.
+</div>
+
+{% for diff in diffs %}
+{% if diff.deleted_file %}
+<div class="border rounded mb-3">
+  <div class="px-3 py-2 bg-light fs-small">
+    <b>{{ diff|pathfromdiff }}</b> file deleted
+  </div>
+</div>
+{% elif diff.renamed %}
+<div class="border rounded mb-3">
+  <div class="px-3 py-2 bg-light fs-small">
+    <b>{{diff.rename_from}}</b> renamed to <b>{{diff.rename_to}}</b>
+  </div>
+</div>
+{% else %}
+<div class="border rounded mb-3">
+  {% with diff|pathfromdiff as path %}
+  {% with inserted=stats.files|diff_inserted:path deleted=stats.files|diff_deleted:path  %}
+  <div class="px-3 py-2 bg-light fs-small">
+    {% if inserted or deleted %}
+    {% if deleted %}
+    <span class="badge badge-pill badge-danger">-{{deleted}}</span>
+    {% endif %}
+    {% if inserted %}
+    <span class="badge badge-pill badge-success">+{{inserted}}</span>
+    {% endif %}
+    {% else %}
+    <span class="badge badge-pill badge-success">created</span>
+    {% endif %}
+    {{path}}
+  </div>
+  {% if inserted or deleted %}
+  <div class="border-top fs-xs">
+    {% if not splitted|byindex:forloop.counter0|byindex:0|startswith:'Binary files' %}
+    {% with splitted|byindex:forloop.counter0|getlineindexes as line_indexes %}
+    {% for line in splitted|byindex:forloop.counter0 %}
+    {% with minus=line_indexes|byindex:forloop.counter0|byindex:0 plus=line_indexes|byindex:forloop.counter0|byindex:1 %}
+    {% if not line|startswith:'\\' %}
+    <div class="d-flex">
+      <div
+        class="d-flex {% if not minus and plus %} bg-success-medium{% elif not plus and minus%} bg-danger-medium{% elif not plus and not minus%} py-2 bg-primary-medium{% endif %}"
+      >
+        <div
+          class="text-muted px-2"
+          style="width:50px; text-align:end; font-family: Consolas;"
+        >{{minus}}</div>
+        <div
+          class="text-muted px-2"
+          style="width:50px; text-align:end; font-family: Consolas;"
+        >{{plus}}</div>
+      </div>
+      <div
+        class="pl-1 flex-auto {% if not minus and plus %} bg-success-light{% elif not plus and minus%} bg-danger-light{% elif not plus and not minus%} py-2 bg-primary-light{% endif %}"
+        style="white-space:pre-wrap; line-height:20px;"
+      >{{line}}</div>
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% endfor %}
+    {% endwith %}
+    {% endif %}
+  </div>
+  {% endif %}
+  {% endwith %}
+  {% endwith %}
+</div>
+{% endif %}
+{% endfor %}

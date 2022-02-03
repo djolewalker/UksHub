@@ -1,0 +1,65 @@
+{% extends 'hub/repository/base.html' %}
+{% load hub_filters %}
+
+{% block repocontent %}
+<div class="d-flex pb-3 justify-content-end align-items-center">
+  {% if request.user.is_authenticated and request.user == user %}
+  <a
+    href="{% url 'new-milestone' repository.creator.username repository.name %}"
+    class="ml-3"
+  >
+    <button
+      type="button"
+      class=" btn d-flex btn-sm btn-success px-3"
+    >
+      New milestone
+    </button>
+  </a>
+  {% endif %}
+</div>
+
+
+
+<div class="border rounded-top p-3">
+  <div class="d-flex col-12 pr-0">
+    <div
+      class="col-7 pl-1 mw-0 flex-auto"
+      style="max-width:unset"
+    >
+      <a
+        href="{% url 'milestones' repository.creator.username repository.name %}?state=open"
+        {% if not request.GET.state or request.GET.state == 'open'%}
+        class="font-weight-bold"
+        {% endif %}
+      >
+        <i class="bi bi-signpost"></i>
+        {% if not request.GET.state or request.GET.state == 'open'%}{{milestones_list|length}}{% endif %}
+        Open
+      </a>
+      <a
+        href="{% url 'milestones' repository.creator.username repository.name %}?state=closed"
+        class="ml-3{% if request.GET.state == 'closed' %} font-weight-bold{% endif %}"
+      >
+        <i class="bi bi-check-circle"></i>
+        {% if request.GET.state == 'closed' %}{{milestones_list|length}}{% endif %}
+        Closed
+      </a>
+    </div>
+
+  </div>
+</div>
+
+{% if milestones_list %}
+<ul class="p-0 border-left border-right">
+  {% for milestone in milestones_list %}
+  <li class="d-flex py-1 border-bottom">
+    {% include 'hub/milestones/milestone-inline.html'  %}
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="border p-5 border-top-0 d-flex justify-content-center align-items-center">
+  <h2 class="py-5">No results!</h2>
+</div>
+{% endif %}
+{% endblock repocontent %}}

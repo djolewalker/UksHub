@@ -166,7 +166,7 @@ GIT_ADMIN = BASE_DIR / 'git-admin-dev'
 GIT_ADMIN_CONF_REPO = GIT_ADMIN / 'conf'
 GIT_ADMIN_CONF = GIT_ADMIN_CONF_REPO / 'gitolite.conf'
 GIT_ADMIN_KEYS = GIT_ADMIN / 'keydir'
-GIT_ADMIN_REMOTE = 'D:\\Works\\UKS\\git-admin-dev'
+GIT_ADMIN_REMOTE = 'D:\\master\\UKS\\git-admin-dev'
 
 THUMBNAIL_ALIASES = {
     '': {

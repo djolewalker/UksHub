@@ -6,81 +6,160 @@ UksHub
 {% endblock %}
 {% block header %}
 {% compress css %}
-<link type="text/x-scss" href="{% static 'styles/hub/hub-base.scss' %}" rel="stylesheet" media="screen" />
+<link
+  type="text/x-scss"
+  href="{% static 'styles/hub/hub-base.scss' %}"
+  rel="stylesheet"
+  media="screen"
+/>
 {% endcompress %}
 {% endblock %}
 {% block content %}
 <div class="home d-flex flex-sm-column">
-    <div class="header d-flex justify-content-sm-between px-3 px-md-4 px-lg-5 border-bottom border-secondary">
-        <div class="d-flex align-items-center">
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'home' %}" class="d-flex h-100 align-items-center">
-                <img src="{% static 'img/hub-icon.svg' %}" alt="UksHub logo">
-            </a>
-            <div class="input-group input-group-sm mx-3">
-                <input type="text" class="form-control" placeholder="Search..." aria-label="Search ukshub"
-                    aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">/</span>
-                </div>
-            </div>
-            {% else %}
-            <a href="{% url 'home' %}" class="d-flex align-items-center h-100">
-                <img src="{% static 'img/hub-icon.svg' %}" alt="UksHub logo">
-                <h1>UksHub</h1>
-            </a>
-            {% endif %}
+  <div class="header d-flex justify-content-sm-between px-3 px-md-4 px-lg-5 border-bottom border-secondary">
+    <div class="d-flex align-items-center">
+      {% if request.user.is_authenticated %}
+      <a
+        href="{% url 'home' %}"
+        class="d-flex h-100 align-items-center"
+      >
+        <img
+          src="{% static 'img/hub-icon.svg' %}"
+          alt="UksHub logo"
+        >
+      </a>
+      <div class="input-group input-group-sm mx-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          aria-label="Search ukshub"
+          aria-describedby="basic-addon2"
+        >
+        <div class="input-group-append">
+          <span
+            class="input-group-text"
+            id="basic-addon2"
+          >/</span>
         </div>
-
-        <div class="actions d-flex align-items-center">
-            {% if request.user.is_authenticated %}
-            <a class="d-flex align-items-center" href="{% url 'profile' request.user.username %}">
-                {% if request.user.userprofile.avatar %}
-                <img class="rounded-circle mr-1" src="{{ request.user.userprofile.avatar |thumbnail_url:'avatar-s' }}"
-                    alt="User avatar">
-                {% else %}
-                <div class="initials-image rounded-circle d-flex bg-dark text-white mr-1"
-                    style="height: 38px; width:38px; font-size: 1em">
-                    {% include 'hub/common/avatar.html' %}
-                </div>
-                {% endif %}
-                <p class="mr-4">{{request.user.username}}</p>
-            </a>
-
-            <a href="{% url 'settings-profile' %}" class="mr-2">
-                <i class="bi-gear-fill" style="font-size:1.8em"></i>
-            </a>
-            <form action="/logout" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-outline-secondary btn-sm">Log out</button>
-            </form>
-            {% else %}
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search..." aria-label="Search ukshub"
-                    aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">/</span>
-                </div>
-            </div>
-            <a href="{% url 'login' %}"><button type="button" class="btn btn-outline-secondary hub">Sign in</button></a>
-            <a href="{% url 'register' %}"><button type="button" class="btn btn-secondary hub">Sign up</button></a>
-            {% endif %}
-        </div>
+      </div>
+      {% else %}
+      <a
+        href="{% url 'home' %}"
+        class="d-flex align-items-center h-100"
+      >
+        <img
+          src="{% static 'img/hub-icon.svg' %}"
+          alt="UksHub logo"
+        >
+        <h1>UksHub</h1>
+      </a>
+      {% endif %}
     </div>
-    <div class="content d-flex flex-wrap">
-        {% if notification %}
-        <div id="hub-notification-panel"
-            class="d-flex text-info w-100 position-relative justify-content-center align-items-center border-top border-bottom border-info">
-            <span class="font-weight-bold ml-3">{{ notification }}</span>
-            <i id="hub-notification-panel-button" class="remove-button bi bi-x ml-3"></i>
-            <div class="notification-background position-absolute w-100 h-100 bg-info"></div>
-            <script src="{% static 'js/hub/base.js' %}"></script>
+
+    <div class="actions d-flex align-items-center">
+      {% if request.user.is_authenticated %}
+      <a
+        class="d-flex align-items-center"
+        href="{% url 'profile' request.user.username %}"
+      >
+        {% if request.user.userprofile.avatar %}
+        <img
+          class="rounded-circle mr-1"
+          src="{{ request.user.userprofile.avatar |thumbnail_url:'avatar-s' }}"
+          alt="User avatar"
+        >
+        {% else %}
+        <div
+          class="initials-image rounded-circle d-flex bg-dark text-white mr-1"
+          style="height: 38px; width:38px; font-size: 1em"
+        >
+          {% include 'hub/common/avatar.html' %}
         </div>
         {% endif %}
-        {% block hubcontent %}{% endblock hubcontent %}
+        <p class="mr-4">{{request.user.username}}</p>
+      </a>
+
+      <a
+        href="{% url 'settings-profile' %}"
+        class="mr-2"
+      >
+        <i
+          class=" bi bi-gear"
+          style="font-size:1.8em"
+        ></i>
+      </a>
+      <form
+        action="/logout"
+        method="post"
+      >
+        {% csrf_token %}
+        <button
+          type="submit"
+          class="btn btn-outline-secondary btn-sm"
+        >Log out</button>
+      </form>
+      {% else %}
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          aria-label="Search ukshub"
+          aria-describedby="basic-addon2"
+        >
+        <div class="input-group-append">
+          <span
+            class="input-group-text"
+            id="basic-addon2"
+          >/</span>
+        </div>
+      </div>
+      <a href="{% url 'login' %}"><button
+          type="button"
+          class="btn btn-outline-secondary hub"
+        >Sign in</button></a>
+      <a href="{% url 'register' %}"><button
+          type="button"
+          class="btn btn-secondary hub"
+        >Sign up</button></a>
+      {% endif %}
     </div>
-    <div class="footer centered-content d-flex justify-content-sm-center border-top mt-4 border-secondary py-4">
-        <p>© 2022 UksHub</p>
+  </div>
+  <div class="content d-flex flex-wrap flex-auto mh-0">
+    {% if notification %}
+    <div
+      id="hub-notification-panel"
+      class="d-flex text-info w-100 position-relative justify-content-center align-items-center border-top border-bottom border-info"
+    >
+      <span class="font-weight-bold ml-3">{{ notification }}</span>
+      <i
+        id="hub-notification-panel-button"
+        class="remove-button bi bi-x ml-3"
+      ></i>
+      <div class="notification-background position-absolute w-100 h-100 bg-info"></div>
+      <script src="{% static 'js/hub/base.js' %}"></script>
     </div>
+    {% elif error %}
+    <div
+      id="hub-notification-panel"
+      class="d-flex text-danger w-100 position-relative justify-content-center align-items-center border-top border-bottom border-danger"
+    >
+      <span class="font-weight-bold ml-3">{{ error }}</span>
+      <i
+        id="hub-notification-panel-button"
+        class="remove-button bi bi-x ml-3"
+      ></i>
+      <div class="notification-background position-absolute w-100 h-100 bg-danger"></div>
+      <script src="{% static 'js/hub/base.js' %}"></script>
+    </div>
+    {% endif %}
+    {% block hubcontent %}
+  </div>
+
+  <div class="footer centered-content d-flex justify-content-sm-center border-top mt-4 border-secondary py-4">
+    <p>© 2022 UksHub</p>
+  </div>
 </div>
+    {% endblock hubcontent %}
 {% endblock content %}

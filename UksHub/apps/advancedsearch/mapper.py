@@ -7,7 +7,7 @@ from UksHub.apps.advancedsearch.models import Query
 from UksHub.apps.advancedsearch.constants import meta_model, is_values, sort_values, m_2_m
 
 
-def _get_artefact_content_type(type):
+def get_artefact_content_type(type):
     return ContentType.objects.get(model=_get_is(type))
 
 
@@ -42,7 +42,7 @@ def map_query_to_filter(query):
                 query.entity.append(f'is:{value}')
                 if 'polymorphic_ctype' in filter:
                     continue  # Implement multiple OR
-                filter['polymorphic_ctype'] = _get_artefact_content_type(value)
+                filter['polymorphic_ctype'] = get_artefact_content_type(value)
             elif value in ['open', 'closed']:
                 query.state.append(f'is:{value}')
                 if 'state' in filter:
