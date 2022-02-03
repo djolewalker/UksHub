@@ -1,6 +1,6 @@
 {% load thumbnail %}
 {% if user.userprofile.avatar %}
-<img class="rounded-circle" src="{{ user.userprofile.avatar |thumbnail_url:'avatar-s' }}" alt="User avatar">
+<img class="w-100 h-100 rounded-circle" src="{{ user.userprofile.avatar |thumbnail_url:'avatar-s' }}" alt="User avatar">
 {% else %}
 <div class="w-100 h-100 rounded-circle d-flex bg-dark text-white">
     {% include 'hub/common/avatar.html' %}

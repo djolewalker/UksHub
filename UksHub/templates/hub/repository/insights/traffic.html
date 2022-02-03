@@ -1,0 +1,89 @@
+{% extends 'hub/repository/insights.html' %}
+{% load static %}
+
+{% block header %}
+{{block.super}}
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"
+  integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+{% endblock header %}
+
+{% block settingsContent %}
+<div class="w-100 border-bottom border-secondary mb-3 py-2 d-flex justify-content-between align-items-center">
+  <h2 class="h3">Page oppening</h2>
+</div>
+
+<canvas
+  id="myChart"
+  width="400"
+  height="230"
+></canvas>
+
+<script>
+  const ctx = document.getElementById('myChart');
+  const myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [{%for d in data %}"{{d.date|date:'M j'}}", {% endfor %}],
+      datasets: [
+        {
+          label: 'Visits',
+          yAxisID: 'y',
+          data: [{%for d in data %}{{d.visits}},{% endfor %}],
+          borderColor: 'rgb(75, 192, 192)',
+          fill: false,
+        },
+        {
+          label: 'Unique visitors',
+          yAxisID: 'y1',
+          data: [{%for d in data %}{{d.visitors}},{% endfor %}],
+          borderColor: 'rgb(54, 162, 235)',
+          fill: false,
+        }
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: false,
+        },
+      },
+      interaction: {
+        intersect: false,
+      },
+      scales: {
+        y: {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          grid: {
+            drawOnChartArea: false, // only want the grid lines for one axis to show up
+          },
+          ticks: {
+            maxTicksLimit: 5,
+            stepSize: 1,
+          }
+        },
+        y1: {
+          type: 'linear',
+          display: true,
+          position: 'right',
+
+          // grid line settings
+          grid: {
+            drawOnChartArea: false, // only want the grid lines for one axis to show up
+          },
+          ticks: {
+            maxTicksLimit: 5,
+            stepSize: 1,
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock settingsContent %}
