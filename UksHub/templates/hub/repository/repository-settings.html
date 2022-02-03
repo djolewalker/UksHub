@@ -19,16 +19,16 @@
     <nav>
       <ul class="settings-options rounded border border-secondary p-0">
         {% with request.resolver_match.url_name as url_name %}
-        <a href="{% url 'repository-settings' repository.creator.username repository.name %}">
+        <a href="{% url 'repo-settings' repository.creator.username repository.name %}">
           <li
-            class="{% if url_name == 'repository-settings' %}active-option{% endif %} d-flex p-2 pl-3 border-bottom border-secondary align-items-center"
+            class="{% if url_name == 'repo-settings' %}active-option{% endif %} d-flex p-2 pl-3 border-bottom border-secondary align-items-center"
           >
             Settings
           </li>
         </a>
-        <a href="{% url 'repository-collaborators' repository.creator.username repository.name %}">
+        <a href="{% url 'repo-collaborators' repository.creator.username repository.name %}">
           <li
-            class="{% if 'repository-collaborators' in url_name %}active-option{% endif %} d-flex p-2 pl-3 border-bottom border-secondary align-items-center"
+            class="{% if 'repo-collaborators' in url_name %}active-option{% endif %} d-flex p-2 pl-3 border-bottom border-secondary align-items-center"
           >
             Collaborators
           </li>

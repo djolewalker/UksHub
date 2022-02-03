@@ -1,0 +1,85 @@
+{% extends 'hub/repository/insights.html' %}
+
+
+
+{% block settingsContent %}
+<div class="w-100 border-bottom border-secondary mb-3 py-2 d-flex justify-content-between align-items-center">
+  <h2 class="h3">Pulse</h2>
+  <a
+    class="main-content-branches text-truncate btn btn-secondary btn-sm dropdown-toggle pl-3 pr-4"
+    href="#"
+    role="button"
+    id="dropdownMenuLink"
+    data-toggle="dropdown"
+  >
+    {% if period == 'daily' %}
+    24 hours
+    {% elif period == 'monthly' %}
+    1 Month
+    {% else %}
+    1 Week
+    {% endif %}
+  </a>
+  <div class="dropdown-menu">
+    <a
+      class="dropdown-item"
+      href="{% url 'pulse-period' repository.creator.username repository.name 'daily' %}"
+    >
+      <i class="bi bi-check-lg{% if period != 'daily' %} hidden{% endif %}"></i>
+      24 hours
+    </a>
+    <a
+      class="dropdown-item"
+      href="{% url 'pulse' repository.creator.username repository.name %}"
+    >
+      <i class="bi bi-check-lg{% if period != 'weekly' %} hidden{% endif %}"></i>
+      1 Week
+    </a>
+    <a
+      class="dropdown-item"
+      href="{% url 'pulse-period' repository.creator.username repository.name 'monthly' %}"
+    >
+      <i class="bi bi-check-lg{% if period != 'monthly' %} hidden{% endif %}"></i>
+      1 Month
+    </a>
+  </div>
+</div>
+
+<div class="mt-3 border rounded fs-small">
+  <div class="p-3 rounded-top border-bottom bg-light">
+    <b>Overview</b>
+  </div>
+  <div class="d-flex">
+    <div class="w-25 border-right rounded-left p-3 d-flex flex-column justify-content-center align-items-center">
+      <span class="fs"><i class="bi bi-check-circle text-primary"></i> {{prs_close}}</span>
+      <div>Merged pull requests</div>
+    </div>
+    <div class="w-25 border-right p-3 d-flex flex-column justify-content-center align-items-center">
+      <span class="fs"><i class="bi bi-bezier2 text-success"></i> {{pr_open}}</span>
+      <div>Open pull requests</div>
+    </div>
+    <div class="w-25 border-right p-3 d-flex flex-column justify-content-center align-items-center">
+      <span class="fs"><i class="bi bi-check-circle text-primary"></i> {{issues_close}}</span>
+      <div>Closed issues</div>
+    </div>
+    <div class="w-25 rounded-right p-3 d-flex flex-column justify-content-center align-items-center">
+      <span class="fs"><i class="bi bi-record-circle text-success"></i> {{issues_open}}</span>
+      <div>New issues</div>
+    </div>
+  </div>
+</div>
+
+{% if commits %}
+<div class="my-5">
+  <b>{{authors}} users </b> have pushed <b>{{commits}} commits</b> to {{repository.default_branch}}.
+  On {{repository.default_branch}}, <b>{{files}} files</b> have changed and there have been
+  <b><span class="text-success">{{additions}}</span> additions</b> and <b><span class="text-danger">{{deletions}}</span>
+    deletions</b>.
+</div>
+{% else %}
+<div class="my-5">
+  There are no commits in chosen period!
+</div>
+{% endif %}
+
+{% endblock settingsContent %}

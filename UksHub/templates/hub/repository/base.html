@@ -201,15 +201,15 @@
             Security
           </li>
         </a>
-        <a href="{% url 'insights' repository.creator repository.name %}">
-          <li class="{% if path_name == 'insights' %}active-url {% endif %}px-3 py-2">
+        <a href="{% url 'pulse' repository.creator repository.name %}">
+          <li class="{% if path_name in 'pulse-period,graphs-cmmts,graphs-traffic' %}active-url {% endif %}px-3 py-2">
             <i class="bi bi-graph-up"></i>
             Insights
           </li>
         </a>
         {% if request.user == repository.creator %}
-        <a href="{% url 'repository-settings' repository.creator repository.name %}">
-          <li class="{% if path_name in 'repository-settings,repository-collaborators' %}active-url {% endif %}px-3 py-2">
+        <a href="{% url 'repo-settings' repository.creator repository.name %}">
+          <li class="{% if path_name in 'repo-settings,repo-collaborators' %}active-url {% endif %}px-3 py-2">
             <i class="bi bi-gear"></i>
             Settings
           </li>
