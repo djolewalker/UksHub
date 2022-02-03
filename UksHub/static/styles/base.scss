@@ -76,7 +76,6 @@ a:hover button.link-hover-underline {
     align-items: center;
     font-size: 1.3em;
     font-weight: 500;
-
     &.initials-s {
         width: 36px;
         height: 36px;
@@ -111,4 +110,10 @@ a:hover button.link-hover-underline {
 
 .hidden {
     visibility: hidden;
+}
+
+.subnav-item {
+    margin-left: 10px !important;
+    border: 2px solid;
+    margin: 2px;
 }

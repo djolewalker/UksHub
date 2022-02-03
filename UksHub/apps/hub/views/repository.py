@@ -5,7 +5,8 @@ from UksHub.apps.events.forms import CommentForm
 from UksHub.apps.events.services import event_user_to_artefact
 
 from UksHub.apps.gitcore.services import get_repository
-from UksHub.apps.hub.forms import IssueForm
+from UksHub.apps.hub.forms import IssueForm, LabelForm
+from UksHub.apps.hub.models import Label
 from UksHub.apps.hub.services import find_branch_from_path, find_repo, generate_hierarchy, get_last_commits, is_user_ssh_enabled
 from UksHub.apps.advancedsearch.models import Query
 from UksHub.apps.advancedsearch.mapper import map_query_to_filter
@@ -278,3 +279,37 @@ def repository_settings(request, username, reponame):
         repository = find_repo(request.user, username, reponame)
         return render(request, 'hub/repository/repository-settings.html', {'repository': repository})
     raise Http404
+
+def labels(request, username, reponame):
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+        issue
+        labels = Label.objects.all()
+
+        return render(request, 'hub/repository/labels.html', {
+            'repository': repository,
+            'labels': labels,
+            'ispr': False,
+            'sort_options': _sort_options
+        })
+
+    raise Http404
+
+def create_label(request, username, reponame):
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+        label_form = LabelForm()
+        repository.contributors.add(repository.creator)
+
+    elif request.method == 'POST':
+        repository = find_repo(request.user, username, reponame)
+        label_form = LabelForm(request.POST)
+        if label_form.is_valid():
+            label = label_form.save(commit=False)
+            label.save()
+            label_form.save_m2m()
+
+            return redirect(reverse('issue', kwargs={'username': username, 'reponame': reponame}))
+    else:
+        raise Http404
+    return render(request, 'hub/repository/new-label.html', {'repository': repository, 'label_form': label_form})

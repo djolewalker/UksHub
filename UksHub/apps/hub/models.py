@@ -6,6 +6,7 @@ from UksHub.apps.core.models import TimeStampModel
 from UksHub.apps.core.utils import random_hex_color
 from UksHub.apps.gitcore.models import Repository
 from easy_thumbnails.fields import ThumbnailerImageField
+from UksHub.apps.core.validators import path_validator
 
 
 def user_directory_path(instance, filename):
@@ -61,7 +62,7 @@ class PullRequest(Artefact):
 
 
 class Label(TimeStampModel):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     description = models.CharField(max_length=400, blank=True, null=True)
     color = models.CharField(max_length=7, blank=True,
                              null=True, default=random_hex_color)
