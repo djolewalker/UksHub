@@ -9,9 +9,13 @@ Login
 {% endcompress %}
 {% endblock header %}
 {% block content %}
-<h1 style="margin: auto; display: block; width: 140px; margin-top: 80px;">UksHub</h1>
+
 <div class="form-container">
-    <h2>Sign in to UksHub</h2>
+    <a  href="{% url 'home' %}" class=" mb-4 d-flex align-items-center">
+            <img src="{% static 'img/hub-logo-vert.svg' %}" alt="UksHub logo">
+    </a>
+
+    <h2>Sign in</h2>
     {% if next %}
     <form class="ignore-asterics" action="/login?next={{next}}" method="POST">
         {% else%}
