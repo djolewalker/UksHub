@@ -55,9 +55,9 @@
           {% else %}
           href="{% url 'pull-requests' repository.creator.username repository.name %}?q={{queries.assignee|urlencode}}{{' '|add:username|urlencode}}"
           {% endif %}
-          style="width:20px;height:20px"
+          style="width:20px;height:20px;line-height:1"
         >
-          <span>{% include 'hub/common/profile-picture.html' %}</span>
+          {% include 'hub/common/profile-picture.html' %}
         </a>
         {% endwith %}
         {% endfor %}
