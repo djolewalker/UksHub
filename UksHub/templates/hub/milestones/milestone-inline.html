@@ -32,12 +32,12 @@
         <div class="col-12 d-flex h-100 p-0">
           <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
               <div class="col-3 d-flex align-items-center justify-content-end px-1">
-                <a
+                <button
                   href=""
-                  style="width:20px;height:20px"
+                  class="d-flex pl-0 mb-0 inline btn btn-sm btn-outline-secondary"
                 >
-                    <span ><i class="bi bi-trash"></i>  <div class="fs-small ">delete</div></span>
-                </a>
+                    <i class="mx-1 bi bi-trash"></i>  delete
+                </button>
               </div>
           <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
         </div>
@@ -47,12 +47,12 @@
         <div class="col-12 d-flex h-100 p-0">
           <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
               <div class="col-3 d-flex align-items-center justify-content-end px-1">
-                <a
+                <button
                   href="{% url 'edit_milestone' repository.creator.username repository.name milestone.id %}"
-                  style="width:20px;height:20px"
+                  class="d-flex pl-0 mb-0 inline btn btn-sm btn-outline-secondary"
                 >
-                   <span><i class="bi bi-pen"></i>  <div class="fs-small ">edit</div></span>
-                </a>
+                   <i class="mx-1 bi bi-pen"></i>  edit
+                </button>
               </div>
           <div class="col-4 d-flex align-items-center justify-content-end px-1"></div>
         </div>
