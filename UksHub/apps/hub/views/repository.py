@@ -917,6 +917,7 @@ def create_label(request, username, reponame):
         label_form = LabelForm(request.POST)
         if label_form.is_valid():
             label = label_form.save(commit=False)
+            label.repository = repository
             label.save()
             label_form.save_m2m()
             return redirect(reverse('labels', kwargs={'username': username, 'reponame': reponame}))
@@ -931,17 +932,15 @@ def edit_label(request, username, reponame, label_name):
         repository = find_repo(request.user, username, reponame)
         can_modify_repo(request.user, repository)
         label = Label.objects.get(name=label_name)
-        label_form = LabelForm(data={'name':label.name, 'description':label.description, 'color':label.color})
+        label_form = LabelForm(instance=label)
 
     elif request.method == 'POST':
         repository = find_repo(request.user, username, reponame)
         can_modify_repo(request.user, repository)
-        label_form = LabelForm(request.POST)
         label = Label.objects.get(name=label_name)
+        label_form = LabelForm(request.POST, instance=label)
         if label_form.is_valid():
-            label.name = label_form.data['name']
-            label.description = label_form.data['description']
-            label.save()
+            label_form.save(commit=True)
             return redirect(reverse('labels', kwargs={'username': username, 'reponame': reponame}))
     else:
         raise Http404
@@ -951,7 +950,9 @@ def edit_label(request, username, reponame, label_name):
 @login_required
 def remove_label(request, username, reponame, label_name):
     if request.method == 'GET':
-        Label.objects.filter(name=label_name).delete()
+        repository = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repository)
+        repository.label_set.filter(name=label_name).delete()
         return redirect(reverse('labels', kwargs={'username': username, 'reponame': reponame}))
 
 

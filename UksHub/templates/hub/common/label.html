@@ -1,11 +1,19 @@
 {% load hub_filters humanize %}
-<div class="d-flex col-12">
+<div class="d-flex col-12 fs-small px-3 py-2">
   <table style="width: 100%">
     <tr style="width: 100%">
-      <td style="width: 40%">{{label.name}}</td>
-      <td style="width: 40%">{{label.description}}</td>
-      <td style="width: 10%"><a href="{% url 'edit_label' repository.creator.username repository.name label.name %}"><button type="button" class="btn btn-warning">Edit</button></a></td>
-      <td style="width: 10%"><a href="{% url 'remove_label' repository.creator.username repository.name label.name %}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+      <td style="width: 40%"><span class="text-muted">Name:</span> <b>{{label.name}}</b></td>
+      <td style="width: 40%"><span class="text-muted">Description:</span> <b>{{label.description}}</b></td>
+      <td style="width: 10%"><a
+          href="{% url 'edit_label' repository.creator.username repository.name label.name %}"><button
+            type="button"
+            class="btn btn-dark text-primary border-primary btn-sm px-3"
+          ><b>Edit</b></button></a></td>
+      <td style="width: 10%"><a
+          href="{% url 'remove_label' repository.creator.username repository.name label.name %}"><button
+            type="button"
+            class="btn btn-dark text-danger border-danger btn-sm px-3"
+          ><b>Delete</b></button></a></td>
     </tr>
   </table>
 </div>

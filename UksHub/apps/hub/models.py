@@ -73,6 +73,8 @@ class Label(TimeStampModel):
     description = models.CharField(max_length=400, blank=True, null=True)
     color = models.CharField(max_length=7, blank=True,
                              null=True, default=random_hex_color)
+    repository = models.ForeignKey(
+        Repository, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class ReviewConversation(TimeStampModel):
