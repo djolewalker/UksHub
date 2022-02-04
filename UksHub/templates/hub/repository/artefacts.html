@@ -21,7 +21,36 @@
       value="{{query}}"
     >
   </form>
-  {% if request.user.is_authenticated and request.user == user %}
+
+  <a href="{% url 'labels' repository.creator.username repository.name %}">
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary px-3 ml-3"
+      name="repo_id"
+      value="{{ repository.pk }}"
+    >
+      <i class="bi bi-signpost mx-1"></i>
+      Labels
+      <span class="mx-1 badge badge-pill badge-secondary">
+        {{repository|labelscount}}
+    </button>
+  </a>
+
+  <a href="{% url 'milestones' repository.creator.username repository.name %}">
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary px-3 ml-3"
+      name="repo_id"
+      value="{{ repository.pk }}"
+    >
+      <i class="bi bi-signpost mx-1"></i>
+      Milestones
+      <span class="mx-1 badge badge-pill badge-secondary">
+        {{repository|milestonecount}}
+      </span>
+    </button>
+  </a>
+
   {% if ispr %}
   <a
     href="{% url 'compare' repository.creator.username repository.name %}"
@@ -47,7 +76,7 @@
     </button>
   </a>
   {% endif %}
-  {% endif %}
+  
 </div>
 
 {% if not is_default_query %}

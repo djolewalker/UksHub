@@ -167,3 +167,23 @@ def get_line_indexes(lines):
         plus_counter += 1
         minus_counter += 1
     return data
+
+
+@register.filter(name='milestonecount')
+def milestone_counter(repository):
+    return repository.milestone_set.count()
+  
+  
+@register.filter(name='labelscount')
+def labels_counter(repository):
+    return repository.label_set.count()
+
+
+# {% milestone_percent milestone %}
+@register.simple_tag
+def milestone_percent(milestone):
+    if len(milestone.artefact_set.all()) >0:
+        return round((len(milestone.artefact_set.filter(state=2).all()) / len(milestone.artefact_set.all()))*100)
+    else:
+        return 100
+

@@ -30,7 +30,7 @@ def init_repo(request):
             except IntegrityError:
                 repo_form.add_error(
                     'name', 'You have already created repository with this name!')
-    if request.method == 'GET':
+    elif request.method == 'GET':
         repo_form = RepositoryForm(
             initial={'isPublic': True, 'owner': request.user.username})
     else:
@@ -76,10 +76,10 @@ def public_key(request):
             except IntegrityError:
                 key_form.add_error(
                     'label', 'Only one key can be labeled with same label!')
-    if request.method == 'GET':
+    elif request.method == 'GET':
         if PublicKey.objects.filter(owner=request.user, label=None).exists():
             note = 'You have set unlabeled public key. Create new one with specified label. Otherwise current unlabeled public key will be overridden!'
         key_form = KeyForm()
     else:
         raise Http404
-    return render(request, 'hub/user-settings/settings-new-ssh.html', {'form': key_form, 'note': note}) if key_form else Http404
+    return render(request, 'hub/user-settings/settings-new-ssh.html', {'form': key_form, 'note': note})

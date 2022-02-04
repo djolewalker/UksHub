@@ -1,4 +1,4 @@
-from UksHub.apps.events.models import StateChange, UserAssignment
+from UksHub.apps.events.models import MilestoneAssignment, StateChange, UserAssignment
 
 
 def event_user_to_artefact(creator, artefact, users, removal=False):
@@ -8,5 +8,10 @@ def event_user_to_artefact(creator, artefact, users, removal=False):
 
 
 def event_artefact_state_change(creator, artefact, state):
-    change = StateChange.objects.create(
+    StateChange.objects.create(
         creator=creator, artefact=artefact, new_state=state)
+
+
+def event_artefact_to_milestone(creator, artefact, milestone):
+    MilestoneAssignment.objects.create(
+        creator=creator, artefact=artefact, milestone=milestone)

@@ -13,16 +13,9 @@ UksHub
     <div class="header centered-content d-flex justify-content-sm-between">
         <a href="{% url 'home' %}" class="d-flex align-items-center">
             <img src="{% static 'img/hub-icon.svg' %}" alt="UksHub logo">
-            <h1>UksHub</h1>
+
         </a>
         <div class="actions d-flex align-items-center">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search..." aria-label="Search ukshub"
-                    aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">/</span>
-                </div>
-            </div>
             <a href="{% url 'login' %}"><button type="button" class="btn btn-outline-secondary hub">Sign in</button></a>
             <a href="{% url 'register' %}"><button type="button" class="btn btn-secondary hub">Sign up</button></a>
         </div>

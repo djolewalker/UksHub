@@ -6,6 +6,7 @@ from UksHub.apps.core.models import TimeStampModel
 from UksHub.apps.core.utils import random_hex_color
 from UksHub.apps.gitcore.models import Repository
 from easy_thumbnails.fields import ThumbnailerImageField
+from UksHub.apps.core.validators import path_validator
 
 
 def user_directory_path(instance, filename):
@@ -30,6 +31,12 @@ class Milestone(TimeStampModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
     due_date = models.DateTimeField()
+    repository = models.ForeignKey(
+        Repository, on_delete=models.CASCADE, null=True)
+    is_open = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Artefact(PolymorphicModel):
@@ -62,10 +69,12 @@ class PullRequest(Artefact):
 
 
 class Label(TimeStampModel):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     description = models.CharField(max_length=400, blank=True, null=True)
     color = models.CharField(max_length=7, blank=True,
                              null=True, default=random_hex_color)
+    repository = models.ForeignKey(
+        Repository, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class ReviewConversation(TimeStampModel):
