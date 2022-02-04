@@ -26,9 +26,9 @@
 <div class="p-4 d-flex my-3 border rounded justify-content-between">
   <div class="d-flex">
     {% if not stat.user.unknown %}
-    <a
+    <div
       class="d-flex mr-1 align-items-center"
-      href="{% url 'profile' stat.user.userprofile.username %}"
+
     >
       <div style="width:20px;height:20px">
         {% with stat.user as user %}
@@ -36,7 +36,7 @@
         {% endwith %}
       </div>
       <b class="link-hover-underline ml-1">{{stat.user.userprofile.username}}</b>
-    </a>
+    </div>
     {% else %}
     <div class="d-flex align-items-center">
       <div
