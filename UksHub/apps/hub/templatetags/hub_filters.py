@@ -171,8 +171,12 @@ def get_line_indexes(lines):
 
 @register.filter(name='milestonecount')
 def milestone_counter(repository):
-    return repository.milestone_set.all().count()
-
+    return repository.milestone_set.count()
+  
+  
+@register.filter(name='labelscount')
+def labels_counter(repository):
+    return repository.label_set.count()
 
 
 # {% milestone_percent milestone %}

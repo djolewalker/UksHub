@@ -28,21 +28,6 @@ UksHub
           alt="UksHub logo"
         >
       </a>
-      <div class="input-group input-group-sm mx-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Search..."
-          aria-label="Search ukshub"
-          aria-describedby="basic-addon2"
-        >
-        <div class="input-group-append">
-          <span
-            class="input-group-text"
-            id="basic-addon2"
-          >/</span>
-        </div>
-      </div>
       {% else %}
       <a
         href="{% url 'home' %}"
@@ -100,21 +85,6 @@ UksHub
         >Log out</button>
       </form>
       {% else %}
-      <div class="input-group">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Search..."
-          aria-label="Search ukshub"
-          aria-describedby="basic-addon2"
-        >
-        <div class="input-group-append">
-          <span
-            class="input-group-text"
-            id="basic-addon2"
-          >/</span>
-        </div>
-      </div>
       <a href="{% url 'login' %}"><button
           type="button"
           class="btn btn-outline-secondary hub"

@@ -19,7 +19,8 @@ from UksHub.apps.gitcore.forms import RepositoryContributorsForm
 from UksHub.apps.gitcore.models import Commit, Repository
 from UksHub.apps.events.services import event_artefact_state_change, event_artefact_to_milestone, event_user_to_artefact
 from UksHub.apps.gitcore.services import can_merge, delete_repository, get_repository, merge, sync_repo
-from UksHub.apps.hub.forms import IssueForm, PullRequestForm, MilestonesForm
+from UksHub.apps.hub.forms import IssueForm, LabelForm, PullRequestForm, MilestonesForm
+from UksHub.apps.hub.models import Label, Milestone
 from UksHub.apps.hub.services import can_delete_repo, can_modify_repo, find_branch_from_path, find_repo, generate_hierarchy, get_last_commits, is_user_ssh_enabled
 from UksHub.apps.advancedsearch.models import Query
 from UksHub.apps.advancedsearch.mapper import get_artefact_content_type, map_query_to_filter
@@ -301,6 +302,8 @@ def issues(request, username, reponame):
             repository,
             query
         )
+        labels = Label.objects.all()
+        milestones = Milestone.objects.all()
 
         return render(request, 'hub/repository/artefacts.html', {
             'repository': repository,
@@ -309,7 +312,9 @@ def issues(request, username, reponame):
             'queries': binding_queries,
             'ispr': False,
             'is_default_query': query == default_query,
-            'sort_options': _sort_options
+            'sort_options': _sort_options,
+            'labelscount': len(labels),
+            'milestonescount': len(milestones)
         })
 
     raise Http404
@@ -883,6 +888,72 @@ def milestone(request, username, reponame, id):
         })
 
     raise Http404
+
+def labels(request, username, reponame):
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+        issue
+        labels = Label.objects.all()
+
+        return render(request, 'hub/repository/labels.html', {
+            'repository': repository,
+            'labels': labels,
+            'ispr': False,
+            'sort_options': _sort_options
+        })
+
+    raise Http404
+
+@login_required
+def create_label(request, username, reponame):
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repository)
+        label_form = LabelForm()
+
+    elif request.method == 'POST':
+        repository = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repository)
+        label_form = LabelForm(request.POST)
+        if label_form.is_valid():
+            label = label_form.save(commit=False)
+            label.repository = repository
+            label.save()
+            label_form.save_m2m()
+            return redirect(reverse('labels', kwargs={'username': username, 'reponame': reponame}))
+    else:
+        raise Http404
+    return render(request, 'hub/repository/new-label.html', {'repository': repository, 'label_form': label_form})
+
+
+@login_required
+def edit_label(request, username, reponame, label_name):
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repository)
+        label = Label.objects.get(name=label_name)
+        label_form = LabelForm(instance=label)
+
+    elif request.method == 'POST':
+        repository = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repository)
+        label = Label.objects.get(name=label_name)
+        label_form = LabelForm(request.POST, instance=label)
+        if label_form.is_valid():
+            label_form.save(commit=True)
+            return redirect(reverse('labels', kwargs={'username': username, 'reponame': reponame}))
+    else:
+        raise Http404
+    return render(request, 'hub/repository/edit-label.html', {'repository': repository, 'label_form': label_form})
+
+
+@login_required
+def remove_label(request, username, reponame, label_name):
+    if request.method == 'GET':
+        repository = find_repo(request.user, username, reponame)
+        can_modify_repo(request.user, repository)
+        repository.label_set.filter(name=label_name).delete()
+        return redirect(reverse('labels', kwargs={'username': username, 'reponame': reponame}))
 
 
 @login_required

@@ -2,7 +2,24 @@
 {% load hub_filters %}
 
 {% block repocontent %}
-<div class="d-flex pb-3 justify-content-end align-items-center">
+<div class="d-flex pb-3 justify-content-between align-items-center">
+  <div class="d-flex">
+    <a
+      class="mr-4"
+      href="{% url 'labels' repository.creator.username repository.name %}"
+    >
+      <button class="px-3 btn btn-sm btn-secondary">
+        <i class="bi bi-tag"></i>
+        Labels
+      </button>
+    </a>
+    <a href="{% url 'milestones' repository.creator.username repository.name %}">
+      <button class="px-3 btn btn-sm btn-secondary">
+        <i class="bi bi-signpost"></i>
+        Milestones
+      </button>
+    </a>
+  </div>
   {% if request.user.is_authenticated and request.user == user %}
   <a
     href="{% url 'new-milestone' repository.creator.username repository.name %}"

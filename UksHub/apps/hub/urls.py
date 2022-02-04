@@ -5,7 +5,7 @@ from .views.home import home_hub_view
 from .views.profile import profile_overview
 from .views.profile_settings import settings_keys, settings_profile
 
-from .views.repository import actions, archive_repo, blob, change_private_status, close_issue, close_pull_request, collaborators, commit, commits, compare, create_issue, delete_repo, issue, issues, pull_request, insights_trafic, insights_commits, pull_requests, pulse, tree, repository_projects, repository_settings, security, wiki, star_view, watch_view, create_milestone, milestones, milestone, close_reopen_milestone, edit_milestone, delete_milestone, add_new_issue_to_milestone, add_artefact_to_milestone
+from .views.repository import actions, archive_repo, blob, change_private_status, close_issue, close_pull_request, collaborators, commit, commits, compare, create_issue, create_label, delete_repo, edit_label, issue, issues, pull_request, insights_trafic, insights_commits, pull_requests, pulse, remove_label, tree, repository_projects, repository_settings, security, wiki, star_view, watch_view, create_milestone, milestones, milestone, close_reopen_milestone, edit_milestone, delete_milestone, add_new_issue_to_milestone, add_artefact_to_milestone, labels
 
 
 urlpatterns = [
@@ -69,6 +69,10 @@ urlpatterns = [
          repository_projects, name='repository-projects'),
     path('<username>/<reponame>/wiki', wiki, name='wiki'),
     path('<username>/<reponame>/security', security, name='security'),
+    path('<username>/<reponame>/labels', labels, name='labels'),
+    path('<username>/<reponame>/create_label', create_label, name='create_label'),
+    path('<username>/<reponame>/edit_label/<path:label_name>', edit_label, name='edit_label'),
+    path('<username>/<reponame>/remove_label/<path:label_name>', remove_label, name='remove_label'),
     path('<username>/<reponame>/pulse', pulse, name='pulse'),
     path('<username>/<reponame>/graphs/commits',
          insights_commits, name='graphs-cmmts'),

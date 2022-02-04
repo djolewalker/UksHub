@@ -1,0 +1,62 @@
+{% extends 'hub/repository/base.html' %}
+{% load hub_filters %}
+
+{% block repocontent %}
+
+<div class="d-flex pb-3 justify-content-between align-items-center">
+  <div class="d-flex">
+    <a
+      class="mr-4"
+      href="{% url 'labels' repository.creator.username repository.name %}"
+    >
+      <button class="px-3 btn btn-sm btn-secondary">
+        <i class="bi bi-tag"></i>
+        Lables
+      </button>
+    </a>
+    <a href="{% url 'milestones' repository.creator.username repository.name %}">
+      <button class="px-3 btn btn-sm btn-secondary">
+        <i class="bi bi-signpost"></i>
+        Milestones
+      </button>
+    </a>
+  </div>
+  <a
+    href="{% url 'create_label' repository.creator.username repository.name %}"
+    class="ml-3"
+  >
+    <button
+      type="button"
+      class="btn d-flex btn-sm btn-success px-3"
+    >
+      New label
+    </button>
+  </a>
+</div>
+
+<div class="border rounded-top p-3">
+  <div class="d-flex pr-0">
+    <div
+      class="pl-1 mw-0 flex-auto"
+      style="max-width:unset"
+    >
+      <b>{{labels|length}} Labels</b>
+    </div>
+  </div>
+</div>
+
+{% if labels %}
+<ul class="p-0 border-left border-right">
+  {% for label in labels %}
+  <li class="d-flex py-1 border-bottom">
+    {% include 'hub/common/label.html' %}
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="border p-5 border-top-0 d-flex justify-content-center align-items-center">
+  <h2 class="py-5">No results!</h2>
+</div>
+{% endif %}
+
+{% endblock repocontent %}}

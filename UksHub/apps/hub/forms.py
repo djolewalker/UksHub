@@ -1,6 +1,5 @@
 from django import forms
-from django.forms import ModelForm
-from UksHub.apps.hub.models import Issue, PullRequest, UserProfile, Milestone
+from UksHub.apps.hub.models import Issue, PullRequest, UserProfile, Milestone, Label
 
 
 class UserProfileForm(forms.ModelForm):
@@ -17,6 +16,12 @@ class IssueForm(forms.ModelForm):
         model = Issue
         fields = ('name', 'assignees', 'milestone')
         widgets = {'assignees': forms.CheckboxSelectMultiple}
+
+
+class LabelForm(forms.ModelForm):
+    class Meta:
+        model = Label
+        fields = ('name', 'description', 'color')
 
 
 class PullRequestForm(forms.ModelForm):
